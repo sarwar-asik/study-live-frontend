@@ -8,14 +8,25 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const navItems: {
+    name: string;
+    link: string;
+    active: boolean;
+  }[] = [
+      { name: 'Home', link: '/', active: true },
+      { name: 'Team', link: '/', active: false },
+      { name: 'Feature', link: '/', active: false },
+      { name: 'About', link: '/', active: false },
+    ];
+
   return (
     <header className="shadow-md font-sans tracking-wide relative z-50">
-      <section className="py-2 bg-primary text-white text-right px-10">
+      {/* <section className="py-2 bg-primary text-white text-right px-10">
         <p className="text-sm">
           <strong className="mx-3">Address:</strong> SWF New York 185669
           <strong className="mx-3">Contact No:</strong> 1800333665
         </p>
-      </section>
+      </section> */}
       <div className="flex flex-wrap items-center justify-between gap-4 px-10 py-4 bg-white min-h-[70px]">
         <Link to="/">
           <img
@@ -23,11 +34,11 @@ const Navbar: React.FC = () => {
             alt="logo"
             className="w-[4rem] h-[3rem]"
           />
-        </Link> 
+        </Link>
         <div
           id="collapseMenu"
           className={`${isMenuOpen ? 'block' : 'hidden'
-            } lg:flex lg:gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50`}
+            } lg:flex lg:gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50 `}
         >
           <button
             id="toggleClose"
@@ -59,64 +70,40 @@ const Navbar: React.FC = () => {
                 />
               </Link>
             </li>
-            <li className="max-lg:border-b max-lg:py-3 px-3">
+
+            {navItems.map((item) => (
+              <li key={item?.name} className="max-lg:border-b max-lg:py-3 px-3">
+                <Link
+                  to={item?.link}
+                  className={`hover:text-[#007bff] block font-bold text-[15px] ${item?.active ? 'text-[#007bff]' : 'text-[#333]'}`}
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+
+            <li className="max-lg:border-b max-lg:py-3 px-3 lg:hidden">
               <Link
-                to="/"
-                className="hover:text-primary text-primary block font-bold text-[15px]"
+                to={'/sign-up'}
+                className={`hover:text-[#007bff] block font-bold text-[15px] text-[#333]`}
               >
-                Home
+                Sign Up
               </Link>
             </li>
-            <li className="max-lg:border-b max-lg:py-3 px-3">
+            <li className="max-lg:border-b max-lg:py-3 px-3 lg:hidden">
               <Link
-                to="/"
-                className="hover:text-primary text-[#333] block font-bold text-[15px]"
+                to={'/login'}
+                className={`hover:text-[#007bff] block font-bold text-[15px] text-[#333]`}
               >
-                Team
+                Login
               </Link>
             </li>
-            <li className="max-lg:border-b max-lg:py-3 px-3">
-              <Link
-                to="/"
-                className="hover:text-primary text-[#333] block font-bold text-[15px]"
-              >
-                Feature
-              </Link>
-            </li>
-            <li className="max-lg:border-b max-lg:py-3 px-3">
-              <Link
-                to="/"
-                className="hover:text-primary text-[#333] block font-bold text-[15px]"
-              >
-                Blog
-              </Link>
-            </li>
-            <li className="max-lg:border-b max-lg:py-3 px-3">
-              <Link
-                to="/"
-                className="hover:text-primary text-[#333] block font-bold text-[15px]"
-              >
-                About
-              </Link>
-            </li>
-            <li className="max-lg:border-b max-lg:py-3 px-3">
-              <Link
-                to="/"
-                className="hover:text-primary text-[#333] block font-bold text-[15px]"
-              >
-                Contact
-              </Link>
-            </li>
-            <li className="max-lg:border-b max-lg:py-3 px-3">
-              <Link
-                to="/"
-                className="hover:text-primary text-[#333] block font-bold text-[15px]"
-              >
-                Source
-              </Link>
-            </li>
+
+
           </ul>
+
         </div>
+
         <div className="flex max-lg:ml-auto">
           <button id="toggleOpen" onClick={handleClick} className="lg:hidden">
             <svg
@@ -132,6 +119,11 @@ const Navbar: React.FC = () => {
               />
             </svg>
           </button>
+        </div>
+
+        <div className='lg:gap-x-5 max-lg:space-y-3 z-50  hidden lg:flex'>
+          <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/">Sign up</Link>
+          <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/">Login</Link>
         </div>
       </div>
     </header>

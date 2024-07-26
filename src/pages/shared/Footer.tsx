@@ -7,8 +7,7 @@ export default function Footer() {
                 <div>
                     <h4 className="text-white text-lg font-semibold mb-7">About Us</h4>
                     <p className="text-gray-300 text-sm">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ultrices
-                        ultricies diam id scelerisque.
+                        Best choice for get better live streaming experience with your community
                     </p>
                     <ul className="space-y-4 mt-5">
                         <li>
@@ -42,7 +41,7 @@ export default function Footer() {
                                 href="javascript:void(0)"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
-                                Company
+                                Admin
                             </a>
                         </li>
                         <li>
@@ -60,7 +59,7 @@ export default function Footer() {
                                 href="javascript:void(0)"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
-                                Careers
+                                Security
                             </a>
                         </li>
                         <li>
@@ -78,7 +77,7 @@ export default function Footer() {
                                 href="javascript:void(0)"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
-                                Contact
+                                Support
                             </a>
                         </li>
                     </ul>
@@ -91,7 +90,7 @@ export default function Footer() {
                                 href="javascript:void(0)"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
-                                Sale
+                                Best Features
                             </a>
                         </li>
                         <li>
@@ -99,7 +98,7 @@ export default function Footer() {
                                 href="javascript:void(0)"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
-                                New arrivals
+                                Update arrivals
                             </a>
                         </li>
                         <li>
@@ -107,7 +106,7 @@ export default function Footer() {
                                 href="javascript:void(0)"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
-                                Shop
+                                Pricing
                             </a>
                         </li>
                         <li>
@@ -115,7 +114,7 @@ export default function Footer() {
                                 href="javascript:void(0)"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
-                                Store
+                                Live
                             </a>
                         </li>
                     </ul>
@@ -160,7 +159,7 @@ export default function Footer() {
                 <div>
                     <h4 className="text-white text-lg font-semibold mb-7">Subscribe</h4>
                     <p className="text-gray-300 mb-5">
-                        Subscribe to our newsletter to receive updates and exclusive offers.
+                        Subscribe to our newsletter to receive updates and exclusive features.
                     </p>
                     <form>
                         <div className="flex">
