@@ -122,8 +122,8 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className='lg:gap-x-5 max-lg:space-y-3 z-50  hidden lg:flex'>
-          <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/">Sign up</Link>
-          <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/">Login</Link>
+          <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/sign-up">Sign up</Link>
+          <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/login">Login</Link>
         </div>
       </div>
     </header>
