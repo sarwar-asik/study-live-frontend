@@ -5,10 +5,10 @@ function App() {
 
 
   return (
-    <React.Fragment>
+    <div>
       <h2 className='text-xl text-green-600 text-center'>Your app runnings</h2>
       <video autoPlay playsInline></video>
-    </React.Fragment>
+    </div>
   )
 }
 
