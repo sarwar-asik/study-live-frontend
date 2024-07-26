@@ -9,7 +9,7 @@ export default function MainLayout() {
         <React.Fragment>
 
             <Navbar />
-            <div className="">
+            <div className="min-h-screen">
                 <Outlet />
             </div>
 
