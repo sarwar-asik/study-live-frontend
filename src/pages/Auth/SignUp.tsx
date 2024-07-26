@@ -20,13 +20,23 @@ export default function SignUp() {
                 to="/login"
                 className="text-blue-600 font-semibold hover:underline ml-1"
               >
-                login
+                Login..
               </Link>
             </p>
           </div>
           <form className="max-w-md md:ml-auto w-full">
-            <h3 className="text-gray-800 text-3xl font-extrabold mb-8">Sign in</h3>
+            <h3 className="text-gray-800 text-3xl font-extrabold mb-8">Sign Up</h3>
             <div className="space-y-4">
+              <div>
+                <input
+                  name="name"
+                  type="text"
+                  // autoComplete="email"
+                  required
+                  className="bg-gray-100 w-full text-sm text-gray-800 px-4 py-3.5 rounded-md outline-blue-600 focus:bg-transparent"
+                  placeholder="Your Name"
+                />
+              </div>
               <div>
                 <input
                   name="email"

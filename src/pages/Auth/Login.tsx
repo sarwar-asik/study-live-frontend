@@ -5,7 +5,7 @@ export default function Login() {
     return (
         <React.Fragment><div className="font-[sans-serif]">
             <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
-                <div className="grid md:grid-cols-2 items-center gap-10 max-w-6xl w-full">
+                <div className="grid md:grid-cols-2 items-center gap-10 max-w-5xl w-full">
                     <div>
                         <h2 className="lg:text-5xl text-4xl font-extrabold lg:leading-[55px] text-gray-800">
                             Seamless Login for Exclusive Access
@@ -17,7 +17,7 @@ export default function Login() {
                         <p className="text-sm mt-12 text-gray-800">
                             Don't have an account{" "}
                             <Link
-                                to="sign"
+                                to="/sign-up"
                                 className="text-blue-600 font-semibold hover:underline ml-1"
                             >
                                 Register here
@@ -25,7 +25,7 @@ export default function Login() {
                         </p>
                     </div>
                     <form className="max-w-md md:ml-auto w-full">
-                        <h3 className="text-gray-800 text-3xl font-extrabold mb-8">Sign in</h3>
+                        <h3 className="text-gray-800 text-3xl font-extrabold mb-8">Log in</h3>
                         <div className="space-y-4">
                             <div>
                                 <input
