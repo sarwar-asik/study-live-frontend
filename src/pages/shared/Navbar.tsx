@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -8,16 +8,18 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const { pathname } = useLocation()
+
+  console.log(pathname)
   const navItems: {
     name: string;
     link: string;
     active: boolean;
   }[] = [
-      { name: 'Home', link: '/', active: true },
-      { name: 'Team', link: '/', active: false },
-      { name: 'Feature', link: '/landing', active: false },
-      { name: 'Pricing', link: '/pricing', active: false },
-      { name: 'About', link: '/', active: false },
+      { name: 'Home', link: '/', active: pathname === '/' },
+      { name: 'Pricing', link: '/pricing', active: pathname === '/pricing' },
+      { name: 'About', link: '/', active: pathname === '/about' },
+      { name: 'Start', link: '/landing', active: pathname === '/landing' },
     ];
 
   return (
