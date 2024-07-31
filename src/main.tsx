@@ -4,20 +4,19 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import { RouterProvider } from 'react-router-dom'
 import router from './router/Routes'
-import { SocketProvider } from './context/SocketProvider'
+
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './context/AuthProvider'
+import { RoomProvider } from './context/RoomProvider'
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthProvider>
-      <SocketProvider>
-        <Toaster />
+      <RoomProvider>
         <RouterProvider router={router} />
-
-
-      </SocketProvider>
+        <Toaster />
+      </RoomProvider>
     </AuthProvider>
 
   </React.StrictMode>,
