@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import AuthContext from '@/context/AuthProvider';
-import {  logoutHandler } from '@/helper/authHelper';
+import { logoutHandler } from '@/helper/authHelper';
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
   const { pathname } = useLocation()
 
 
-  console.log(user)
+  // console.log(user)
 
 
   // console.log(pathname)
@@ -35,8 +35,12 @@ const Navbar: React.FC = () => {
       { name: 'Home', link: '/', active: pathname === '/' },
       { name: 'Pricing', link: '/pricing', active: pathname === '/pricing' },
       { name: 'About', link: '/', active: pathname === '/about' },
-      { name: 'Start', link: '/landing', active: pathname === '/landing' },
+
     ];
+
+  if (user?.email) {
+    navItems.push({ name: 'Start', link: '/landing', active: pathname === '/landing' },)
+  }
 
   return (
     <header className="shadow-md font-sans tracking-wide relative z-50">
