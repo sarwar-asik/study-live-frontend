@@ -32,7 +32,7 @@ export default function LandingPage() {
 
                         </div>
                     </div>
-                    <div>
+                    <div className='sm:mt-1 mt-[7rem]'>
                         <img
                             className="w-full mx-auto"
                             src="https://cdn.rareblocks.xyz/collection/clarity/images/features/2/illustration.png"
