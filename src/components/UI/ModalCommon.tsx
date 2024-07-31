@@ -1,23 +1,30 @@
-import generateUUID from '@/helper/generateUUID'
-import React from 'react'
+import { RoomCOntext } from '@/context/RoomProvider'
+
+import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ModalCommon({ type, points, onClick, openModal, setOpenModal }: { type: "video" | "audio" | null, points: number, onClick: () => void, openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>> }) {
 
-    const uuid = generateUUID()
+
+    const { roomId } = useContext(RoomCOntext)
+
+    // console.log(enterRoom())
+    // console.log(roomId)
+
     const navigate = useNavigate()
 
 
     const callHandler = () => {
 
         if (type === "video") {
-            navigate(`/dashboard/video/${uuid}`)
+            navigate(`/dashboard/video/${roomId}`)
             setOpenModal(false)
+
 
         }
         else {
-            navigate(`/dashboard/audio/${uuid}`)
+            navigate(`/dashboard/audio/${roomId}`)
             setOpenModal(false)
         }
     }
