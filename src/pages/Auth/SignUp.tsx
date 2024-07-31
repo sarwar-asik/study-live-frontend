@@ -3,12 +3,15 @@ import usePostHook from '@/hooks/usePostHook';
 import React from 'react'
 import { Link } from 'react-router-dom'
 import LoaderSubmit from '../shared/LoaderSubmit';
+import { authKey, SERVER_URL } from '@/helper/const';
+import toast from 'react-hot-toast';
+import { setToLocalStorage } from '@/helper/authHelper';
 
 export default function SignUp() {
 
 
 
-  const { data, loading, postData } = usePostHook<string>('https://api.example.com/data');
+  const { data, loading, postData } = usePostHook<string>(`${SERVER_URL}/auth/sign-up`);
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<any> => {
     event.preventDefault();
     const formElement = event.currentTarget;
@@ -18,13 +21,14 @@ export default function SignUp() {
     console.log({ name, email, password });
     const bodyData = { name, email, password }
 
-    const response = await postData(bodyData);
+    const response = await postData(bodyData) as any
+    if (response?.accessToken) {
+      toast("SIgn Up  dones")
+      setToLocalStorage(authKey, response?.accessToken)
+    }
 
     console.log(data);
     console.log(response);
-
-
-
 
 
   }
