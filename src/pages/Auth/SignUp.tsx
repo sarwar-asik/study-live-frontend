@@ -1,7 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import usePostHook from '@/hooks/usePostHook';
 import React from 'react'
 import { Link } from 'react-router-dom'
+import LoaderSubmit from '../shared/LoaderSubmit';
 
 export default function SignUp() {
+
+
+
+  const { data, loading, postData } = usePostHook<string>('https://api.example.com/data');
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<any> => {
+    event.preventDefault();
+    const formElement = event.currentTarget;
+    const name: string = (formElement.elements.namedItem("name") as HTMLInputElement).value;
+    const email: string = (formElement.elements.namedItem("email") as HTMLInputElement).value;
+    const password: string = (formElement.elements.namedItem("password") as HTMLInputElement).value;
+    console.log({ name, email, password });
+    const bodyData = { name, email, password }
+
+    const response = await postData(bodyData);
+
+    console.log(data);
+    console.log(response);
+
+
+
+
+
+  }
   return (
     <React.Fragment><div className="font-[sans-serif]">
       <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
@@ -24,7 +50,7 @@ export default function SignUp() {
               </Link>
             </p>
           </div>
-          <form className="max-w-md md:ml-auto w-full">
+          <form onSubmit={onSubmit} className="max-w-md md:ml-auto w-full">
             <h3 className="text-gray-800 text-3xl font-extrabold mb-8">Sign Up</h3>
             <div className="space-y-4">
               <div>
@@ -72,23 +98,28 @@ export default function SignUp() {
                     Remember me
                   </label>
                 </div>
-                <div className="text-sm">
+                {/* <div className="text-sm">
                   <Link
                     to="/"
                     className="text-blue-600 hover:text-blue-500 font-semibold"
                   >
                     Forgot your password?
                   </Link>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="!mt-8">
-              <button
-                type="button"
-                className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
-              >
-                Sign Up
-              </button>
+              {
+                loading ? <LoaderSubmit /> :
+
+                  <button
+                    type="submit"
+                    className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                  >
+                    Sign Up
+                  </button>
+              }
+
             </div>
             <div className="space-x-6 flex justify-center mt-8">
               <button type="button" className="border-none outline-none">
