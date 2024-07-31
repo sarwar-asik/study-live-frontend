@@ -2,13 +2,15 @@
 import { setToLocalStorage } from '@/helper/authHelper';
 import { authKey, SERVER_URL } from '@/helper/const';
 import usePostHook from '@/hooks/usePostHook';
-import React from 'react'
+import React, { useContext } from 'react'
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom'
 import LoaderSubmit from '../shared/LoaderSubmit';
+import AuthContext from '@/context/AuthProvider';
 
 export default function Login() {
 
+    const { refreshUser } = useContext(AuthContext)
     const { data, loading, postData } = usePostHook<string>(`${SERVER_URL}/auth/login`);
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<any> => {
         event.preventDefault();
@@ -19,14 +21,15 @@ export default function Login() {
         const bodyData = { email, password }
 
         const response = await postData(bodyData) as any
-        if (response?.accessToken) {
-            toast("Login Successfully")
-            setToLocalStorage(authKey, response?.accessToken)
-        }
-
         console.log(data);
         console.log(response);
-
+        if (response?.data?.accessToken) {
+            refreshUser()
+            toast("Login Successfully")
+            setToLocalStorage(authKey, response?.data?.accessToken)
+            // reset the form
+            formElement.reset();
+        }
 
     }
     return (
@@ -107,7 +110,7 @@ export default function Login() {
                                         type="submit"
                                         className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
                                     >
-                                        Sign Up
+                                        Login
                                     </button>
                             }
                         </div>

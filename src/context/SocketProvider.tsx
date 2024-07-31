@@ -11,10 +11,13 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-    const socket = useMemo(() => io("localhost:5001"), []);
+    // const socket = useMemo(() => io("http://localhost:5000"), []);
+
+
+
 
     return (
-        <SocketContext.Provider value={socket as any}>
+        <SocketContext.Provider value={{}}>
             {children}
         </SocketContext.Provider>
     );

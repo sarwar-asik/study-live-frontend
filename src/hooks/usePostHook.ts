@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getRefreshToken } from "@/helper/authHelper";
 import { useState } from "react";
 
 interface PostOptions {
@@ -10,18 +9,15 @@ interface PostResponse<T> {
   data: T | null;
   loading: boolean;
   error: Error | null;
-  postData: (body: any) => Promise<void>;
+  postData: (body: any) => Promise<T | null>;
 }
 
-const usePostHook = <T>(
-  url: string,
-  options?: PostOptions
-): PostResponse<T> => {
-  const [data, setData] = useState<any| null>(null);
+const usePost = <T>(url: string, options?: PostOptions): PostResponse<T> => {
+  const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const postData = async (body: any) => {
+  const postData = async (body: any): Promise<T | null> => {
     setLoading(true);
     setError(null);
 
@@ -32,22 +28,30 @@ const usePostHook = <T>(
           "Content-Type": "application/json",
           ...options?.headers,
         },
-        body,
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
 
-      const result = await response.json()
+      const result = await response.json();
       setData(result);
       return result;
-    } catch (err:any) {
-      setError(err as Error);
-      // eslint-disable-next-line no-constant-condition
-      if ((err.status = 403)) {
-        await getRefreshToken();
+    } catch (err: any) {
+      setError(err);
+      console.log(err, "err");
+
+      // Attempt to refresh token if a 403 status is encountered
+      if (err.status === 403) {
+        try {
+          await getRefreshToken();
+          return postData(body); // Retry the request after refreshing the token
+        } catch (refreshError) {
+          console.error("Failed to refresh token", refreshError);
+        }
       }
+      return null;
     } finally {
       setLoading(false);
     }
@@ -56,4 +60,22 @@ const usePostHook = <T>(
   return { data, loading, error, postData };
 };
 
-export default usePostHook;
+export default usePost;
+
+async function getRefreshToken() {
+  // Implement the logic to get a new token here
+  // For example:
+  const response = await fetch("/api/refresh-token", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to refresh token");
+  }
+
+  const result = await response.json();
+  // Store the new token (localStorage, state, context, etc.)
+  // For example:
+  localStorage.setItem("token", result.token);
+}

@@ -41,3 +41,9 @@ export const getUserInfo = (): any | { e: "" } => {
     return { e: "" };
   }
 };
+
+// logout handler
+export const logoutHandler = () => {
+  localStorage.removeItem(authKey);
+  getUserInfo();
+};

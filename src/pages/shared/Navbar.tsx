@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import AuthContext from '@/context/AuthProvider';
+import {  logoutHandler } from '@/helper/authHelper';
+import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
+  const { user, refreshUser } = useContext(AuthContext)
+
+  // console.log(data)
+
   const handleClick = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const logoutHandle = () => {
+    logoutHandler()
+    refreshUser()
+  }
+
   const { pathname } = useLocation()
 
-  console.log(pathname)
+
+  console.log(user)
+
+
+  // console.log(pathname)
   const navItems: {
     name: string;
     link: string;
@@ -85,24 +101,32 @@ const Navbar: React.FC = () => {
               </li>
             ))}
 
-            <li className="max-lg:border-b max-lg:py-3 px-3 lg:hidden">
-              <Link
-                to={'/sign-up'}
-                className={`hover:text-[#007bff] block font-bold text-[15px] text-[#333]`}
-              >
-                Sign Up
-              </Link>
-            </li>
-            <li className="max-lg:border-b max-lg:py-3 px-3 lg:hidden">
-              <Link
-                to={'/login'}
-                className={`hover:text-[#007bff] block font-bold text-[15px] text-[#333]`}
-              >
-                Login
-              </Link>
-            </li>
+            {
+              user?.email ? <button
+                onClick={() => { logoutHandle() }}
+                className='text-red-500 hover:text-red-400 block font-bold text-[15px] lg:hidden '>
 
+                logout
+              </button> :
 
+                <div className='lg:hidden'>
+                  <li className="max-lg:border-b max-lg:py-3 px-3 ">
+                    <Link
+                      to={'/sign-up'}
+                      className={`hover:text-[#007bff] block font-bold text-[15px] text-[#333]`}
+                    >
+                      Sign Up
+                    </Link>
+                  </li>
+                  <li className="max-lg:border-b max-lg:py-3 px-3 lg:hidden">
+                    <Link
+                      to={'/login'}
+                      className={`hover:text-[#007bff] block font-bold text-[15px] text-[#333]`}
+                    >
+                      Login
+                    </Link>
+                  </li></div>
+            }
           </ul>
 
         </div>
@@ -124,10 +148,21 @@ const Navbar: React.FC = () => {
           </button>
         </div>
 
-        <div className='lg:gap-x-5 max-lg:space-y-3 z-50  hidden lg:flex'>
-          <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/sign-up">Sign up</Link>
-          <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/login">Login</Link>
-        </div>
+        {
+          user?.email ? <button onClick={() => {
+            logoutHandle();
+
+          }} className='text-red-500 hover:text-red-400  font-bold text-[15px] hidden lg:flex'>
+
+            logout
+          </button> :
+
+            <div className='lg:gap-x-5 max-lg:space-y-3 z-50  hidden lg:flex'>
+              <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/sign-up">Sign up</Link>
+              <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/login">Login</Link>
+            </div>
+        }
+
       </div>
     </header>
   );
