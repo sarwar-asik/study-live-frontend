@@ -1,7 +1,14 @@
 import VideoCall from '@/components/dashboard/videoCall/VideoCall';
-import React, { useEffect, useState } from 'react'
+import AuthContext from '@/context/AuthProvider';
+import React, { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
 
 export default function VideoCallPage() {
+
+    const paramsData = useParams()
+    const { user } = useContext(AuthContext)
+    console.log(paramsData?.id)
+    console.log(user)
     const [points, setPoints] = useState<number>(10);
 
     useEffect(() => {

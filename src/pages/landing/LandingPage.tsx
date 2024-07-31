@@ -1,6 +1,9 @@
+import BoxDropDownUI from '@/components/UI/DrpDownMeet'
 import React from 'react'
 
+
 export default function LandingPage() {
+
     return (
         <React.Fragment><section className="py-12 bg-white sm:py-16 lg:py-20">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -13,7 +16,8 @@ export default function LandingPage() {
                             Connect, collaborate, and celebrate from anywhere with Study Live video , live message streamming
                         </p>
                         <div className="relative inline-flex gap-5 mt-10 group">
-                            <button className='p-5 bg-primary text-white font-semibold rounded border border-primary h-[3rem] py-2'>New Meeting +</button>
+                            <BoxDropDownUI />
+
                             <div className=" bg-white">
                                 <input
                                     type="url"
@@ -28,7 +32,7 @@ export default function LandingPage() {
 
                         </div>
                     </div>
-                    <div>
+                    <div className='sm:mt-1 mt-[7rem]'>
                         <img
                             className="w-full mx-auto"
                             src="https://cdn.rareblocks.xyz/collection/clarity/images/features/2/illustration.png"

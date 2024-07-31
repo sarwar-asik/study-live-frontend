@@ -4,6 +4,7 @@ import MainLayout from "@/layout/MainLayout.tsx";
 import { MainRouterPath } from "./MainRouterPath";
 import DashboardLayout from "@/layout/DashboardLayout";
 import { DashboardRouterPath } from "./DashboardRouterPath";
+import PrivateRoute from "./PrivateRouter";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
     children: DashboardRouterPath
   }
 ]);

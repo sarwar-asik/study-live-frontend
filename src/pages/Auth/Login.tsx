@@ -1,7 +1,37 @@
-import React from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { setToLocalStorage } from '@/helper/authHelper';
+import { authKey, SERVER_URL } from '@/helper/const';
+import usePostHook from '@/hooks/usePostHook';
+import React, { useContext } from 'react'
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom'
+import LoaderSubmit from '../shared/LoaderSubmit';
+import AuthContext from '@/context/AuthProvider';
 
 export default function Login() {
+
+    const { refreshUser } = useContext(AuthContext)
+    const { data, loading, postData } = usePostHook<string>(`${SERVER_URL}/auth/login`);
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<any> => {
+        event.preventDefault();
+        const formElement = event.currentTarget;
+        const email: string = (formElement.elements.namedItem("email") as HTMLInputElement).value;
+        const password: string = (formElement.elements.namedItem("password") as HTMLInputElement).value;
+        console.log({ name, email, password });
+        const bodyData = { email, password }
+
+        const response = await postData(bodyData) as any
+        console.log(data);
+        console.log(response);
+        if (response?.data?.accessToken) {
+            refreshUser()
+            toast("Login Successfully")
+            setToLocalStorage(authKey, response?.data?.accessToken)
+            // reset the form
+            formElement.reset();
+        }
+
+    }
     return (
         <React.Fragment><div className="font-[sans-serif]">
             <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
@@ -24,7 +54,7 @@ export default function Login() {
                             </Link>
                         </p>
                     </div>
-                    <form className="max-w-md md:ml-auto w-full">
+                    <form onSubmit={onSubmit} className="max-w-md md:ml-auto w-full">
                         <h3 className="text-gray-800 text-3xl font-extrabold mb-8">Log in</h3>
                         <div className="space-y-4">
                             <div>
@@ -73,12 +103,16 @@ export default function Login() {
                             </div>
                         </div>
                         <div className="!mt-8">
-                            <button
-                                type="button"
-                                className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
-                            >
-                                Log in
-                            </button>
+                            {
+                                loading ? <LoaderSubmit /> :
+
+                                    <button
+                                        type="submit"
+                                        className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                                    >
+                                        Login
+                                    </button>
+                            }
                         </div>
                         <div className="space-x-6 flex justify-center mt-8">
                             <button type="button" className="border-none outline-none">
