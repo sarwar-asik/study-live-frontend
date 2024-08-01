@@ -11,7 +11,7 @@ import AuthContext from '@/context/AuthProvider';
 export default function Login() {
 
     const { refreshUser } = useContext(AuthContext)
-    const { data, loading, postData } = usePostHook<string>(`${SERVER_URL}/auth/login`);
+    const { data, loading, postData, error } = usePostHook<string>(`${SERVER_URL}/auth/login`);
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<any> => {
         event.preventDefault();
         const formElement = event.currentTarget;
@@ -30,6 +30,14 @@ export default function Login() {
             // reset the form
             formElement.reset();
         }
+        else if (response?.success === false) {
+            toast(response?.message)
+        }
+        else if (error) {
+            toast("Email or password incorrect")
+
+        }
+        // console.log(error)
 
     }
     return (

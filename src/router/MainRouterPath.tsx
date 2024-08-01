@@ -3,6 +3,7 @@ import SignUp from "@/pages/Auth/SignUp";
 import Home from "@/pages/home/Home";
 import LandingPage from "@/pages/landing/LandingPage";
 import PricingPage from "@/pages/pricing/PricingPage";
+import PrivateRoute from "./PrivateRouter";
 
 export const MainRouterPath = [
     {
@@ -23,6 +24,6 @@ export const MainRouterPath = [
     },
     {
         path: "/landing",
-        element: <LandingPage />
+        element: <PrivateRoute><LandingPage /></PrivateRoute>
     },
 ]

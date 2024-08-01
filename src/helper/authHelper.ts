@@ -35,7 +35,7 @@ export const getUserInfo = (): any | { e: "" } => {
 
   if (authToken) {
     const decodedData = decodedToken(authToken);
-    // console.log(decodedData)
+    // console.log(decodedData);
     return decodedData;
   } else {
     return { e: "" };
