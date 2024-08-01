@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import generateUUID from "@/helper/generateUUID";
-import React, { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createContext, useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 
@@ -19,10 +19,16 @@ export const RoomProvider = ({ children }: { children: any }) => {
     const enterRoom = () => {
         ws.emit("create-room")
     };
+
+    const getUsers = ({ participants }: { participants: string[] }) => {
+        console.log(participants, 'participants')
+
+    }
     useEffect(() => {
         ws.on("room-created", (room) => {
-            setRoomId(room.roomId)
+            setRoomId(room?.roomId ?? generateUUID())
         });
+        ws.on("get-users", getUsers)
     }, [enterRoom])
 
 

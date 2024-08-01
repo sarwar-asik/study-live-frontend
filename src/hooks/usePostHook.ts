@@ -39,8 +39,8 @@ const usePost = <T>(url: string, options?: PostOptions): PostResponse<T> => {
       setData(result);
       return result;
     } catch (err: any) {
-      setError(err);
-      console.log(err, "err");
+      setError(err.message);
+      console.log(err.message, "err");
 
       // Attempt to refresh token if a 403 status is encountered
       if (err.status === 403) {

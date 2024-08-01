@@ -7,21 +7,37 @@ const AuthContext = createContext<any>(null)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [user, setUser] = useState<any>(null)
+    const [user, setUser] = useState<any>(getUserInfo() ?? null)
 
-    const [refresh, setRefreshUser] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    // const [refresh, setRefreshUser] = useState(false)
+
+    useEffect(() => {
+        setLoading(true)
+        const userData = getUserInfo();
+        console.log(userData)
+        if (userData?.email) {
+            setUser(userData);
+            setLoading(false)
+        }
+    }, []);
 
     const refreshUser = () => {
-        setRefreshUser(prev => !prev)
-    }
-    useEffect(() => {
-        const userData = getUserInfo()
-        setUser(userData)
-        refreshUser()
-    }, [refresh])
+        setLoading(true)
+        const userData = getUserInfo();
 
+        if (userData) {
+
+            setUser(userData);
+            setLoading(false)
+        }
+        setLoading(false)
+    };
+
+    console.log(user)
     return (
-        <AuthContext.Provider value={{ user, refreshUser }}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, refreshUser, loading }}>{children}</AuthContext.Provider>
     )
 }
 

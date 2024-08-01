@@ -1,5 +1,6 @@
 import VideoCall from '@/components/dashboard/videoCall/VideoCall';
 import AuthContext from '@/context/AuthProvider';
+import { RoomCOntext } from '@/context/RoomProvider';
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 
@@ -7,16 +8,21 @@ export default function VideoCallPage() {
 
     const paramsData = useParams()
     const { user } = useContext(AuthContext)
-    console.log(paramsData?.id)
-    console.log(user)
+    const { ws } = useContext(RoomCOntext)
+
+    console.log(paramsData?.id, 'room id')
+    console.log(user?.id, 'user',user )
     const [points, setPoints] = useState<number>(10);
 
+
     useEffect(() => {
-        if (points <= 0) {
-            // Handle disconnection logic here
-            alert("Your points are exhausted. Please add more points to continue.");
+        if (user.id) {
+            ws.emit("join-room", { roomId: paramsData?.id, userId: user?.id, name: user?.name })
+            console.log('user id', user?.id)
         }
-    }, [points]);
+
+
+    }, [paramsData?.id, user?.id, ws, user.name]);
 
     const handlePointDeduction = (amount: number) => {
         setPoints(prevPoints => Math.max(prevPoints - amount, 0));
