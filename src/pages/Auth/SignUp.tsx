@@ -24,15 +24,18 @@ export default function SignUp() {
     const bodyData = { name, email, password }
 
     const response = await postData(bodyData) as any
+    console.log(response)
     if (response?.data.accessToken) {
       toast("SIgn Up  success")
       setToLocalStorage(authKey, response?.data.accessToken)
       await refreshUser()
-      navigate('/landing')
+      navigate('/dashboard/chat/1')
       // reset the form
       formElement.reset();
-    }
+    } else {
+      toast("Failed to sign up")
 
+    }
     console.log(data);
     console.log(response);
 

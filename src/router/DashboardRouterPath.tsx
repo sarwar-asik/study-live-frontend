@@ -15,7 +15,7 @@ export const DashboardRouterPath = [
         element: <AudioCallPage />
     },
     {
-        path: "chat",
+        path: "chat/:id",
         element: <ChatPage />
     },
 ]

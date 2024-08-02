@@ -25,12 +25,12 @@ export default function Login() {
         console.log(data);
         console.log(response);
         if (response?.data?.accessToken) {
-           await refreshUser()
+            await refreshUser()
             toast("Login Successfully")
             setToLocalStorage(authKey, response?.data?.accessToken)
             // reset the form
             formElement.reset();
-            navigate('/landing')
+            navigate('/dashboard/chat/1')
 
         }
         else if (response?.success === false) {

@@ -1,21 +1,90 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import SidebarDash from '@/components/dashboard/SidebarDash';
-import  { useState } from 'react'
+import AuthContext from '@/context/AuthProvider';
+import { SERVER_URL } from '@/helper/const';
+import useFetchDataHook from '@/hooks/useFetchDataHook';
+// import { IMessageDataType } from '@/type/dataType/message.data';
+import { IUserDataType } from '@/type/dataType/user.data';
+import { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
+import LoaderData from '../shared/LoaderData';
+import { ChatContext } from '@/context/ChatContext';
 // import { Link } from 'react-router-dom';
 
 export default function ChatPage() {
 
+    const { user } = useContext(AuthContext)
+    const { io, newMessage } = useContext(ChatContext)
+    const { id } = useParams()
+
+
+    // console.log(user)
+
+    const { data: userData, } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
+
+    // console.log(userData)
+    // const { data, loading, refetch } = useFetchDataHook<{ data: IMessageDataType[] }>(`${SERVER_URL}/message/user?senderId=${user.id}&receiverId=${id}`)
+    const [data, setData] = useState({ data: [] })
+    const [loading, setLoading] = useState(false)
+    // const [newMessage, setNewMessage] = useState({})
+
+
+    useEffect(() => {
+        (async () => {
+            setLoading(true)
+            const res = await fetch(`${SERVER_URL}/message/user?senderId=${user.id}&receiverId=${id}`)
+            const data = await res.json()
+            console.log(data)
+            setLoading(false)
+            setData(data)
+        })()
+
+
+    }, [id, newMessage, user.id])
+
+    console.log(data?.data.length)
+    console.log(data?.data)
+    // console.log(id)
+    // console.log(data)
+
+    // const userData = 
+
+    // useEffect(() => {
+    //     io.on('new-message', (data: any) => {
+    //         console.log(data)
+    //         // console.log(d)
+    //         setNewMessage(data)
+    //         // refetch()
+    //     })
+    // }, [io])
+
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
 
     // console.log(data)
     const handleClick = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
+
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const formElement = e.currentTarget;
+        const message: string = (formElement.elements.namedItem("message") as HTMLInputElement).value;
+        console.log(message)
+        io.emit("send-message", { message, senderId: user.id, receiverId: id })
+        // setMessage(!message)
+        // e.target.reset()
+        formElement.reset();
+    }
+
+
     return (
         <div className="flex-1">
             {/* Chat Header */}
             <header className="bg-white p-4 text-gray-700 flex justify-between">
-                <h1 className="text-2xl font-semibold">Alice</h1>
+                <h1 className="text-2xl font-semibold">{userData?.data?.name ?? "UnName"}</h1>
 
                 <button onClick={handleClick} id="toggleOpen" className="lg:hidden">
                     <svg
@@ -68,47 +137,67 @@ export default function ChatPage() {
             {/* Chat Messages */}
             <div className="h-screen overflow-y-auto p-4 pb-36">
                 {/* Incoming Message */}
-                <div className="flex mb-4 cursor-pointer">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-                        <img
-                            src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-                            alt="User Avatar"
-                            className="w-8 h-8 rounded-full"
-                        />
-                    </div>
-                    <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-                        <p className="text-gray-700">Hey Bob, how's it going?</p>
-                    </div>
-                </div>
+
+                {
+                    loading && <LoaderData />
+                }
+                {
+                    !loading && data?.data?.map((message) => {
+
+                        if (message.senderId === user?.id) {
+                            return <div key={message.id} className="flex justify-end mb-4 cursor-pointer">
+                                <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
+                                    <p>
+                                        {message.message}
+                                    </p>
+                                </div>
+                                <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
+                                    <img
+                                        src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
+                                        alt="My Avatar"
+                                        className="w-8 h-8 rounded-full"
+                                    />
+                                </div>
+                            </div>
+                        }
+                        else {
+                            return <div key={message.id} className="flex mb-4 cursor-pointer">
+                                <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
+                                    <img
+                                        src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
+                                        alt="User Avatar"
+                                        className="w-8 h-8 rounded-full"
+                                    />
+                                </div>
+                                <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
+                                    <p className="text-gray-700">
+                                        {message.message}
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                    })
+                }
+
+
                 {/* Outgoing Message */}
-                <div className="flex justify-end mb-4 cursor-pointer">
-                    <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
-                        <p>
-                            Hi Alice! I'm good, just finished a great book. How about you?
-                        </p>
-                    </div>
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
-                        <img
-                            src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-                            alt="My Avatar"
-                            className="w-8 h-8 rounded-full"
-                        />
-                    </div>
-                </div>
+
             </div>
             {/* Chat Input */}
-            <footer className="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-full lg:w-3/4">
+            <form onSubmit={handleSubmit} className="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-full lg:w-3/4">
                 <div className="flex items-center">
                     <input
                         type="text"
+                        name="message"
+                        // onChange={(e) => setMessage(e.target.value)}
                         placeholder="Type a message..."
                         className="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500"
                     />
-                    <button className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2">
+                    <button type='submit' className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2">
                         Send
                     </button>
                 </div>
-            </footer>
+            </form>
         </div>
     )
 }

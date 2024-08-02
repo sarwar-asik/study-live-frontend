@@ -1,3 +1,14 @@
 export type IUserDataType = {
-  name: string;
+  id: string;
+  name: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  password: string;
+  email: string;
+  phone_number: string | null;
+  role: string;
+  points?: number;
+  img: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
