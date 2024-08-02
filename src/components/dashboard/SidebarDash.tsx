@@ -3,10 +3,17 @@ import useFetchDataHook from '@/hooks/useFetchDataHook'
 import LoaderData from '@/pages/shared/LoaderData'
 import { IUserDataType } from '@/type/dataType/user.data'
 import React, { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 export default function SidebarDash() {
 
+    const location = useLocation()
+    console.log(location)
+    const chatStart = location.pathname?.indexOf('/chat') + 6; // +6 to move past '/chat/'
+    const uuid = location.pathname?.slice(chatStart);
+
+
+    console.log(uuid); // Output: baffe21f-1341-4738-9f30-8d8f3f3bec6d
     const { user } = useContext(AuthContext)
     const { data, error, loading } = useFetchDataHook<{ data: IUserDataType[] }>(`http://localhost:5001/api/v1/user`)
     // console.log(data)
@@ -36,9 +43,9 @@ export default function SidebarDash() {
 
                 {
                     userData?.map((user: IUserDataType) => {
-                        return <Link to={`/dashboard/chat/${user?.id}`} key={user.id} className="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md">
+                        return <Link to={`/dashboard/chat/${user?.id}`} key={user.id} className={`flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md ${user.id === uuid ? "bg-gray-200 hover:bg-gray-400" : ""}`}>
 
-                            <div className="w-12 h-12 bg-gray-300 rounded-full mr-3">
+                            <div className="w-12 h-12 bg-gray-300 rounded-full mr-3 ">
                                 <img
                                     src={
                                         user?.img ? user?.img : "https://placehold.co/200x/ad922e/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"

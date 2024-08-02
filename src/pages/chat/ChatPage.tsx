@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import LoaderData from '../shared/LoaderData';
 import { ChatContext } from '@/context/ChatContext';
+import { IMessageDataType } from '@/type/dataType/message.data';
 // import { Link } from 'react-router-dom';
 
 export default function ChatPage() {
@@ -24,7 +25,7 @@ export default function ChatPage() {
 
     // console.log(userData)
     // const { data, loading, refetch } = useFetchDataHook<{ data: IMessageDataType[] }>(`${SERVER_URL}/message/user?senderId=${user.id}&receiverId=${id}`)
-    const [data, setData] = useState({ data: [] })
+    const [data, setData] = useState<{ data: IMessageDataType[] | [] }>({ data: [] })
     const [loading, setLoading] = useState(false)
     // const [newMessage, setNewMessage] = useState({})
 
@@ -42,8 +43,8 @@ export default function ChatPage() {
 
     }, [id, newMessage, user.id])
 
-    console.log(data?.data.length)
-    console.log(data?.data)
+    // console.log(data?.data.length)
+    // console.log(data?.data)
     // console.log(id)
     // console.log(data)
 
@@ -142,7 +143,7 @@ export default function ChatPage() {
                     loading && <LoaderData />
                 }
                 {
-                    !loading && data?.data?.map((message) => {
+                    !loading && data?.data?.map((message: IMessageDataType) => {
 
                         if (message.senderId === user?.id) {
                             return <div key={message.id} className="flex justify-end mb-4 cursor-pointer">
