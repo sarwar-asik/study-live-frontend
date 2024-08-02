@@ -1,6 +1,6 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ModalCommon from './ModalCommon';
-import { RoomCOntext } from '@/context/RoomProvider';
+// import { RoomContext } from '@/context/RoomProvider';
 
 
 export type IItem = "video" | "audio"
@@ -9,7 +9,7 @@ export default function BoxDropDownUI() {
     const dropDownRef = useRef<HTMLDivElement>(null);
     const items: IItem[] = ["audio", "video"];
 
-    const { enterRoom } = useContext(RoomCOntext)
+    // const { enterRoom } = useContext(RoomContext)
     useEffect(() => {
         const close = (e: MouseEvent): void => {
             if (dropDownRef.current && !dropDownRef.current.contains(e.target as Node)) {
@@ -29,7 +29,7 @@ export default function BoxDropDownUI() {
 
     return (
         <div ref={dropDownRef} className="relative mx-auto w-fit text-white">
-            <button onClick={() => { setOpen((prev) => !prev); enterRoom() }} className='p-5 bg-primary text-white font-semibold rounded border border-primary h-[3rem] py-2 text-nowrap'>New Meeting +</button>
+            <button onClick={() => { setOpen((prev) => !prev) }} className='p-5 bg-primary text-white font-semibold rounded border border-primary h-[3rem] py-2 text-nowrap'>New Meeting +</button>
             <ul className={`${open ? 'visible' : 'invisible'} absolute top-12 z-50 w-full space-y-1 mt-3 cursor-pointer text-center capitalize `}>
                 {items.map((item, idx) => (
                     <li

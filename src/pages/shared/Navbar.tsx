@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
     ];
 
   if (user?.email) {
-    navItems.push({ name: 'Start', link: '/landing', active: pathname === '/landing' },)
+    navItems.push({ name: 'Start', link: '/dashboard/chat/1', active: pathname === '/landing' },)
   }
 
   return (

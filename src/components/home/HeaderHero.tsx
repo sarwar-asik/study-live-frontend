@@ -21,7 +21,7 @@ export default function HeaderHero() {
 
                                 </p>
                                 <Link
-                                    to="/landing"
+                                    to="/dashboard/chat/1"
                                     title=""
                                     className="inline-flex items-center px-6 py-4 mt-8 font-semibold text-white transition-all duration-200 bg-primary rounded-full lg:mt-16 hover:bg-primary focus:bg-primary"
                                     role="button"

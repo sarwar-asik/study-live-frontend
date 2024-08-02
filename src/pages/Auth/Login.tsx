@@ -4,11 +4,12 @@ import { authKey, SERVER_URL } from '@/helper/const';
 import usePostHook from '@/hooks/usePostHook';
 import React, { useContext } from 'react'
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import LoaderSubmit from '../shared/LoaderSubmit';
 import AuthContext from '@/context/AuthProvider';
 
 export default function Login() {
+    const navigate = useNavigate()
 
     const { refreshUser } = useContext(AuthContext)
     const { data, loading, postData, error } = usePostHook<string>(`${SERVER_URL}/auth/login`);
@@ -24,11 +25,13 @@ export default function Login() {
         console.log(data);
         console.log(response);
         if (response?.data?.accessToken) {
-            refreshUser()
+            await refreshUser()
             toast("Login Successfully")
             setToLocalStorage(authKey, response?.data?.accessToken)
             // reset the form
             formElement.reset();
+            navigate('/dashboard/chat/1')
+
         }
         else if (response?.success === false) {
             toast(response?.message)
