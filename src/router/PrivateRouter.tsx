@@ -10,7 +10,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     const { user, loading } = useContext(AuthContext);
     const location = useLocation();
 
-    console.log(user)
+    // console.log(user)
     if (!loading && !user?.email) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }

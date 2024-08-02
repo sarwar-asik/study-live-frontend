@@ -45,4 +45,5 @@ export default defineConfig({
       "@modules": "/src/Pages/Modules",
     },
   },
+  
 });

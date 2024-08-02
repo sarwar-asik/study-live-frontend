@@ -12,29 +12,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(false)
 
     // const [refresh, setRefreshUser] = useState(false)
-
     useEffect(() => {
-        setLoading(true)
-        const userData = getUserInfo();
-        console.log(userData)
-        if (userData?.email) {
-            setUser(userData);
-            setLoading(false)
-        }
+        const fetchUserData = async () => {
+            setLoading(true);
+            try {
+                const userData = await getUserInfo();
+                if (userData?.email) {
+                    setUser(userData);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();
     }, []);
 
-    const refreshUser = () => {
-        setLoading(true)
-        const userData = getUserInfo();
-
-        if (userData) {
-
-            setUser(userData);
-            setLoading(false)
+    const refreshUser = async () => {
+        setLoading(true);
+        try {
+            const userData = await getUserInfo();
+            if (userData) {
+                setUser(userData);
+            }
+        } catch (error) {
+            console.error('Error refreshing user data:', error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false)
     };
-
     console.log(user)
     return (
         <AuthContext.Provider value={{ user, refreshUser, loading }}>{children}</AuthContext.Provider>

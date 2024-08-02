@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import usePostHook from '@/hooks/usePostHook';
 import React, { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import LoaderSubmit from '../shared/LoaderSubmit';
 import { authKey, SERVER_URL } from '@/helper/const';
 import toast from 'react-hot-toast';
@@ -10,6 +10,8 @@ import AuthContext from '@/context/AuthProvider';
 
 export default function SignUp() {
   const { refreshUser } = useContext(AuthContext)
+
+  const navigate = useNavigate()
 
   const { data, loading, postData } = usePostHook<string>(`${SERVER_URL}/auth/sign-up`);
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<any> => {
@@ -25,7 +27,8 @@ export default function SignUp() {
     if (response?.data.accessToken) {
       toast("SIgn Up  success")
       setToLocalStorage(authKey, response?.data.accessToken)
-      refreshUser()
+      await refreshUser()
+      navigate('/landing')
       // reset the form
       formElement.reset();
     }

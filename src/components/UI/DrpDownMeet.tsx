@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import ModalCommon from './ModalCommon';
-import { RoomCOntext } from '@/context/RoomProvider';
+import { RoomContext } from '@/context/RoomProvider';
 
 
 export type IItem = "video" | "audio"
@@ -9,7 +9,7 @@ export default function BoxDropDownUI() {
     const dropDownRef = useRef<HTMLDivElement>(null);
     const items: IItem[] = ["audio", "video"];
 
-    const { enterRoom } = useContext(RoomCOntext)
+    const { enterRoom } = useContext(RoomContext)
     useEffect(() => {
         const close = (e: MouseEvent): void => {
             if (dropDownRef.current && !dropDownRef.current.contains(e.target as Node)) {
