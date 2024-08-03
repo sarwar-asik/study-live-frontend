@@ -17,18 +17,24 @@ import toast from 'react-hot-toast';
 
 export default function ChatPage() {
 
+
+
     const { user } = useContext(AuthContext)
-    const { io, newMessage } = useContext(ChatContext)
+    const { io, newMessage, userAllData } = useContext(ChatContext)
     const { localStream, startCall, getMedia, localVideoRef, remoteVideoRef, endCall, incomingCall, answerCall, setIncomingCall, remoteStream } = useContext(RoomContext);
 
+
+
     const { id } = useParams()
+    // console.log("🚀 ~ id:", id)
 
-
+    const receiverId = id === '1' ? userAllData[0]?.id : id
     // console.log(user)
+    console.log(receiverId)
 
     // console.log(`${SERVER_URL}/user/${id}`)
 
-    const { data: userData, } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
+    const { data: userData, } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${receiverId}`)
 
     console.log(userData)
     // const { data, loading, refetch } = useFetchDataHook<{ data: IMessageDataType[] }>(`${SERVER_URL}/message/user?senderId=${user.id}&receiverId=${id}`)
@@ -40,7 +46,7 @@ export default function ChatPage() {
     useEffect(() => {
         (async () => {
             setLoading(true)
-            const res = await fetch(`${SERVER_URL}/message/user?senderId=${user.id}&receiverId=${id}`)
+            const res = await fetch(`${SERVER_URL}/message/user?senderId=${user.id}&receiverId=${receiverId}`)
             const data = await res.json()
             console.log(data)
             setLoading(false)
@@ -48,23 +54,12 @@ export default function ChatPage() {
         })()
 
 
-    }, [id, newMessage, user.id])
+    }, [receiverId, newMessage, user.id])
 
     // console.log(data?.data.length)
-    // console.log(data?.data)
-    // console.log(id)
-    // console.log(data)
+    console.log(data?.data)
 
-    // const userData = 
 
-    // useEffect(() => {
-    //     io.on('new-message', (data: any) => {
-    //         console.log(data)
-    //         // console.log(d)
-    //         setNewMessage(data)
-    //         // refetch()
-    //     })
-    // }, [io])
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -81,7 +76,7 @@ export default function ChatPage() {
         const formElement = e.currentTarget;
         const message: string = (formElement.elements.namedItem("message") as HTMLInputElement).value;
         console.log(message)
-        io.emit("send-message", { message, senderId: user.id, receiverId: id })
+        io.emit("send-message", { message, senderId: user.id, receiverId: receiverId })
         // setMessage(!message)
         // e.target.reset()
         formElement.reset();
@@ -93,7 +88,7 @@ export default function ChatPage() {
     // const [incomingCalling, setIncomingCall] = useState<{ offer: any; from: string; senderName?: string } | null>(null);
 
     const senderId = user?.id
-    const receiverId = id
+    // const receiverId = receiverId
     const toggleAudio = () => {
         if (localStream) {
             localStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
@@ -126,7 +121,7 @@ export default function ChatPage() {
 
     console.log(senderId, receiverId);
 
-    console.log(userData?.data)
+    // console.log(userAllData.data[0].id)
 
     return (
         <div className="flex-1">
@@ -268,7 +263,7 @@ export default function ChatPage() {
                     loading && <LoaderData />
                 }
                 {
-                    !loading && data?.data?.map((message: IMessageDataType) => {
+                    data?.data?.map((message: IMessageDataType) => {
 
                         if (message.senderId === user?.id) {
                             return <div key={message.id} className="flex justify-end mb-4 cursor-pointer">

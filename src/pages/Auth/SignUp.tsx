@@ -7,10 +7,11 @@ import { authKey, SERVER_URL } from '@/helper/const';
 import toast from 'react-hot-toast';
 import { setToLocalStorage } from '@/helper/authHelper';
 import AuthContext from '@/context/AuthProvider';
+import { ChatContext } from '@/context/ChatContext';
 
 export default function SignUp() {
   const { refreshUser } = useContext(AuthContext)
-
+  const { userAllData } = useContext(ChatContext)
   const navigate = useNavigate()
 
   const { data, loading, postData } = usePostHook<string>(`${SERVER_URL}/auth/sign-up`);
@@ -30,7 +31,7 @@ export default function SignUp() {
       setToLocalStorage(authKey, response?.data.accessToken)
       formElement.reset();
       await refreshUser()
-      navigate('/dashboard/chat/1')
+      navigate(`/dashboard/chat/${userAllData[0]?.id}`)
       // reset the form
     } else {
       toast("Failed to sign up")

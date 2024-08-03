@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import AuthContext from '@/context/AuthProvider';
+import { ChatContext } from '@/context/ChatContext';
 import { logoutHandler } from '@/helper/authHelper';
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -8,8 +9,10 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const { user, refreshUser } = useContext(AuthContext)
+  const { userAllData } = useContext(ChatContext)
 
   // console.log(data)
+  // console.log(userAllData)
 
   const handleClick = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -39,7 +42,7 @@ const Navbar: React.FC = () => {
     ];
 
   if (user?.email) {
-    navItems.push({ name: 'Start', link: '/dashboard/chat/1', active: pathname === '/landing' },)
+    navItems.push({ name: 'Start', link: `/dashboard/chat/${userAllData[0]?.id}`, active: pathname === '/landing' },)
   }
 
   return (
