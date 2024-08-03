@@ -12,7 +12,7 @@ export default {
     extend: {
       colors: {
         // Add your custom colors here
-        primary: "#007bff",
+        primary: "#7808B1",
         white: "#F9FAFB",
         secondary: "#2ecc71",
         black: "#040C1F",

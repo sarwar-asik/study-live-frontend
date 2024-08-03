@@ -3,7 +3,8 @@ import SidebarDash from '@/components/dashboard/SidebarDash';
 import AuthContext from '@/context/AuthProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash } from 'react-icons/fa';
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, Fa } from 'react-icons/fa';
+import { IoCallOutline } from "react-icons/io5";
 // import { IMessageDataType } from '@/type/dataType/message.data';
 import { IUserDataType } from '@/type/dataType/user.data';
 import { useContext, useEffect, useState } from 'react'
@@ -13,6 +14,8 @@ import { ChatContext } from '@/context/ChatContext';
 import { IMessageDataType } from '@/type/dataType/message.data';
 import { RoomContext } from '@/context/RoomProvider';
 import toast from 'react-hot-toast';
+import ModalCommon from '@/components/UI/ModalCommon';
+import Chat from '@/components/dashboard/chat/Chat';
 // import { Link } from 'react-router-dom';
 
 export default function ChatPage() {
@@ -121,39 +124,26 @@ export default function ChatPage() {
 
     console.log(senderId, receiverId);
 
+    console.log(localVideoRef)
     // console.log(userAllData.data[0].id)
 
     return (
-        <div className="flex-1">
+        <div className="flex-1 overflow-hidden ">
             {/* Chat Header */}
             <header className="bg-white p-4 text-gray-700 flex justify-between">
                 <h1 className="text-2xl font-semibold">{userData?.data?.name ?? "UserName"}</h1>
                 {/* audio and video button by react-icons */}
                 <div className="flex space-x-4">
-                    <button
-                        onClick={handleStartCall}
-                        className="p-2 bg-green-500 rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
-                    >
-                        Start Call
+
+
+
+                    <button className="rounded-full text-2xl bg-primary hover:bg-primary/80 w-[3rem] text-white p-3 "><IoCallOutline />
                     </button>
-                    <button
-                        onClick={handleEndCall}
-                        className="p-2 bg-red-500 rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
-                    >
-                        End Call
+                    <button onClick={handleStartCall} className="p-3 bg-primary 
+                    hover:bg-primary/80  text-white rounded-full  focus:outline-none focus:ring-2 focus:ring-gray-400">
+                        <FaVideo size={25} />
                     </button>
-                    <button
-                        onClick={toggleAudio}
-                        className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    >
-                        {isAudioOn ? <FaMicrophone size={24} /> : <FaMicrophoneSlash size={24} />}
-                    </button>
-                    <button
-                        onClick={toggleVideo}
-                        className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    >
-                        {isVideoOn ? <FaVideo size={24} /> : <FaVideoSlash size={24} />}
-                    </button>
+
 
                     <button onClick={handleClick} id="toggleOpen" className="lg:hidden">
                         <svg
@@ -172,9 +162,9 @@ export default function ChatPage() {
                 </div>
 
 
-
             </header>
 
+            {/* small device section */}
             <div
                 id="collapseMenu"
                 className={`${isMenuOpen ? 'block lg:hidden' : 'hidden'
@@ -210,20 +200,7 @@ export default function ChatPage() {
 
                 {/* Incoming Call Notification */}
                 {incomingCall && (
-                    // <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-                    //     <div className="bg-white p-7 rounded-lg shadow-lg">
-                    //         <p>Incoming call from {incomingCall.senderName}</p>
-                    //         <button
-                    //             onClick={handleAnswerCall}
-                    //             className="p-2 bg-green-600 px-3 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white my-5 z-50"
-                    //         >
-                    //             Answer Call
-                    //         </button>
-                    //     </div>
-                    // </div>
-
                     <div className="mx-auto w-fit">
-
                         <div className={`fixed z-[100] ${incomingCall ? 'visible opacity-100' : 'invisible opacity-0'} inset-0 grid place-items-center bg-black/20 backdrop-blur-sm duration-100 dark:bg-transparent`}>
                             <div onClick={(e_) => e_.stopPropagation()} className={`absolute max-w-xl rounded-lg  drop-shadow-lg dark:bg-zinc-900 dark:text-white ${incomingCall ? 'opacity-1 duration-300' : 'scale-110 opacity-0 duration-150'} rounded border border-[#7808B1] max-w-6xl mx-auto bg-[#393B4C] text-white `}>
                                 <div className='flex  justify-between py-9 px-7 text-xl'>
@@ -252,73 +229,47 @@ export default function ChatPage() {
                     </div >
                 )}
 
+
+
                 <div className="flex flex-col items-center justify-center h-full">
-                    <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-1/2" />
+
+                    <div className="w-full">
+                        <video ref={localVideoRef} autoPlay playsInline muted className="w-full " />
+
+                        {/* video bottom */}
+                        {/* <div className='w-full bg-slate-700 flex items-center justify-center  gap-5 py-4'>
+                            <button
+                                onClick={toggleAudio}
+                                className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            >
+                                {isAudioOn ? <FaMicrophone size={24} /> : <FaMicrophoneSlash size={24} />}
+                            </button>
+                            <button
+
+                                onClick={toggleVideo}
+                                className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            >
+
+                                {isVideoOn ? <FaVideo size={24} /> : <FaVideoSlash size={24} />}
+                            </button>
+                            <button onClick={handleEndCall} className="rounded-full text-2xl bg-red-600 w-[3rem] text-white p-3 "><IoCallOutline />
+                            </button>
+                        </div> */}
+
+
+
+                    </div>
                     <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-1/2" />
                 </div>
 
-                {/* Incoming Message */}
+                {/* chat section */}
 
-                {
-                    loading && <LoaderData />
-                }
-                {
-                    data?.data?.map((message: IMessageDataType) => {
+                <Chat data={data?.data} user={user} io={io} receiverId={receiverId} />
 
-                        if (message.senderId === user?.id) {
-                            return <div key={message.id} className="flex justify-end mb-4 cursor-pointer">
-                                <div className="flex max-w-96 bg-indigo-500 text-white rounded-lg p-3 gap-3">
-                                    <p>
-                                        {message.message}
-                                    </p>
-                                </div>
-                                <div className="w-9 h-9 rounded-full flex items-center justify-center ml-2">
-                                    <img
-                                        src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-                                        alt="My Avatar"
-                                        className="w-8 h-8 rounded-full"
-                                    />
-                                </div>
-                            </div>
-                        }
-                        else {
-                            return <div key={message.id} className="flex mb-4 cursor-pointer">
-                                <div className="w-9 h-9 rounded-full flex items-center justify-center mr-2">
-                                    <img
-                                        src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-                                        alt="User Avatar"
-                                        className="w-8 h-8 rounded-full"
-                                    />
-                                </div>
-                                <div className="flex max-w-96 bg-white rounded-lg p-3 gap-3">
-                                    <p className="text-gray-700">
-                                        {message.message}
-                                    </p>
-                                </div>
-                            </div>
-                        }
-                    })
-                }
-
-
-                {/* Outgoing Message */}
 
             </div>
-            {/* Chat Input */}
-            <form onSubmit={handleSubmit} className="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-full lg:w-3/4">
-                <div className="flex items-center">
-                    <input
-                        type="text"
-                        name="message"
-                        // onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Type a message..."
-                        className="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500"
-                    />
-                    <button type='submit' className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2">
-                        Send
-                    </button>
-                </div>
-            </form>
+
+
         </div>
     )
 }

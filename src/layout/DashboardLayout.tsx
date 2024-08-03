@@ -7,18 +7,15 @@ export default function DashboardLayout() {
         <React.Fragment>
 
 
-            <>
-                {/* component */}
-                <div className="flex h-screen overflow-hidden">
-                    {/* Sidebar */}
-                    <div className="w-full lg:w-1/4 hidden lg:flex">
-                        <SidebarDash />
-                    </div>
-                    {/* Main Chat Area */}
-                    <Outlet />
+            <div className="flex h-screen overflow-hidden">
+                {/* Sidebar */}
+                <div className="w-full lg:w-1/4 hidden lg:flex ">
+                    <SidebarDash />
                 </div>
-            </>
+                {/* Main Chat Area */}
 
+                <Outlet />
+            </div>
         </React.Fragment>
     )
 }
