@@ -13,12 +13,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        const pc = new RTCPeerConnection({
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-            
-            ],
-        });
+        const pc = new RTCPeerConnection();
 
         pc.onicecandidate = (event) => {
             if (event.candidate) {
@@ -29,6 +24,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
         pc.ontrack = (event) => {
             setRemoteStream(event.streams[0]);
         };
+
         pc.onconnectionstatechange = (event) => {
             switch (pc.connectionState) {
                 case 'connected':
@@ -37,7 +33,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
                 case 'disconnected':
                 case 'failed':
                     console.error('The connection has been disconnected or failed');
-                  
+
                     break;
                 case 'closed':
                     console.log('The connection has been closed');
@@ -52,7 +48,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
                 case 'disconnected':
                 case 'failed':
                     console.error('ICE connection state is disconnected or failed');
-                
+
                     break;
                 case 'closed':
                     console.log('ICE connection state is closed');
@@ -82,10 +78,11 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         ws.on('incoming-call', async ({ offer, from, senderName }) => {
-            console.log(offer, from, senderName,'incoming-call')    
+            console.log(offer, from, senderName, 'incoming-call')
             setIncomingCall({ offer, from, senderName });
         });
 
+        console.log(peerConnection)
         ws.on('answer', async (answer) => {
             console.log(answer)
             if (peerConnection) {
@@ -141,6 +138,8 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
             console.error('Incoming call offer is not available');
             return;
         }
+
+
 
         try {
             const { offer } = incomingCall;
