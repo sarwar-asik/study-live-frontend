@@ -7,6 +7,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 export default function SidebarDash() {
 
+    // const {user}= useContext(AuthContext)
     const location = useLocation()
     console.log(location)
     const chatStart = location.pathname?.indexOf('/chat') + 6; // +6 to move past '/chat/'
@@ -42,25 +43,27 @@ export default function SidebarDash() {
                 }
 
                 {
-                    userData?.map((user: IUserDataType) => {
-                        return <Link to={`/dashboard/chat/${user?.id}`} key={user.id} className={`flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md ${user.id === uuid ? "bg-gray-200 hover:bg-gray-400" : ""}`}>
+                    userData?.map((signleUser: IUserDataType) => {
+                        if (signleUser.id !== user?.id) {
+                            return <Link to={`/dashboard/chat/${signleUser?.id}`} key={signleUser.id} className={`flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md ${signleUser.id === uuid ? "bg-gray-200 hover:bg-gray-400" : ""}`}>
 
-                            <div className="w-12 h-12 bg-gray-300 rounded-full mr-3 ">
-                                <img
-                                    src={
-                                        user?.img ? user?.img : "https://placehold.co/200x/ad922e/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
-                                    }
-                                    alt="User Avatar"
-                                    className="w-12 h-12 rounded-full"
-                                />
-                            </div>
-                            <div className="flex-1">
-                                <h2 className="text-lg font-semibold">{user?.name ?? "User"}</h2>
-                                <p className="text-gray-600">
-                                    That pizza place was amazing! We should go again sometime. 🍕
-                                </p>
-                            </div>
-                        </Link>
+                                <div className="w-12 h-12 bg-gray-300 rounded-full mr-3 ">
+                                    <img
+                                        src={
+                                            signleUser?.img ? signleUser?.img : "https://placehold.co/200x/ad922e/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato"
+                                        }
+                                        alt="User Avatar"
+                                        className="w-12 h-12 rounded-full"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <h2 className="text-lg font-semibold">{signleUser?.name ?? "User"}</h2>
+                                    <p className="text-gray-600">
+                                        That pizza place was amazing! We should go again sometime. 🍕
+                                    </p>
+                                </div>
+                            </Link>
+                        }
                     })
                 }
 

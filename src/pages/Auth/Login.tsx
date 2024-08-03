@@ -7,11 +7,14 @@ import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom'
 import LoaderSubmit from '../shared/LoaderSubmit';
 import AuthContext from '@/context/AuthProvider';
+import { ChatContext } from '@/context/ChatContext';
 
 export default function Login() {
     const navigate = useNavigate()
 
     const { refreshUser } = useContext(AuthContext)
+    const { userAllData } = useContext(ChatContext)
+    
     const { data, loading, postData, error } = usePostHook<string>(`${SERVER_URL}/auth/login`);
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<any> => {
         event.preventDefault();
@@ -30,7 +33,7 @@ export default function Login() {
             await refreshUser()
             // reset the form
             formElement.reset();
-            navigate('/dashboard/chat/1')
+            navigate(`/dashboard/chat/${userAllData[0]?.id}`)
 
         }
         else if (response?.success === false) {
