@@ -254,7 +254,7 @@ export default function ChatPage() {
 
                 <div className="flex flex-col items-center justify-center h-full">
                     <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-1/2" />
-                    <video ref={remoteStream} autoPlay playsInline className="w-full h-1/2" />
+                    <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-1/2" />
                 </div>
 
                 {/* Incoming Message */}
