@@ -3,6 +3,7 @@ import SidebarDash from '@/components/dashboard/SidebarDash';
 import AuthContext from '@/context/AuthProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash } from 'react-icons/fa';
 // import { IMessageDataType } from '@/type/dataType/message.data';
 import { IUserDataType } from '@/type/dataType/user.data';
 import { useContext, useEffect, useState } from 'react'
@@ -10,20 +11,26 @@ import { useParams } from 'react-router-dom';
 import LoaderData from '../shared/LoaderData';
 import { ChatContext } from '@/context/ChatContext';
 import { IMessageDataType } from '@/type/dataType/message.data';
+import { RoomContext } from '@/context/RoomProvider';
+import toast from 'react-hot-toast';
 // import { Link } from 'react-router-dom';
 
 export default function ChatPage() {
 
     const { user } = useContext(AuthContext)
     const { io, newMessage } = useContext(ChatContext)
+    const { localStream, startCall, getMedia, localVideoRef, remoteVideoRef, endCall, incomingCall, answerCall, setIncomingCall, remoteStream } = useContext(RoomContext);
+
     const { id } = useParams()
 
 
     // console.log(user)
 
+    // console.log(`${SERVER_URL}/user/${id}`)
+
     const { data: userData, } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
 
-    // console.log(userData)
+    console.log(userData)
     // const { data, loading, refetch } = useFetchDataHook<{ data: IMessageDataType[] }>(`${SERVER_URL}/message/user?senderId=${user.id}&receiverId=${id}`)
     const [data, setData] = useState<{ data: IMessageDataType[] | [] }>({ data: [] })
     const [loading, setLoading] = useState(false)
@@ -80,27 +87,97 @@ export default function ChatPage() {
         formElement.reset();
     }
 
+    //!  video /audio
+    const [isAudioOn, setIsAudioOn] = useState(true);
+    const [isVideoOn, setIsVideoOn] = useState(true);
+    // const [incomingCalling, setIncomingCall] = useState<{ offer: any; from: string; senderName?: string } | null>(null);
+
+    const senderId = user?.id
+    const receiverId = id
+    const toggleAudio = () => {
+        if (localStream) {
+            localStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
+        }
+        setIsAudioOn(!isAudioOn);
+    };
+
+    const toggleVideo = () => {
+        if (localStream) {
+            localStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
+        }
+        setIsVideoOn(!isVideoOn);
+    };
+    const handleStartCall = () => {
+        getMedia().then(() => {
+            startCall(receiverId, user.name);
+        });
+    };
+
+    const handleEndCall = () => {
+        endCall(receiverId);
+    };
+    const handleAnswerCall = async () => {
+        console.log('yes handle call')
+        // toast("answering")
+        await answerCall()
+    }
+
+
+
+    console.log(senderId, receiverId);
+
+    console.log(userData?.data)
 
     return (
         <div className="flex-1">
             {/* Chat Header */}
             <header className="bg-white p-4 text-gray-700 flex justify-between">
-                <h1 className="text-2xl font-semibold">{userData?.data?.name ?? "UnName"}</h1>
-
-                <button onClick={handleClick} id="toggleOpen" className="lg:hidden">
-                    <svg
-                        className="w-7 h-7"
-                        fill="#000"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                <h1 className="text-2xl font-semibold">{userData?.data?.name ?? "UserName"}</h1>
+                {/* audio and video button by react-icons */}
+                <div className="flex space-x-4">
+                    <button
+                        onClick={handleStartCall}
+                        className="p-2 bg-green-500 rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
                     >
-                        <path
-                            fillRule="evenodd"
-                            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
-                </button>
+                        Start Call
+                    </button>
+                    <button
+                        onClick={handleEndCall}
+                        className="p-2 bg-red-500 rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    >
+                        End Call
+                    </button>
+                    <button
+                        onClick={toggleAudio}
+                        className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    >
+                        {isAudioOn ? <FaMicrophone size={24} /> : <FaMicrophoneSlash size={24} />}
+                    </button>
+                    <button
+                        onClick={toggleVideo}
+                        className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    >
+                        {isVideoOn ? <FaVideo size={24} /> : <FaVideoSlash size={24} />}
+                    </button>
+
+                    <button onClick={handleClick} id="toggleOpen" className="lg:hidden">
+                        <svg
+                            className="w-7 h-7"
+                            fill="#000"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                    </button>
+                </div>
+
+
+
             </header>
 
             <div
@@ -131,12 +208,60 @@ export default function ChatPage() {
                 <div className="flex lg:hidden">
                     <SidebarDash />
                 </div>
-
-
             </div>
 
             {/* Chat Messages */}
-            <div className="h-screen overflow-y-auto p-4 pb-36">
+            <div className="h-screen  overflow-y-auto p-4 pb-36">
+
+                {/* Incoming Call Notification */}
+                {incomingCall && (
+                    // <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                    //     <div className="bg-white p-7 rounded-lg shadow-lg">
+                    //         <p>Incoming call from {incomingCall.senderName}</p>
+                    //         <button
+                    //             onClick={handleAnswerCall}
+                    //             className="p-2 bg-green-600 px-3 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white my-5 z-50"
+                    //         >
+                    //             Answer Call
+                    //         </button>
+                    //     </div>
+                    // </div>
+
+                    <div className="mx-auto w-fit">
+
+                        <div className={`fixed z-[100] ${incomingCall ? 'visible opacity-100' : 'invisible opacity-0'} inset-0 grid place-items-center bg-black/20 backdrop-blur-sm duration-100 dark:bg-transparent`}>
+                            <div onClick={(e_) => e_.stopPropagation()} className={`absolute max-w-xl rounded-lg  drop-shadow-lg dark:bg-zinc-900 dark:text-white ${incomingCall ? 'opacity-1 duration-300' : 'scale-110 opacity-0 duration-150'} rounded border border-[#7808B1] max-w-6xl mx-auto bg-[#393B4C] text-white `}>
+                                <div className='flex  justify-between py-9 px-7 text-xl'>
+                                    {/* <h1>Request For {type} Call</h1> */}
+                                    <h2>Incoming call from {incomingCall.senderName}</h2>
+
+                                    {/* <button onClick={() => setIncomingCall(null)} className='rounded-full py-[2px] text-sm px-1 border border-red-500 '>&#x274c;</button> */}
+                                </div>
+                                <section className=''>
+                                    <div className="bg-white p-7 flex justify-between items-center  rounded-lg shadow-lg">
+
+                                        <button
+                                            onClick={handleAnswerCall}
+                                            className="p-2 bg-green-600 px-3 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white my-5 z-50"
+                                        >
+                                            Answer Call
+                                        </button>
+
+                                        <button onClick={() => setIncomingCall(null)} className='h-9 px-3 rounded-full p-2 bg-red-600'>Reject  </button>
+
+                                    </div>
+                                </section>
+
+                            </div>
+                        </div>
+                    </div >
+                )}
+
+                <div className="flex flex-col items-center justify-center h-full">
+                    <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-1/2" />
+                    <video ref={remoteStream} autoPlay playsInline className="w-full h-1/2" />
+                </div>
+
                 {/* Incoming Message */}
 
                 {

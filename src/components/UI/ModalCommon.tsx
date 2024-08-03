@@ -29,7 +29,9 @@ export default function ModalCommon({ type, points, onClick, openModal, setOpenM
         }
     }
     return (
-        <React.Fragment> <div className="mx-auto w-fit">
+        <React.Fragment>
+            
+             <div className="mx-auto w-fit">
 
             <div onClick={() => setOpenModal(false)} className={`fixed z-[100] ${openModal ? 'visible opacity-100' : 'invisible opacity-0'} inset-0 grid place-items-center bg-black/20 backdrop-blur-sm duration-100 dark:bg-transparent`}>
                 <div onClick={(e_) => e_.stopPropagation()} className={`absolute max-w-xl rounded-lg  drop-shadow-lg dark:bg-zinc-900 dark:text-white ${openModal ? 'opacity-1 duration-300' : 'scale-110 opacity-0 duration-150'} rounded border border-[#7808B1] max-w-6xl mx-auto bg-[#393B4C] text-white my-2 font-semibold`}>
@@ -47,3 +49,4 @@ export default function ModalCommon({ type, points, onClick, openModal, setOpenM
         </div></React.Fragment>
     )
 }
+

@@ -1,150 +1,206 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import generateUUID from "@/helper/generateUUID";
-import { createContext, useContext, useEffect, useState } from "react";
-import socketIOClient from "socket.io-client";
-import AuthContext from "./AuthProvider";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { addUserPeer, removeUserPeer } from "@/redux/features/video/videoSlice";
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { ChatContext } from './ChatContext';
 
-export const RoomContext = createContext<null | any>(null);
-const ws = socketIOClient('http://localhost:5001');
+export const RoomContext = createContext<any>(null);
 
-export const RoomProvider = ({ children }: { children: any }) => {
-    const { user } = useContext(AuthContext);
-    const dispatch = useDispatch();
-    const peers = useSelector((state: RootState) => state.video);
-
-    // Room state
-    const [roomId, setRoomId] = useState("");
-    const [stream, setStream] = useState<MediaStream | null>(null);
-    const [localPeer, setLocalPeer] = useState<RTCPeerConnection | null>(null);
-
-    // Create a new RTCPeerConnection
-    const createPeerConnection = () => {
-        const peer = new RTCPeerConnection({
-            iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
-        });
-
-        console.log(peer)
-
-        peer.onicecandidate = (event) => {
-            console.log(event)
-            if (event.candidate) {
-                ws.emit("candidate", { candidate: event.candidate, userId: user?.id, roomId });
-            }
-        };
-
-        peer.ontrack = (event) => {
-            console.log(event)
-            const stream = event.streams[0];
-            if (stream) {
-                console.log({ userId: peer.remoteDescription?.type || '', stream })
-                dispatch(addUserPeer({ userId: peer.remoteDescription?.type || '', stream }));
-            }
-        };
-
-        return peer;
-    };
-
-    // Join room
-    const enterRoom = () => {
-        ws.emit("create-room");
-    };
-
-    // Handle incoming list of participants
-    const getUsers = ({ participants }: { participants: string[] }) => {
-        console.log(participants, 'participants');
-    };
+export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
+    const { io: ws } = useContext(ChatContext);
+    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+    const [peerConnection, setPeerConnection] = useState<RTCPeerConnection | null>(null);
+    const [incomingCall, setIncomingCall] = useState<any>(null);
+    const localVideoRef = useRef<HTMLVideoElement>(null);
+    const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        ws.on("room-created", (room) => {
-            setRoomId(room?.roomId ?? generateUUID());
-            console.log(room)
-            ws.emit("join-room", { roomId: room.roomId, userId: user?.id, name: user?.name });
+        const pc = new RTCPeerConnection({
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+            
+            ],
         });
-        ws.on("get-users", getUsers);
 
-        console.log(localPeer)
-        ws.on("offer", async ({ offer, userId }: { offer: RTCSessionDescriptionInit; userId: string }) => {
-            console.log(offer, 'offer')
+        pc.onicecandidate = (event) => {
+            if (event.candidate) {
+                ws.emit('ice-candidate', event.candidate);
+            }
+        };
 
-            if (!localPeer) return;
+        pc.ontrack = (event) => {
+            setRemoteStream(event.streams[0]);
+        };
+        pc.onconnectionstatechange = (event) => {
+            switch (pc.connectionState) {
+                case 'connected':
+                    console.log('The connection has become fully connected');
+                    break;
+                case 'disconnected':
+                case 'failed':
+                    console.error('The connection has been disconnected or failed');
+                  
+                    break;
+                case 'closed':
+                    console.log('The connection has been closed');
+                    break;
+                default:
+                    break;
+            }
+        };
 
-            try {
-                await localPeer.setRemoteDescription(new RTCSessionDescription(offer));
-                const answer = await localPeer.createAnswer();
-                await localPeer.setLocalDescription(answer);
-                ws.emit("answer", { answer, userId, roomId });
-            } catch (error) {
-                console.error("Error handling offer:", error);
+        pc.oniceconnectionstatechange = (event) => {
+            switch (pc.iceConnectionState) {
+                case 'disconnected':
+                case 'failed':
+                    console.error('ICE connection state is disconnected or failed');
+                
+                    break;
+                case 'closed':
+                    console.log('ICE connection state is closed');
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        pc.onicegatheringstatechange = (event) => {
+            if (pc.iceGatheringState === 'complete') {
+                console.log('ICE gathering is complete');
+            }
+        };
+
+        pc.onsignalingstatechange = (event) => {
+            if (pc.signalingState === 'stable') {
+                console.log('Signaling state is stable');
+            }
+        };
+        setPeerConnection(pc);
+
+        ws.on('ice-candidate', (candidate) => {
+            if (candidate) {
+                pc.addIceCandidate(new RTCIceCandidate(candidate));
             }
         });
 
-        ws.on("answer", async ({ answer }: { answer: RTCSessionDescriptionInit }) => {
-            if (!localPeer) return;
-            console.log(answer, 'answer')
-            try {
-                await localPeer.setRemoteDescription(new RTCSessionDescription(answer));
-            } catch (error) {
-                console.error("Error setting remote description:", error);
-            }
+        ws.on('incoming-call', async ({ offer, from, senderName }) => {
+            console.log(offer, from, senderName,'incoming-call')    
+            setIncomingCall({ offer, from, senderName });
         });
 
-        ws.on("candidate", async ({ candidate }: { candidate: RTCIceCandidateInit }) => {
-            if (localPeer) {
+        ws.on('answer', async (answer) => {
+            console.log(answer)
+            if (peerConnection) {
                 try {
-                    await localPeer.addIceCandidate(new RTCIceCandidate(candidate));
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
                 } catch (error) {
-                    console.error("Error adding ICE candidate:", error);
+                    console.error('Error setting remote description:', error);
                 }
             }
         });
 
-        ws.on('user-joined', async ({ userId }: { userId: string }) => {
-
-            console.log(userId)
-            const peer = createPeerConnection();
-            console.log(peer)
-            setLocalPeer(peer);
-
-            const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            setStream(localStream);
-
-            localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
-
-            try {
-                const offer = await peer.createOffer();
-                console.log("🚀 ~ file: RoomProvider.tsx:115 ~ ws.on ~ offer:", offer)
-                await peer.setLocalDescription(offer);
-                ws.emit("offer", { offer, userId, roomId });
-            } catch (error) {
-                console.error('Error creating offer:', error);
-            }
-        });
-
-        ws.on('user-disconnected', (userId: string) => {
-            dispatch(removeUserPeer({ userId }));
-        });
-
         return () => {
-            ws.off("room-created");
-            ws.off("get-users");
-            ws.off("offer");
-            ws.off("answer");
-            ws.off("candidate");
-            ws.off('user-joined');
-            ws.off('user-disconnected');
-            localPeer?.close();
+            pc.close();
         };
-    }, [user?.id, roomId, localPeer]);
+    }, [ws]);
 
-    console.log(stream)
-    console.log(peers, 'peers');
+    useEffect(() => {
+        if (localStream && peerConnection) {
+            localStream.getTracks().forEach((track) => {
+                peerConnection.addTrack(track, localStream);
+            });
+        }
+    }, [localStream, peerConnection]);
+
+    useEffect(() => {
+        if (localVideoRef.current && localStream) {
+            localVideoRef.current.srcObject = localStream;
+        }
+    }, [localStream]);
+
+    useEffect(() => {
+        if (remoteVideoRef.current && remoteStream) {
+            remoteVideoRef.current.srcObject = remoteStream;
+        }
+    }, [remoteStream]);
+
+    const startCall = async (receiverId: string, senderName: string) => {
+        if (peerConnection) {
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            ws.emit('offer', { offer, targetId: receiverId, senderName });
+        }
+    };
+
+    console.log(peerConnection)
+    const answerCall = async () => {
+        if (!peerConnection) {
+            console.error('Peer connection is not initialized');
+            return;
+        }
+
+        if (!incomingCall || !incomingCall.offer) {
+            console.error('Incoming call offer is not available');
+            return;
+        }
+
+        try {
+            const { offer } = incomingCall;
+
+            // Validate the offer object
+            if (!offer || !offer.sdp || !offer.type) {
+                throw new Error('Invalid offer format');
+            }
+
+            // Set remote description
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+            // Create and set local description
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            // Emit the answer
+            ws.emit('answer', { answer, targetId: incomingCall.from });
+
+            // Clear the incoming call state
+            setIncomingCall(null);
+        } catch (error) {
+            console.error('Error answering the call:', error);
+        }
+    };
+
+
+    const getMedia = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        setLocalStream(stream);
+    };
+
+    const endCall = (receiverId: string) => {
+        if (peerConnection) {
+            // Close the peer connection
+            peerConnection.close();
+            setPeerConnection(null);
+
+            // Stop all tracks in the local stream
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            setLocalStream(null);
+            setRemoteStream(null);
+
+            // Clear video elements
+            if (localVideoRef.current) {
+                localVideoRef.current.srcObject = null;
+            }
+            if (remoteVideoRef.current) {
+                remoteVideoRef.current.srcObject = null;
+            }
+
+            // Notify the server that the call has ended
+            ws.emit('end-call', receiverId);
+        }
+    };
 
     return (
-        <RoomContext.Provider value={{ ws, enterRoom, roomId, stream, peers }}>
+        <RoomContext.Provider value={{ localStream, remoteStream, startCall, getMedia, localVideoRef, remoteVideoRef, endCall, incomingCall, answerCall, setIncomingCall }}>
             {children}
         </RoomContext.Provider>
     );

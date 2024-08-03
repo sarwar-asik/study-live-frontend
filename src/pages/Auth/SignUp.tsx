@@ -28,10 +28,10 @@ export default function SignUp() {
     if (response?.data.accessToken) {
       toast("SIgn Up  success")
       setToLocalStorage(authKey, response?.data.accessToken)
+      formElement.reset();
       await refreshUser()
       navigate('/dashboard/chat/1')
       // reset the form
-      formElement.reset();
     } else {
       toast("Failed to sign up")
 
