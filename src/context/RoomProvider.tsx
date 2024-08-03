@@ -13,7 +13,9 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        const pc = new RTCPeerConnection();
+        const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
+
+        const pc = new RTCPeerConnection(configuration);
 
         pc.onicecandidate = (event) => {
             if (event.candidate) {
@@ -72,8 +74,9 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
         setPeerConnection(pc);
 
         ws.on('ice-candidate', (candidate) => {
+            console.log(candidate, 'ice-candidate')
             if (candidate) {
-                pc.addIceCandidate(new RTCIceCandidate(candidate));
+                pc.addIceCandidate(candidate);
             }
         });
 
@@ -85,14 +88,17 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
         console.log(peerConnection)
         ws.on('answer', async (answer) => {
             console.log(answer)
-            if (peerConnection) {
+            if (peerConnection && pc.signalingState === 'stable') {
                 try {
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+                    await pc.setRemoteDescription(new RTCSessionDescription(answer));
                 } catch (error) {
                     console.error('Error setting remote description:', error);
                 }
+            } else {
+                console.error('Cannot set remote description, signaling state is not stable:', pc.signalingState);
             }
         });
+
 
         return () => {
             pc.close();
@@ -150,11 +156,14 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
             }
 
             // Set remote description
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
 
             // Create and set local description
             const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
+            await peerConnection.setLocalDescription(
+
+            );
 
             // Emit the answer
             ws.emit('answer', { answer, targetId: incomingCall.from });
