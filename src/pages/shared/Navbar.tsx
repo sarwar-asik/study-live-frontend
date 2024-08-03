@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
     ];
 
   if (user?.email) {
-    navItems.push({ name: 'Start', link: `/dashboard/chat/${userAllData[0]?.id}`, active: pathname === '/landing' },)
+    navItems.push({ name: 'Start', link: `/dashboard/chat/${userAllData?.length && userAllData[0]?.id}`, active: pathname === '/landing' },)
   }
 
   return (
@@ -101,7 +101,7 @@ const Navbar: React.FC = () => {
               <li key={item?.name} className="max-lg:border-b max-lg:py-3 px-3">
                 <Link
                   to={item?.link}
-                  className={`hover:text-[#007bff] block font-bold text-[15px] ${item?.active ? 'text-[#007bff]' : 'text-[#333]'}`}
+                  className={`hover:text-primary block font-bold text-[15px] ${item?.active ? 'text-primary' : 'text-[#333]'}`}
                 >
                   {item.name}
                 </Link>
@@ -120,7 +120,7 @@ const Navbar: React.FC = () => {
                   <li className="max-lg:border-b max-lg:py-3 px-3 ">
                     <Link
                       to={'/sign-up'}
-                      className={`hover:text-[#007bff] block font-bold text-[15px] text-[#333]`}
+                      className={`hover:text-primary block font-bold text-[15px] text-[#333]`}
                     >
                       Sign Up
                     </Link>
@@ -128,7 +128,7 @@ const Navbar: React.FC = () => {
                   <li className="max-lg:border-b max-lg:py-3 px-3 lg:hidden">
                     <Link
                       to={'/login'}
-                      className={`hover:text-[#007bff] block font-bold text-[15px] text-[#333]`}
+                      className={`hover:text-primary block font-bold text-[15px] text-[#333]`}
                     >
                       Login
                     </Link>
@@ -165,8 +165,8 @@ const Navbar: React.FC = () => {
           </button> :
 
             <div className='lg:gap-x-5 max-lg:space-y-3 z-50  hidden lg:flex'>
-              <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/sign-up">Sign up</Link>
-              <Link className="hover:text-[#007bff] text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/login">Login</Link>
+              <Link className="hover:text-primary text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/sign-up">Sign up</Link>
+              <Link className="hover:text-primary text-[#333] font-bold text-[15px] max-lg:border-b max-lg:py-3 px-3" to="/login">Login</Link>
             </div>
         }
 

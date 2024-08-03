@@ -13,65 +13,71 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
+        const createPeerConnection = () => {
+            const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };
+            const pc = new RTCPeerConnection(configuration);
 
-        const pc = new RTCPeerConnection(configuration);
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    ws.emit('ice-candidate', event.candidate);
+                }
+            };
 
-        pc.onicecandidate = (event) => {
-            if (event.candidate) {
-                ws.emit('ice-candidate', event.candidate);
-            }
+            pc.ontrack = (event) => {
+                setRemoteStream(event.streams[0]);
+            };
+
+            pc.onconnectionstatechange = (event) => {
+                switch (pc.connectionState) {
+                    case 'connected':
+                        console.log('The connection has become fully connected');
+                        break;
+                    case 'disconnected':
+                    case 'failed':
+                        console.error('The connection has been disconnected or failed');
+                        break;
+                    case 'closed':
+                        console.log('The connection has been closed');
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            pc.oniceconnectionstatechange = (event) => {
+                switch (pc.iceConnectionState) {
+                    case 'disconnected':
+                    case 'failed':
+                        console.error('ICE connection state is disconnected or failed');
+                        break;
+                    case 'closed':
+                        console.log('ICE connection state is closed');
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            pc.onicegatheringstatechange = (event) => {
+                if (pc.iceGatheringState === 'complete') {
+                    console.log('ICE gathering is complete');
+                }
+            };
+
+            pc.onsignalingstatechange = (event) => {
+                if (pc.signalingState === 'stable') {
+                    console.log('Signaling state is stable');
+                }
+            };
+
+            return pc;
         };
 
-        pc.ontrack = (event) => {
-            setRemoteStream(event.streams[0]);
-        };
-
-        pc.onconnectionstatechange = (event) => {
-            switch (pc.connectionState) {
-                case 'connected':
-                    console.log('The connection has become fully connected');
-                    break;
-                case 'disconnected':
-                case 'failed':
-                    console.error('The connection has been disconnected or failed');
-
-                    break;
-                case 'closed':
-                    console.log('The connection has been closed');
-                    break;
-                default:
-                    break;
-            }
-        };
-
-        pc.oniceconnectionstatechange = (event) => {
-            switch (pc.iceConnectionState) {
-                case 'disconnected':
-                case 'failed':
-                    console.error('ICE connection state is disconnected or failed');
-
-                    break;
-                case 'closed':
-                    console.log('ICE connection state is closed');
-                    break;
-                default:
-                    break;
-            }
-        };
-
-        pc.onicegatheringstatechange = (event) => {
-            if (pc.iceGatheringState === 'complete') {
-                console.log('ICE gathering is complete');
-            }
-        };
-
-        pc.onsignalingstatechange = (event) => {
-            if (pc.signalingState === 'stable') {
-                console.log('Signaling state is stable');
-            }
-        };
-        setPeerConnection(pc);
+        const pc = createPeerConnection();
+        console.log(pc)
+        if (pc) {
+            setPeerConnection(pc);
+        }
 
         ws.on('ice-candidate', (candidate) => {
             console.log(candidate, 'ice-candidate')
@@ -87,8 +93,8 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
 
         console.log(peerConnection)
         ws.on('answer', async (answer) => {
-            console.log(answer)
-            if (peerConnection && pc.signalingState === 'stable') {
+            console.log(answer);
+            if (pc.signalingState === 'stable' || pc.signalingState === 'have-local-offer') {
                 try {
                     await pc.setRemoteDescription(new RTCSessionDescription(answer));
                 } catch (error) {
