@@ -9,6 +9,8 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [peerConnection, setPeerConnection] = useState<RTCPeerConnection | null>(null);
     const [incomingCall, setIncomingCall] = useState<any>(null);
+    const [reload,setReload] = useState(true)
+
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -17,16 +19,28 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
             const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };
             const pc = new RTCPeerConnection(configuration);
 
-            pc.onicecandidate = (event) => {
-                if (event.candidate) {
-                    ws.emit('ice-candidate', event.candidate);
-                }
-            };
+            // pc.onicecandidate = (event) => {
+            //     if (event.candidate) {
+            //         ws.emit('ice-candidate', event.candidate);
+            //     }
+            // };
+
+
 
             pc.ontrack = (event) => {
+                console.log(event, 'ice event')
                 setRemoteStream(event.streams[0]);
             };
 
+            pc.addEventListener("icecandidate", (event) => {
+                console.log(event, 'ice event')
+                ws.emit('ice-candidate', event.candidate)
+            })
+            pc.addEventListener("addstream", (event) => {
+                console.log('stream of both', event)
+                setRemoteStream(event.streams[0]);
+
+            })
             pc.onconnectionstatechange = (event) => {
                 switch (pc.connectionState) {
                     case 'connected':
@@ -74,7 +88,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
         };
 
         const pc = createPeerConnection();
-        console.log(pc)
+        // console.log(pc)
         if (pc) {
             setPeerConnection(pc);
         }
@@ -89,6 +103,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
         ws.on('incoming-call', async ({ offer, from, senderName }) => {
             console.log(offer, from, senderName, 'incoming-call')
             setIncomingCall({ offer, from, senderName });
+
         });
 
         console.log(peerConnection)
@@ -97,6 +112,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
             if (pc.signalingState === 'stable' || pc.signalingState === 'have-local-offer') {
                 try {
                     await pc.setRemoteDescription(new RTCSessionDescription(answer));
+                    setIncomingCall(null);
                 } catch (error) {
                     console.error('Error setting remote description:', error);
                 }
@@ -105,12 +121,10 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
             }
         });
 
-
         return () => {
             pc.close();
         };
-    }, [ws]);
-
+    }, [ws])
     useEffect(() => {
         if (localStream && peerConnection) {
             localStream.getTracks().forEach((track) => {
@@ -170,12 +184,13 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
             await peerConnection.setLocalDescription(
 
             );
+            // setReload(reload=>!reload)  
 
             // Emit the answer
             ws.emit('answer', { answer, targetId: incomingCall.from });
 
             // Clear the incoming call state
-            setIncomingCall(null);
+            // setIncomingCall(null);
         } catch (error) {
             console.error('Error answering the call:', error);
         }

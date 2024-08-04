@@ -28,7 +28,7 @@ export default function SidebarDash() {
     console.log(userData)
 
     return (
-        <div className="bg-white border-r border-gray-300">
+        <div className="bg-white border-r border-gray-300 min-w-[20rem]">
             {/* Sidebar Header */}
             <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
                 <Link to={`/`}>Home</Link>
@@ -36,7 +36,7 @@ export default function SidebarDash() {
 
             </header>
             {/* Contact List */}
-            <div className="overflow-y-auto h-screen p-3 mb-9 pb-20 min-w-[20rem] ">
+            <div className="overflow-y-auto h-screen p-3 mb-9 pb-20  ">
 
                 {
                     loading && <LoaderData />
