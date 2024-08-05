@@ -4,6 +4,7 @@ import LoaderData from '@/pages/shared/LoaderData'
 import { IMessageDataType } from '@/type/dataType/message.data'
 import { IUserDataType } from '@/type/dataType/user.data'
 import React, { useEffect, useRef, useState } from 'react'
+import VideoCallSection from '../videoCall/VideoCallSection'
 
 export default function ChatSection({ user, io, receiverId, newMessage }: { user: IUserDataType, io: any, receiverId: string, newMessage: any }) {
     const [data, setData] = useState<IMessageDataType[] | any[]>([])
@@ -15,7 +16,7 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
             setLoading(true)
             const res = await fetch(`${SERVER_URL}/message/user?senderId=${user.id}&receiverId=${receiverId}`)
             const data = await res.json()
-            console.log(data)
+            // console.log(data)
             setLoading(false)
             setData(data.data)
             if (data.data && messagesEndRef.current) {
@@ -44,8 +45,9 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
                 {
                     loading && <LoaderData />
                 }
+                <VideoCallSection receiverId={receiverId} senderId={user?.id} /> 
                 {
-                    [...data, ...data, ...data, ...data, ...data]?.map((message: IMessageDataType) => {
+                    data?.map((message: IMessageDataType) => {
 
                         if (message.senderId === user?.id) {
                             return <div key={message.id} className="flex justify-end mb-4 cursor-pointer">
@@ -83,6 +85,7 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
                 }
 
 
+          
                 {/* Outgoing Message */}
 
             </div>

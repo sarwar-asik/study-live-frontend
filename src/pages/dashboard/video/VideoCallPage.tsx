@@ -1,4 +1,4 @@
-import VideoCall from '@/components/dashboard/videoCall/VideoCall';
+import VideoCall from '@/components/dashboard/videoCall/VideoCallSection';
 import AuthContext from '@/context/AuthProvider';
 import { RoomContext } from '@/context/RoomProvider';
 import React, { useContext, useEffect, useState } from 'react';

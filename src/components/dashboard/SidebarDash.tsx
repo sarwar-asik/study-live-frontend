@@ -9,12 +9,12 @@ export default function SidebarDash() {
 
     // const {user}= useContext(AuthContext)
     const location = useLocation()
-    console.log(location)
+    // console.log(location)
     const chatStart = location.pathname?.indexOf('/chat') + 6; // +6 to move past '/chat/'
     const uuid = location.pathname?.slice(chatStart);
 
 
-    console.log(uuid); // Output: baffe21f-1341-4738-9f30-8d8f3f3bec6d
+    // console.log(uuid); // Output: baffe21f-1341-4738-9f30-8d8f3f3bec6d
     const { user } = useContext(AuthContext)
     const { data, error, loading } = useFetchDataHook<{ data: IUserDataType[] }>(`http://localhost:5001/api/v1/user`)
     // console.log(data)
@@ -25,7 +25,7 @@ export default function SidebarDash() {
     }
 
     const userData = data?.data
-    console.log(userData)
+    // console.log(userData)
 
     return (
         <div className="bg-white border-r border-gray-300 min-w-[20rem]">
