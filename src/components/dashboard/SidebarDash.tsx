@@ -1,6 +1,6 @@
 import AuthContext from '@/context/AuthProvider'
 import useFetchDataHook from '@/hooks/useFetchDataHook'
-import LoaderData from '@/pages/shared/LoaderData'
+import LoaderData from '@/components/shared/LoaderData'
 import { IUserDataType } from '@/type/dataType/user.data'
 import React, { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'

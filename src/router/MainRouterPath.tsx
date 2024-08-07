@@ -5,6 +5,9 @@ import LandingPage from "@/pages/landing/LandingPage";
 import PricingPage from "@/pages/pricing/PricingPage";
 import PrivateRoute from "./PrivateRouter";
 import TestWeb from "@/components/dashboard/Test";
+import UsersPage from "@/pages/Users/UsersPage";
+import SingleUser from "@/pages/Users/SingleUser";
+import { Room } from "@/pages/dashboard/video/VideoCallPage";
 
 export const MainRouterPath = [
     {
@@ -26,6 +29,15 @@ export const MainRouterPath = [
     {
         path: "/test",
         element: <TestWeb />
+    },{
+        path: "/users",
+        element: <UsersPage />
+    },{
+        path: "/user/:id",
+        element: <SingleUser />
+    },{
+        path: "/video/:id",
+        element: <Room />
     },
     {
         path: "/landing",

@@ -2,14 +2,14 @@
 
 import ChatPage from "@/pages/chat/ChatPage";
 import AudioCallPage from "@/pages/dashboard/audio/AudioCallPage";
-import VideoCallPage from "@/pages/dashboard/video/VideoCallPage";
+import { Room } from "@/pages/dashboard/video/VideoCallPage";
 
 export const DashboardRouterPath = [
 
-    {
-        path: "video/:id",
-        element: <VideoCallPage />
-    },
+    // {
+    //     path: "video/:id",
+    //     element: <Room />
+    // },
     {
         path: "audio/:id",
         element: <AudioCallPage />

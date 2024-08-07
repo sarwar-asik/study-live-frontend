@@ -17,8 +17,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setLoading(true);
             try {
                 const userData = await getUserInfo();
+                
                 if (userData?.email) {
                     setUser(userData);
+                    localStorage.setItem('userId', userData?.id);
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);

@@ -25,6 +25,9 @@ export default {
         info: "#06b6d4",
         // You can define as many custom colors as you need
       },
+      backgroundImage: {
+        "login-bg": "url('/src/assets/loginBg.jpeg')",
+      },
     },
   },
   plugins: [],

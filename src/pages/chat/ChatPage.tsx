@@ -17,6 +17,7 @@ export default function ChatPage() {
     const { io, newMessage, userAllData } = useContext(ChatContext)
 
     const { id } = useParams()
+
     // console.log("🚀 ~ id:", id)
 
     const receiverId = id === '1' ? userAllData[0]?.id : id
@@ -26,7 +27,7 @@ export default function ChatPage() {
     return (
         <div className="flex-1">
             {/* Chat Header */}
-            <ChatHeaderSection user={user} receiverId={receiverId} />
+            <ChatHeaderSection user={userData?.data} receiverId={receiverId} />
 
             {/* {incomingCall && (
        

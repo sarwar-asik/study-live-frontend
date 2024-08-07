@@ -14,7 +14,7 @@ import { RoomContext } from '@/context/RoomProvider';
 export default function ChatHeaderSection({ user, receiverId }: {
     user: IUserDataType | undefined, receiverId: string
 }) {
-    const { startVideoCallNow } = useContext(RoomContext)
+    // const { startVideoCallNow } = useContext(RoomContext)
 
     // const { } = useContext(RoomContext)
 
@@ -30,7 +30,7 @@ export default function ChatHeaderSection({ user, receiverId }: {
             console.log("user id or receiver id not found")
             return
         }
-       await startVideoCallNow(user?.id, receiverId, user?.name)
+    //    await startVideoCallNow(user?.id, receiverId, user?.name)
     }
 
     return (
