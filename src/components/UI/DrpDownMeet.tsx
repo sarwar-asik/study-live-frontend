@@ -30,7 +30,7 @@ export default function BoxDropDownUI({ items, buttonMenu, elementItem }: { item
                     <li
                         key={idx}
                         onClick={() => setOpen(false)}
-                        className={`rounded-sm bg-sky-400 p-2 ${open ? 'opacity-100 duration-500' : 'opacity-0 duration-150'} hover:bg-sky-500 text-nowrap px-3`}
+                        className={`rounded-sm bg-primary p-2 ${open ? 'opacity-100 duration-500' : 'opacity-0 duration-150'} hover:bg-primary/80 text-nowrap px-3`}
                         style={{ transform: `translateY(${open ? 0 : (idx + 1) * 10}px)cursor-pointer mx-auto` }}
                     >
                         {item}

@@ -12,9 +12,12 @@ export default function DashboardLayout() {
                 <div className="w-full lg:w-1/4 hidden lg:flex ">
                     <SidebarDash />
                 </div>
+                <div className="w-full lg:w-3/4">
+
+                    <Outlet />
+                </div>
                 {/* Main Chat Area */}
 
-                <Outlet />
             </div>
         </React.Fragment>
     )

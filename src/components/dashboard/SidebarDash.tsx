@@ -2,8 +2,9 @@ import AuthContext from '@/context/AuthProvider'
 import useFetchDataHook from '@/hooks/useFetchDataHook'
 import LoaderData from '@/components/shared/LoaderData'
 import { IUserDataType } from '@/type/dataType/user.data'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { SERVER_URL } from '@/helper/const'
 
 export default function SidebarDash() {
 
@@ -16,7 +17,7 @@ export default function SidebarDash() {
 
     // console.log(uuid); // Output: baffe21f-1341-4738-9f30-8d8f3f3bec6d
     const { user } = useContext(AuthContext)
-    const { data, error, loading } = useFetchDataHook<{ data: IUserDataType[] }>(`http://localhost:5001/api/v1/user`)
+    const { data, error, loading } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
     // console.log(data)
 
 
@@ -28,7 +29,7 @@ export default function SidebarDash() {
     // console.log(userData)
 
     return (
-        <div className="bg-white border-r border-gray-300 min-w-[20rem]">
+        <div className="bg-white border-r border-gray-300 min-w-full">
             {/* Sidebar Header */}
             <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
                 <Link to={`/`}>Home</Link>
