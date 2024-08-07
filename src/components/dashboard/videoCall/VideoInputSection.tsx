@@ -4,8 +4,6 @@ import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash } from 'react-ic
 import { IoCallOutline } from 'react-icons/io5';
 
 export default function VideoInputSection({ stream, handleEndCall }: { stream: MediaStream | null, handleEndCall: () => void }) {
-
-
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
