@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RoomContext } from "@/context/RoomProvider";
 import Footer from "@/components/shared/Footer";
 import Navbar from "@/components/shared/Navbar";
@@ -12,12 +13,12 @@ export default function MainLayout() {
     const { ws } = useContext(RoomContext);
     const navigate = useNavigate();
     useEffect(() => {
-        ws.on("room-created", (data) => {
+        ws.on("room-created", (data: { roomId: any; }) => {
             console.log(data);
             navigate(`/video/${data.roomId}`)
             // window.location.href = `/video/${data.roomId}`
         });
-        ws.on("room-created-b", (data) => {
+        ws.on("room-created-b", (data: { roomId: any; }) => {
             console.log(data);
 
             setTimeout(() => {
@@ -31,7 +32,7 @@ export default function MainLayout() {
         <React.Fragment>
 
             <Navbar />
-            <div className="min-h-screen">
+            <div className="min-h-screen bg-[#362C38]">
                 <Outlet />
             </div>
 

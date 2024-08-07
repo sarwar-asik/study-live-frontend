@@ -4,19 +4,19 @@ import { Link } from 'react-router-dom'
 export default function HeaderHero() {
     return (
         <React.Fragment>
-            <div className="bg-white">
+            <div className="bg-">
 
-                <section className="bg-[#FCF8F1] bg-opacity-30 py-10 sm:py-16 lg:py-24">
+                <section className=" bg-opacity-30 py-10 sm:py-16 lg:py-24">
                     <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                         <div className="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
                             <div>
-                                <p className="text-base font-semibold tracking-wider text-primary uppercase">
+                                <p className="text-base font-semibold tracking-wider text-white uppercase">
                                     Study Live Streaming
                                 </p>
-                                <h1 className="mt-4 text-4xl font-bold text-black lg:mt-8 sm:text-6xl xl:text-8xl">
+                                <h1 className="mt-4 text-4xl font-bold text-white lg:mt-8 sm:text-6xl xl:text-8xl">
                                     Video calls with anyone, anywhere
                                 </h1>
-                                <p className="mt-4 text-base text-black lg:mt-8 sm:text-xl">
+                                <p className="mt-4 text-base text-white lg:mt-8 sm:text-xl">
                                     Stay connected and collaborate with friends, family, and colleagues no matter where you are.
 
                                 </p>
@@ -42,12 +42,12 @@ export default function HeaderHero() {
                                         />
                                     </svg>
                                 </Link>
-                                <p className="mt-5 text-gray-600">
+                                <p className="mt-5 text-gray-200">
                                     Already created account?
                                     <Link
                                         to="/login"
                                         title=""
-                                        className="text-black transition-all duration-200 hover:underline ms-2"
+                                        className="text-slate-300 transition-all duration-200 hover:underline ms-2"
                                     >
                                         Log in
                                     </Link>

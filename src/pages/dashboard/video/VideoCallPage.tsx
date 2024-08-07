@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { VideoPlayer } from "./VideoPlayer";

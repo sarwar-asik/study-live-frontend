@@ -18,8 +18,8 @@ export default function UserCard({ user }: any) {
             </div>
             {/* Card Heading */}
 
-            <h2></h2>
-            <section className='px-5 py-9 bg-[#52545B] text-white flex flex-col gap-9 '>
+
+            <section className='px-5 py-9 bg-[#52545B] text-white flex flex-col gap-5 '>
                 <div className="space-y-2 flex justify-between items-center">
                     <h2 className=" sm:text-lg md:text-xl dark:text-white/90 font-bold">{user?.name}</h2>
                     {/* rating  */}

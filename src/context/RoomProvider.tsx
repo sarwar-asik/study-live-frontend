@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useEffect, useReducer, useState } from "react";
 import Peer from "peerjs";
 import { v4 as uuidV4 } from "uuid";
@@ -6,20 +7,21 @@ import { io } from "socket.io-client";
 // import { useNavigate } from "react-router-dom";
 import { peersReducer } from "./pearsReducer";
 import { addPeerAction, removePeerAction } from "./pearsAction";
-
-const WS = `http://localhost:5001?id=${localStorage.getItem("userId")}`;
+import { SERVER_URL_ONLY } from "@/helper/const";
+const WS = `${SERVER_URL_ONLY}?id=${localStorage.getItem("userId")}`;
 
 export const RoomContext = createContext<null | any>(null);
 
 const ws = io(WS);
 
-export const RoomProvider: React.FunctionComponent = ({ children }) => {
+export const RoomProvider = ({ children }: { children: any }) => {
     // const navigate = useNavigate();
 
     const [me, setMe] = useState<Peer>();
     const [peers, dispatch] = useReducer(peersReducer, {});
     const [stream, setStream] = useState<MediaStream>();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const enterRoom = ({ roomId }: { roomId: "string" }) => {
         // navigate(`/room/${roomId}`);
         console.log(roomId);
@@ -67,7 +69,7 @@ export const RoomProvider: React.FunctionComponent = ({ children }) => {
         ws.on(
             "user-joined",
             ({ peerId }: { roomId: string; peerId: string }) => {
-                const call = stream && me.call(peerId, stream); 
+                const call = stream && me.call(peerId, stream);
                 call.on("stream", (userVideoStream: MediaStream) => {
                     dispatch(addPeerAction(peerId, userVideoStream));
                 });
