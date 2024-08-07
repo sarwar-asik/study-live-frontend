@@ -4,6 +4,7 @@ import Home from "@/pages/home/Home";
 import LandingPage from "@/pages/landing/LandingPage";
 import PricingPage from "@/pages/pricing/PricingPage";
 import PrivateRoute from "./PrivateRouter";
+import TestWeb from "@/components/dashboard/Test";
 
 export const MainRouterPath = [
     {
@@ -21,6 +22,10 @@ export const MainRouterPath = [
     {
         path: "/pricing",
         element: <PricingPage />
+    },
+    {
+        path: "/test",
+        element: <TestWeb />
     },
     {
         path: "/landing",

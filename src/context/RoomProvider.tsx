@@ -4,143 +4,93 @@ import { ChatContext } from './ChatContext';
 export const RoomContext = createContext<any>(null);
 
 export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
-    const { io: ws } = useContext(ChatContext);
+    const { io } = useContext(ChatContext);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [peerConnection, setPeerConnection] = useState<RTCPeerConnection | null>(null);
     const [incomingCall, setIncomingCall] = useState<any>(null);
-    const localVideoRef = useRef<HTMLVideoElement>(null);
-    const remoteVideoRef = useRef<HTMLVideoElement>(null);
+    const [isStartVideoCall, setIsStartVideoCall] = useState(false)
+
 
     useEffect(() => {
-        const createPeerConnection = () => {
-            const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };
-            const pc = new RTCPeerConnection(configuration);
+        const configuration = { 'iceServers': [{ urls:[
+            'stun:stun.l.google.com:19302',
+            'stun:stun1.l.google.com:19302',
+            'stun:stun2.l.google.com:19302',
+            'stun:stun3.l.google.com:19302',
+        ] }] }
+        const pc = new RTCPeerConnection(configuration);
+        setPeerConnection(pc)
 
-            pc.onicecandidate = (event) => {
-                if (event.candidate) {
-                    ws.emit('ice-candidate', event.candidate);
-                }
-            };
 
-            pc.ontrack = (event) => {
-                setRemoteStream(event.streams[0]);
-            };
+        io.on('incoming-call', async (data: { senderId: string, receiverId: string, senderName: string }) => {
+            console.log(data, 'incoming call data')
+            setIncomingCall(data)
 
-            pc.onconnectionstatechange = (event) => {
-                switch (pc.connectionState) {
-                    case 'connected':
-                        console.log('The connection has become fully connected');
-                        break;
-                    case 'disconnected':
-                    case 'failed':
-                        console.error('The connection has been disconnected or failed');
-                        break;
-                    case 'closed':
-                        console.log('The connection has been closed');
-                        break;
-                    default:
-                        break;
-                }
-            };
+        })
 
-            pc.oniceconnectionstatechange = (event) => {
-                switch (pc.iceConnectionState) {
-                    case 'disconnected':
-                    case 'failed':
-                        console.error('ICE connection state is disconnected or failed');
-                        break;
-                    case 'closed':
-                        console.log('ICE connection state is closed');
-                        break;
-                    default:
-                        break;
-                }
-            };
+        io.on('answer', (answerData) => {
+            console.log(answerData, 'from caller')
+            if (peerConnection) {
+                console.log('peerConnection ache', peerConnection,)
 
-            pc.onicegatheringstatechange = (event) => {
-                if (pc.iceGatheringState === 'complete') {
-                    console.log('ICE gathering is complete');
-                }
-            };
-
-            pc.onsignalingstatechange = (event) => {
-                if (pc.signalingState === 'stable') {
-                    console.log('Signaling state is stable');
-                }
-            };
-
-            return pc;
-        };
-
-        const pc = createPeerConnection();
-        console.log(pc)
-        if (pc) {
-            setPeerConnection(pc);
-        }
-
-        ws.on('ice-candidate', (candidate) => {
-            console.log(candidate, 'ice-candidate')
-            if (candidate) {
-                pc.addIceCandidate(candidate);
+                peerConnection.setRemoteDescription(new RTCSessionDescription(answerData))
             }
-        });
+            // setPeerConnection(pc)
+        })
 
-        ws.on('incoming-call', async ({ offer, from, senderName }) => {
-            console.log(offer, from, senderName, 'incoming-call')
-            setIncomingCall({ offer, from, senderName });
-        });
+        io.on('end-call', data => {
+            // Close the peer connection
 
-        console.log(peerConnection)
-        ws.on('answer', async (answer) => {
-            console.log(answer);
-            if (pc.signalingState === 'stable' || pc.signalingState === 'have-local-offer') {
-                try {
-                    await pc.setRemoteDescription(new RTCSessionDescription(answer));
-                } catch (error) {
-                    console.error('Error setting remote description:', error);
+            if (peerConnection) {
+                peerConnection.close();
+                setPeerConnection(null);
+
+                // Stop all tracks in the local stream
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
                 }
-            } else {
-                console.error('Cannot set remote description, signaling state is not stable:', pc.signalingState);
+
+
+                // Clear video elements
+
             }
-        });
+            setLocalStream(null);
+            setRemoteStream(null);
+        })
 
 
-        return () => {
-            pc.close();
-        };
-    }, [ws]);
+    }, [io])
 
     useEffect(() => {
         if (localStream && peerConnection) {
+            console.log('local stream and peer connection available added getTracks()')
             localStream.getTracks().forEach((track) => {
+                console.log(track, 'trackData')
                 peerConnection.addTrack(track, localStream);
             });
         }
     }, [localStream, peerConnection]);
-
-    useEffect(() => {
-        if (localVideoRef.current && localStream) {
-            localVideoRef.current.srcObject = localStream;
-        }
-    }, [localStream]);
-
-    useEffect(() => {
-        if (remoteVideoRef.current && remoteStream) {
-            remoteVideoRef.current.srcObject = remoteStream;
-        }
-    }, [remoteStream]);
-
-    const startCall = async (receiverId: string, senderName: string) => {
-        if (peerConnection) {
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            ws.emit('offer', { offer, targetId: receiverId, senderName });
+    const getMedia = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            setLocalStream(stream);
+        } catch (err) {
+            console.error('Error accessing media devices.', err);
         }
     };
 
-    console.log(peerConnection)
+    const startVideoCallNow = async (senderId: string, receiverId: string, senderName: string) => {
+        setIsStartVideoCall(true);
+        // navigator.
+        await getMedia()
+        const offer = await peerConnection?.createOffer();
+        await peerConnection?.setLocalDescription(offer);
+        io.emit("offer", { offer, targetId: receiverId, senderId, receiverId, senderName })
+    }
+
     const answerCall = async () => {
+        // await getMedia()
         if (!peerConnection) {
             console.error('Peer connection is not initialized');
             return;
@@ -151,45 +101,33 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
             return;
         }
 
-
-
         try {
-            const { offer } = incomingCall;
-
-            // Validate the offer object
-            if (!offer || !offer.sdp || !offer.type) {
-                throw new Error('Invalid offer format');
-            }
-
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            setLocalStream(stream);
+            const { offer } = incomingCall
+            console.log(offer, 'offer')
             // Set remote description
+            
+            
             peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-
-
             // Create and set local description
             const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(
+            await peerConnection.setLocalDescription();
+            
+            io.emit('answer', { answer, targetId: incomingCall.from });
 
-            );
 
-            // Emit the answer
-            ws.emit('answer', { answer, targetId: incomingCall.from });
-
-            // Clear the incoming call state
-            setIncomingCall(null);
         } catch (error) {
-            console.error('Error answering the call:', error);
+            console.log(error, "error in answerCall()")
+
         }
-    };
 
 
-    const getMedia = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        setLocalStream(stream);
-    };
+    }
 
     const endCall = (receiverId: string) => {
+        // console.log("end call")
         if (peerConnection) {
-            // Close the peer connection
             peerConnection.close();
             setPeerConnection(null);
 
@@ -197,24 +135,18 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
             }
-            setLocalStream(null);
-            setRemoteStream(null);
 
             // Clear video elements
-            if (localVideoRef.current) {
-                localVideoRef.current.srcObject = null;
-            }
-            if (remoteVideoRef.current) {
-                remoteVideoRef.current.srcObject = null;
-            }
-
-            // Notify the server that the call has ended
-            ws.emit('end-call', receiverId);
         }
-    };
+        setLocalStream(null);
+        console.log('null')
+        setRemoteStream(null);
+        io.emit('end-call', receiverId);
+    }
+    // console.log(localStream)
 
     return (
-        <RoomContext.Provider value={{ localStream, remoteStream, startCall, getMedia, localVideoRef, remoteVideoRef, endCall, incomingCall, answerCall, setIncomingCall }}>
+        <RoomContext.Provider value={{ startVideoCallNow, localStream, incomingCall, answerCall, endCall }}>
             {children}
         </RoomContext.Provider>
     );
