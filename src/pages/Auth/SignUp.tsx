@@ -2,16 +2,17 @@
 import usePostHook from '@/hooks/usePostHook';
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import LoaderSubmit from '../shared/LoaderSubmit';
+import LoaderSubmit from '../../components/shared/LoaderSubmit';
 import { authKey, SERVER_URL } from '@/helper/const';
 import toast from 'react-hot-toast';
 import { setToLocalStorage } from '@/helper/authHelper';
 import AuthContext from '@/context/AuthProvider';
-import { ChatContext } from '@/context/ChatContext';
+import Logo from '@/components/shared/Logo';
+
 
 export default function SignUp() {
   const { refreshUser } = useContext(AuthContext)
-  const { userAllData } = useContext(ChatContext)
+
   const navigate = useNavigate()
 
   const { data, loading, postData } = usePostHook<string>(`${SERVER_URL}/auth/sign-up`);
@@ -31,7 +32,7 @@ export default function SignUp() {
       setToLocalStorage(authKey, response?.data.accessToken)
       formElement.reset();
       await refreshUser()
-      navigate(`/dashboard/chat/${userAllData[0]?.id}`)
+      navigate(`/users`)
       // reset the form
     } else {
       toast("Failed to sign up")
@@ -43,57 +44,45 @@ export default function SignUp() {
 
   }
   return (
-    <React.Fragment><div className="font-[sans-serif]">
-      <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
-        <div className="grid md:grid-cols-2 items-center gap-10 max-w-5xl w-full">
-          <div>
-            <h2 className="lg:text-5xl text-4xl font-extrabold lg:leading-[55px] text-gray-800">
-              Register to start your streaming enjoy.
-            </h2>
-            <p className="text-sm mt-6 text-gray-800">
-              Immerse yourself in a hassle-free login journey with our intuitively
-              designed login form. Effortlessly access your account.
-            </p>
-            <p className="text-sm mt-12 text-gray-800">
-              ALready have an account{" "}
-              <Link
-                to="/login"
-                className="text-blue-600 font-semibold hover:underline ml-1"
-              >
-                Login..
-              </Link>
-            </p>
-          </div>
-          <form onSubmit={onSubmit} className="max-w-md md:ml-auto w-full">
-            <h3 className="text-gray-800 text-3xl font-extrabold mb-8">Sign Up</h3>
+    <React.Fragment>
+      <div className="min-h-screen bg-login-bg bg-cover bg-center flex items-center justify-center relative ">
+        <div className="absolute inset-0 bg-black bg-opacity-5 backdrop-blur-sm"></div>
+        <section className='z-40 flex flex-col gap-5'>
+          <Logo />
+
+          <form onSubmit={onSubmit} className="max-w-4xl md:mx-auto w-full bg-[#172B4DB2] px-3 lg:px-[7rem] rounded-md py-2 lg:py-[5rem]  z-40 border border-[#7A00B8B2]">
+            <h3 className="text-white text-3xl font-extrabold mb-8 text-center">Create new account</h3>
             <div className="space-y-4">
               <div>
+                <label htmlFor="name" className='text-white font-semibold my-3 text-lg'>Your Name</label>
                 <input
                   name="name"
                   type="text"
                   // autoComplete="email"
                   required
-                  className="bg-gray-100 w-full text-sm text-gray-800 px-4 py-3.5 rounded-md outline-blue-600 focus:bg-transparent"
+                  className="bg-[#52545BCC] w-full text-sm text-white px-4 py-3.5 rounded-md outline-blue-600 focus:bg-transparent mt-3"
                   placeholder="Your Name"
                 />
               </div>
               <div>
+                <label htmlFor="email" className='text-white font-semibold my-3 text-lg'>Your Email</label>
                 <input
                   name="email"
                   type="email"
                   autoComplete="email"
                   required
-                  className="bg-gray-100 w-full text-sm text-gray-800 px-4 py-3.5 rounded-md outline-blue-600 focus:bg-transparent"
+                  className="bg-[#52545BCC] w-full text-sm text-white px-4 py-3.5 rounded-md outline-blue-600 focus:bg-transparent mt-3"
                   placeholder="Email address"
                 />
               </div>
               <div>
+                <label htmlFor="password" className='text-white font-semibold my-3 text-lg'>Type Password</label>
                 <input
                   name="password"
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="bg-gray-100 w-full text-sm text-gray-800 px-4 py-3.5 rounded-md outline-blue-600 focus:bg-transparent"
+                  className="bg-[#52545BCC] w-full text-sm text-white px-4 py-3.5 rounded-md outline-blue-600 focus:bg-transparent mt-3"
                   placeholder="Password"
                 />
               </div>
@@ -107,19 +96,19 @@ export default function SignUp() {
                   />
                   <label
                     htmlFor="remember-me"
-                    className="ml-3 block text-sm text-gray-800"
+                    className="ml-3 block text-sm text-gray-100"
                   >
                     Remember me
                   </label>
                 </div>
                 {/* <div className="text-sm">
-                  <Link
-                    to="/"
-                    className="text-blue-600 hover:text-blue-500 font-semibold"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div> */}
+                    <Link
+                      to="/"
+                      className="text-blue-600 hover:text-blue-500 font-semibold"
+                    >
+                      Forgot your password?
+                    </Link>
+                  </div> */}
               </div>
             </div>
             <div className="!mt-8">
@@ -128,12 +117,16 @@ export default function SignUp() {
 
                   <button
                     type="submit"
-                    className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                    className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded text-white bg-primary hover:bg-primary/85 focus:outline-none"
                   >
                     Sign Up
                   </button>
               }
 
+            </div>
+
+            <div className='text-white text-center flex  mt-5 items-center justify-center gap-3'>   <h2>Already have an account?</h2>
+              <Link to="/login">Login now</Link>
             </div>
             <div className="space-x-6 flex justify-center mt-8">
               <button type="button" className="border-none outline-none">
@@ -205,10 +198,12 @@ export default function SignUp() {
                 </svg>
               </button>
             </div>
+
           </form>
-        </div>
+        </section>
+
+
       </div>
-    </div>
     </React.Fragment>
   )
 }

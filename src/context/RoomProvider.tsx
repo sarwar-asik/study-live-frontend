@@ -1,152 +1,89 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { ChatContext } from './ChatContext';
+import { createContext, useEffect, useReducer, useState } from "react";
+import Peer from "peerjs";
+import { v4 as uuidV4 } from "uuid";
 
-export const RoomContext = createContext<any>(null);
+import { io } from "socket.io-client";
+// import { useNavigate } from "react-router-dom";
+import { peersReducer } from "./pearsReducer";
+import { addPeerAction, removePeerAction } from "./pearsAction";
 
-export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
-    const { io } = useContext(ChatContext);
-    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-    const [peerConnection, setPeerConnection] = useState<RTCPeerConnection | null>(null);
-    const [incomingCall, setIncomingCall] = useState<any>(null);
-    const [isStartVideoCall, setIsStartVideoCall] = useState(false)
+const WS = `http://localhost:5001?id=${localStorage.getItem("userId")}`;
 
+export const RoomContext = createContext<null | any>(null);
 
-    useEffect(() => {
-        const configuration = { 'iceServers': [{ urls:[
-            'stun:stun.l.google.com:19302',
-            'stun:stun1.l.google.com:19302',
-            'stun:stun2.l.google.com:19302',
-            'stun:stun3.l.google.com:19302',
-        ] }] }
-        const pc = new RTCPeerConnection(configuration);
-        setPeerConnection(pc)
+const ws = io(WS);
 
+export const RoomProvider: React.FunctionComponent = ({ children }) => {
+    // const navigate = useNavigate();
 
-        io.on('incoming-call', async (data: { senderId: string, receiverId: string, senderName: string }) => {
-            console.log(data, 'incoming call data')
-            setIncomingCall(data)
+    const [me, setMe] = useState<Peer>();
+    const [peers, dispatch] = useReducer(peersReducer, {});
+    const [stream, setStream] = useState<MediaStream>();
 
-        })
-
-        io.on('answer', (answerData) => {
-            console.log(answerData, 'from caller')
-            if (peerConnection) {
-                console.log('peerConnection ache', peerConnection,)
-
-                peerConnection.setRemoteDescription(new RTCSessionDescription(answerData))
-            }
-            // setPeerConnection(pc)
-        })
-
-        io.on('end-call', data => {
-            // Close the peer connection
-
-            if (peerConnection) {
-                peerConnection.close();
-                setPeerConnection(null);
-
-                // Stop all tracks in the local stream
-                if (localStream) {
-                    localStream.getTracks().forEach(track => track.stop());
-                }
-
-
-                // Clear video elements
-
-            }
-            setLocalStream(null);
-            setRemoteStream(null);
-        })
-
-
-    }, [io])
-
-    useEffect(() => {
-        if (localStream && peerConnection) {
-            console.log('local stream and peer connection available added getTracks()')
-            localStream.getTracks().forEach((track) => {
-                console.log(track, 'trackData')
-                peerConnection.addTrack(track, localStream);
-            });
-        }
-    }, [localStream, peerConnection]);
-    const getMedia = async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            setLocalStream(stream);
-        } catch (err) {
-            console.error('Error accessing media devices.', err);
-        }
+    const enterRoom = ({ roomId }: { roomId: "string" }) => {
+        // navigate(`/room/${roomId}`);
+        console.log(roomId);
     };
 
-    const startVideoCallNow = async (senderId: string, receiverId: string, senderName: string) => {
-        setIsStartVideoCall(true);
-        // navigator.
-        await getMedia()
-        const offer = await peerConnection?.createOffer();
-        await peerConnection?.setLocalDescription(offer);
-        io.emit("offer", { offer, targetId: receiverId, senderId, receiverId, senderName })
-    }
+    const handleUserList = ({ participants }: { participants: string[] }) => {
 
-    const answerCall = async () => {
-        // await getMedia()
-        if (!peerConnection) {
-            console.error('Peer connection is not initialized');
-            return;
-        }
+        stream && participants?.map((peerId) => {
+            const call = stream && me?.call(peerId, stream);
+            console.log(stream, "steam");
+            console.log("call", call);
+            call?.on("stream", (userVideoStream: MediaStream) => {
+                console.log({ addPeerAction });
+                dispatch(addPeerAction(peerId, userVideoStream));
+            });
+        });
+    };
 
-        if (!incomingCall || !incomingCall.offer) {
-            console.error('Incoming call offer is not available');
-            return;
-        }
+    const removePeer = (peerId: string) => {
+        dispatch(removePeerAction(peerId));
+    };
 
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            setLocalStream(stream);
-            const { offer } = incomingCall
-            console.log(offer, 'offer')
-            // Set remote description
-            
-            
-            peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-            // Create and set local description
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription();
-            
-            io.emit('answer', { answer, targetId: incomingCall.from });
+    useEffect(() => {
+        const meId = uuidV4();
+        const peer = new Peer(meId);
+        setMe(peer);
+        // try {
+        //     navigator.mediaDevices
+        //         .getUserMedia({ video: true, audio: true })
+        //         .then((stream) => {
+        //             setStream(stream);
+        //         });
+        // } catch (err) {
+        //     console.error({ err });
+        // }
+        // ws.on("room-created", enterRoom);
+        ws.on("get-users", handleUserList);
+        ws.on("user-disconnected", removePeer);
+    }, [ws]);
 
+    useEffect(() => {
+        if (!stream) return;
+        if (!me) return;
 
-        } catch (error) {
-            console.log(error, "error in answerCall()")
-
-        }
-
-
-    }
-
-    const endCall = (receiverId: string) => {
-        // console.log("end call")
-        if (peerConnection) {
-            peerConnection.close();
-            setPeerConnection(null);
-
-            // Stop all tracks in the local stream
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
+        ws.on(
+            "user-joined",
+            ({ peerId }: { roomId: string; peerId: string }) => {
+                const call = stream && me.call(peerId, stream); 
+                call.on("stream", (userVideoStream: MediaStream) => {
+                    dispatch(addPeerAction(peerId, userVideoStream));
+                });
             }
+        );
 
-            // Clear video elements
-        }
-        setLocalStream(null);
-        console.log('null')
-        setRemoteStream(null);
-        io.emit('end-call', receiverId);
-    }
-    // console.log(localStream)
+        me.on("call", (call) => {
+            call.answer(stream);
+            call.on("stream", (userVideoStream) => {
+                dispatch(addPeerAction(call.peer, userVideoStream));
+            });
+        });
+    }, [stream, me, ws,]);
 
     return (
-        <RoomContext.Provider value={{ startVideoCallNow, localStream, incomingCall, answerCall, endCall }}>
+        <RoomContext.Provider value={{ ws, me, peers, stream, setStream }}>
             {children}
         </RoomContext.Provider>
     );

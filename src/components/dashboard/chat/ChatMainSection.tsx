@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SERVER_URL } from '@/helper/const'
-import LoaderData from '@/pages/shared/LoaderData'
+import LoaderData from '@/components/shared/LoaderData'
 import { IMessageDataType } from '@/type/dataType/message.data'
 import { IUserDataType } from '@/type/dataType/user.data'
 import React, { useEffect, useRef, useState } from 'react'
@@ -20,7 +20,7 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
             setLoading(false)
             setData(data.data)
             if (data.data && messagesEndRef.current) {
-                messagesEndRef.current.scrollIntoView({ behavior: 'smooth',block: 'end' });
+                messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }
         })()
 
@@ -41,11 +41,11 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
     }
     return (
         <div className=''>
-            <div  className="h-screen  overflow-y-auto p-4   pb-[10rem]  ">
+            <div className="h-screen  overflow-y-auto p-4   pb-[10rem]  ">
                 {
                     loading && <LoaderData />
                 }
-                <VideoCallSection receiverId={receiverId} senderId={user?.id} /> 
+                {/* <VideoCallSection receiverId={receiverId} senderId={user?.id} />  */}
                 {
                     data?.map((message: IMessageDataType) => {
 
@@ -85,13 +85,13 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
                 }
 
 
-          
+
                 {/* Outgoing Message */}
 
             </div>
             {/* Chat Input */}
-          
-            <form  onSubmit={handleSubmit} className="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-full lg:w-3/4">
+
+            <form onSubmit={handleSubmit} className="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-full lg:w-3/4">
                 <div className="flex items-center">
                     <input
                         type="text"
