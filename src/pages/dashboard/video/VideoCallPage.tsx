@@ -4,14 +4,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { VideoPlayer } from "./VideoPlayer";
 import { RoomContext } from "@/context/VideoProvider";
 import VideoInputSection from "@/components/dashboard/videoCall/VideoInputSection";
+import usePointDeduction from "@/hooks/usePointsDeduction";
+import AuthContext from "@/context/AuthProvider";
 
 
 export const VideoCallPage = () => {
     const { id } = useParams();
+    const { user } = useContext(AuthContext)
     const { ws, me, peers, stream, setStream } = useContext(RoomContext);
 
     const navigate = useNavigate()
 
+    usePointDeduction(user.id, 5)
     useEffect(() => {
         try {
             navigator.mediaDevices
@@ -33,7 +37,7 @@ export const VideoCallPage = () => {
             }
             setStream(null);
         };
-    }, [id, me, setStream, ws]);
+    }, [id, me, setStream, ws, stream]);
 
     const handleEndCall = () => {
         if (stream) {
@@ -42,6 +46,7 @@ export const VideoCallPage = () => {
         setStream(null);
         navigate(-1);
     };
+
 
     return (
         <div>

@@ -9,13 +9,16 @@ import { FaDollarSign } from 'react-icons/fa';
 import { IoMenuSharp, IoClose } from "react-icons/io5";
 import { HiMenuAlt2, HiSearch, HiOutlineUser } from "react-icons/hi";
 import Logo from './Logo';
+import { useGetSingleUserQuery } from '@/redux/api/userApi.ts';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const { user } = useContext(AuthContext)
 
-
+  const { data } = useGetSingleUserQuery(user?.id ?? "1");
+  // console.log(data)
+  const userData = data?.data
   const handleClick = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -53,7 +56,7 @@ const Navbar: React.FC = () => {
           <input
             id="pass"
             className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500  bg-white placeholder:text-slate-600 placeholder:font-serif"
-            placeholder="Search by category or celebrity name"
+            placeholder="Search by category "
             name="password"
             type="password"
           />
@@ -83,7 +86,6 @@ const Navbar: React.FC = () => {
               <HiMenuAlt2 className="text-2xl" /> <span>{user?.name}</span>
             </div>
           }
-
 
         />
 
@@ -125,7 +127,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-center gap-3 font-bold text-white text-2xl">
           <h2><FaDollarSign className='text-2xl text-white font-bold' /></h2>
           <h1> Total Points :</h1>
-          <h2> {user?.points ?? 0}</h2>
+          <h2> {userData?.points ?? 0}</h2>
         </div>
         <div className="flex max-lg:ml-auto">
           <button id="toggleOpen" onClick={handleClick} className="lg:hidden">

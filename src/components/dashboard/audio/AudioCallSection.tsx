@@ -13,15 +13,11 @@ export default function AudioCallSection({ senderId, receiverId }: { senderId: s
   // console.log(localStream, 'localStream')
 
   const handleEndCall = () => {
-
     console.log(senderId)
     navigate(-1)
     endCall(receiverId)
-
-
   }
 
-  // console.log(localStream)
   return (
     <div className='h-full w-full'>
 

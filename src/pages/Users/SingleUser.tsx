@@ -5,10 +5,15 @@ import AuthContext from '@/context/AuthProvider';
 import { RoomContext } from '@/context/VideoProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
+import { useGetSingleUserQuery } from '@/redux/api/userApi.ts';
 import { IUserDataType } from '@/type/dataType/user.data';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+// import { useContext } from 'react';
 
-import { useContext } from 'react';
+import { FaRegMessage } from "react-icons/fa6";
+import { FaDollarSign, FaVideo } from 'react-icons/fa';
+import { IoCallOutline } from "react-icons/io5";
+
 
 import { useParams, Link, useNavigate } from 'react-router-dom';
 
@@ -16,10 +21,14 @@ const SingleUser = () => {
     const { startAudioCallNow, setLocalStream } = useContext(AudioContext)
     const { user } = useContext(AuthContext)
     const { id } = useParams()
-    const { data, loading } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
+    const { data, isLoading: loading } = useGetSingleUserQuery(id ?? "1");
+    // console.log(data)
+    // const { data, loading } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
     const { data: allUserData } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
     const userData = data?.data
     const { ws, me } = useContext(RoomContext);
+
+
     const navigate = useNavigate()
 
     // console.log(data?.data)
@@ -80,14 +89,25 @@ const SingleUser = () => {
                     </div>
                 </div>
                 <div className='mt-7 lg:mt-0 flex flex-col gap-5 w-[45%] font-bold text-xl mx-auto text-center'>
-                    <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded">
-                        Message Now
+                    <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center ">
+                        <FaRegMessage />
+                        <h4> Message Now</h4>
+
+                        <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>01</span></h5>
+
                     </Link>
-                    <button onClick={handleAudioCall} className="bg-primary w-full p-3 text-white rounded">
-                        Audio call
+                    <button onClick={handleAudioCall} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center" >
+                        <IoCallOutline />
+                        <h4>Audio Call</h4>
+
+                        <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>03</span></h5>
+
                     </button>
-                    <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded">
-                        Video call
+                    <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center">
+                        <FaVideo />
+                        <h4>Video Call</h4>
+
+                        <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>05</span></h5>
                     </button>
                 </div>
             </section>

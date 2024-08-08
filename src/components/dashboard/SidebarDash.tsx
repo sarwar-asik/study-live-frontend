@@ -47,7 +47,7 @@ export default function SidebarDash() {
                 {
                     userData?.map((signleUser: IUserDataType) => {
                         if (signleUser.id !== user?.id) {
-                            return <Link to={`/dashboard/chat/${signleUser?.id}`} key={signleUser.id} className={`flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 border rounded-md text-primary/90 ${signleUser.id === uuid ? "bg-gray-200 hover:bg-gray-300" : ""} `}>
+                            return <Link to={`/dashboard/chat/${signleUser?.id}`} key={signleUser.id} className={`flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 border rounded-md ${signleUser.id === uuid ? "bg-gray-200 hover:bg-gray-300 text-primary " : "text-white hover:text-slate-700"} `}>
 
                                 <div className="w-12 h-12 bg-gray-300 rounded-full mr-3 ">
                                     <img
@@ -60,7 +60,7 @@ export default function SidebarDash() {
                                 </div>
                                 <div className="flex-1">
                                     <h2 className="text-lg font-semibold uppercase">{signleUser?.name ?? "User"}</h2>
-                                    <p className="text-gray-400">
+                                    <p className={`${signleUser.id === uuid ? "text-slate-700 " : "text-slate-200 hover:text-slate-500"}`}>
                                         That pizza place was amazing! We should go again sometime. 🍕
                                     </p>
                                 </div>

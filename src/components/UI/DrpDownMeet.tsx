@@ -31,7 +31,7 @@ export default function BoxDropDownUI({
         document.addEventListener('mousedown', close);
         return () => document.removeEventListener('mousedown', close);
     }, []);
-    console.log('elementItem:', elementItem);
+    // console.log('elementItem:', elementItem);
     // console.log('userEmail:', userEmail);
 
     return (
@@ -54,7 +54,7 @@ export default function BoxDropDownUI({
                         {item}
                     </li>
                 ))}
-                {/* {userEmail && elementItem} */}
+                {user.email && elementItem}
                 {
                     user?.email && <button onClick={logoutHandle} className={`rounded-sm bg-red-500 p-2 w-full ${open ? 'opacity-100 duration-500' : 'opacity-0 duration-150'
                         } hover:bg-red-700 text-nowrap px-3`}
