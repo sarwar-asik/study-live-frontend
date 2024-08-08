@@ -7,7 +7,9 @@ import PrivateRoute from "./PrivateRouter";
 import TestWeb from "@/components/dashboard/Test";
 import UsersPage from "@/pages/Users/UsersPage";
 import SingleUser from "@/pages/Users/SingleUser";
-import { Room } from "@/pages/dashboard/video/VideoCallPage";
+import { VideoCallPage } from "@/pages/dashboard/video/VideoCallPage";
+import AudioCallPage from "@/pages/dashboard/audio/AudioCallPage";
+
 
 export const MainRouterPath = [
     {
@@ -29,15 +31,20 @@ export const MainRouterPath = [
     {
         path: "/test",
         element: <TestWeb />
-    },{
+    }, {
         path: "/users",
         element: <UsersPage />
-    },{
+    }, {
         path: "/user/:id",
         element: <SingleUser />
-    },{
+    },
+    {
         path: "/video/:id",
-        element: <Room />
+        element: <PrivateRoute><VideoCallPage /></PrivateRoute>
+    },
+    {
+        path: "/audio/:id",
+        element: <PrivateRoute><AudioCallPage /></PrivateRoute>
     },
     {
         path: "/landing",

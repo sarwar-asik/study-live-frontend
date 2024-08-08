@@ -6,7 +6,7 @@ import { RoomContext } from "@/context/VideoProvider";
 import VideoInputSection from "@/components/dashboard/videoCall/VideoInputSection";
 
 
-export const Room = () => {
+export const VideoCallPage = () => {
     const { id } = useParams();
     const { ws, me, peers, stream, setStream } = useContext(RoomContext);
 

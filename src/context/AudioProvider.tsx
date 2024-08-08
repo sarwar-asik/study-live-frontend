@@ -88,17 +88,25 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-    const startVideoCallNow = async (senderId: string, receiverId: string, senderName: string) => {
+    const startAudioCallNow = async (senderId: string, receiverId: string, senderName: string) => {
         setIsStartVideoCall(true);
-        // navigator.
-        await getMedia()
-        const offer = await peerConnection?.createOffer();
-        await peerConnection?.setLocalDescription(offer);
-        io.emit("offer", { offer, targetId: receiverId, senderId, receiverId, senderName })
-    }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+            setLocalStream(stream);
+
+            if (peerConnection) {
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                io.emit("offer", { offer, targetId: receiverId, senderId, receiverId, senderName });
+                // navigate(`/audio/${receiverId}`);  // Redirect after sending the offer
+            }
+        } catch (err) {
+            console.error('Error accessing media devices.', err);
+        }
+    };
+
 
     const answerCall = async () => {
-        // await getMedia()
         if (!peerConnection) {
             console.error('Peer connection is not initialized');
             return;
@@ -110,28 +118,20 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
             setLocalStream(stream);
-            const { offer } = incomingCall
-            console.log(offer, 'offer')
-            // Set remote description
 
-
-            peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-            // Create and set local description
+            const { offer } = incomingCall;
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
             const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription();
+            await peerConnection.setLocalDescription(answer);
 
-            io.emit('answer', { answer, targetId: incomingCall.from });
-
-
+            io.emit('answer', { answer, targetId: incomingCall.senderId });
         } catch (error) {
-            console.log(error, "error in answerCall()")
-
+            console.error('Error answering the call:', error);
         }
+    };
 
-
-    }
 
     const endCall = (receiverId: string) => {
         // console.log("end call")
@@ -154,7 +154,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
     // console.log(localStream)
 
     return (
-        <AudioContext.Provider value={{ startVideoCallNow, localStream, incomingCall, answerCall, endCall }}>
+        <AudioContext.Provider value={{ startAudioCallNow, localStream, incomingCall, answerCall, endCall }}>
             {children}
         </AudioContext.Provider>
     );

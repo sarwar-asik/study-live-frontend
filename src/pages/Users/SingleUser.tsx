@@ -1,5 +1,7 @@
 import LoaderData from '@/components/shared/LoaderData';
 import UserCard from '@/components/user/UserCard';
+import { AudioContext } from '@/context/AudioProvider';
+import AuthContext from '@/context/AuthProvider';
 import { RoomContext } from '@/context/VideoProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
@@ -8,20 +10,35 @@ import { useState } from 'react';
 
 import { useContext } from 'react';
 
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const SingleUser = () => {
+    const { startAudioCallNow } = useContext(AudioContext)
+    const { user } = useContext(AuthContext)
     const { id } = useParams()
     const { data, loading } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
     const { data: allUserData } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
     const userData = data?.data
     const { ws, me } = useContext(RoomContext);
+    const navigate = useNavigate()
 
     // console.log(data?.data)
     const startVideoCallWithRoom = () => {
-        ws.emit("create-room", { peerId: me._id, receiverId: data?.data });
+        ws.emit("create-room", { peerId: me._id, receiverId: data?.data?.id,senderName:data?.data?.name });
     };
+
     const [userRating, setUserRating] = useState(1);
+
+
+    const handleAudioCall = async () => {
+        if (!user?.id || !id) {
+            console.log("user id or receiver id not found")
+            return
+        }
+        await startAudioCallNow(user.id, id, user?.name)
+        navigate(`/audio/${id}`)
+    }
+
 
     // console.log(userData)
 
@@ -56,7 +73,7 @@ const SingleUser = () => {
                     <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded">
                         Message Now
                     </Link>
-                    <button className="bg-primary w-full p-3 text-white rounded">
+                    <button onClick={handleAudioCall} className="bg-primary w-full p-3 text-white rounded">
                         Audio call
                     </button>
                     <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded">

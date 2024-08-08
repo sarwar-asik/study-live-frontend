@@ -1,11 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Logo from './Logo'
 
 export default function Footer() {
     return (
-        <React.Fragment><footer className="bg-black font-sans tracking-wide">
+        <React.Fragment><footer className="bg-black font-sans tracking-wide  ">
+
             <div className="max-w-screen-xl mx-auto px-10 py-14 grid sm:grid-cols-2 gap-10">
+
                 <div>
+                    <div className=" mb-7">
+                        <Logo />
+                    </div>
                     <h4 className="text-white text-lg font-semibold mb-7">About Us</h4>
                     <p className="text-gray-300 text-sm">
                         Best choice for get better live streaming experience with your community

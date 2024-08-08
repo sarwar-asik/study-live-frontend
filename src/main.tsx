@@ -11,6 +11,7 @@ import { VideoProvider } from './context/VideoProvider'
 import { Provider } from 'react-redux'
 import store from './redux/store'
 import { ChatProvider } from './context/ChatContext'
+import { AudioProvider } from './context/AudioProvider'
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -20,8 +21,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <ChatProvider>
           <VideoProvider>
-            <RouterProvider router={router} />
-            <Toaster />
+           <AudioProvider>
+              <RouterProvider router={router} />
+              <Toaster />
+           </AudioProvider>
           </VideoProvider>
         </ChatProvider>
       </AuthProvider>

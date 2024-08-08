@@ -6,6 +6,7 @@ import DashboardLayout from "@/layout/DashboardLayout";
 import { DashboardRouterPath } from "./DashboardRouterPath";
 import PrivateRoute from "./PrivateRouter";
 
+
 const router = createBrowserRouter([
   {
     path: "/",

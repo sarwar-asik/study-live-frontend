@@ -1,13 +1,13 @@
 import { RoomContext } from '@/context/VideoProvider'
-import React, { useContext } from 'react'
-import VideoInputSection from './VideoInputSection'
+import  { useContext } from 'react'
+import VideoInputSection from '../videoCall/VideoInputSection'
 
 
-export default function VideoCallSection({ senderId, receiverId }: { senderId: string, receiverId: string }) {
+export default function AudioCallSection({ senderId, receiverId }: { senderId: string, receiverId: string }) {
   const { localStream, incomingCall, endCall, answerCall } = useContext(RoomContext)
   // console.log(senderId, receiverId)
 
-  // console.log(localStream, 'localStream')
+  console.log(localStream, 'localStream')
 
   const handleEndCall = () => {
 

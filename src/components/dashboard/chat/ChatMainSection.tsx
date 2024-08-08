@@ -4,7 +4,7 @@ import LoaderData from '@/components/shared/LoaderData'
 import { IMessageDataType } from '@/type/dataType/message.data'
 import { IUserDataType } from '@/type/dataType/user.data'
 import React, { useEffect, useRef, useState } from 'react'
-import VideoCallSection from '../videoCall/VideoCallSection'
+
 
 export default function ChatSection({ user, io, receiverId, newMessage }: { user: IUserDataType, io: any, receiverId: string, newMessage: any }) {
     const [data, setData] = useState<IMessageDataType[] | any[]>([])
