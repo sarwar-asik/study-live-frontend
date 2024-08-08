@@ -1,16 +1,16 @@
-import { RoomContext } from '@/context/RoomProvider'
+import { RoomContext } from '@/context/VideoProvider'
 
 import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ModalCommon({ type, points, onClick, openModal, setOpenModal }: { type: "video" | "audio" | null, points: number, onClick: () => void, openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ModalCommon({ type, points, openModal, setOpenModal }: { type: "video" | "audio" | null, points: number, openModal: boolean, setOpenModal: React.Dispatch<React.SetStateAction<boolean>> }) {
 
 
     const { roomId, } = useContext(RoomContext)
 
     // console.log(enterRoom())
-    console.log(roomId)
+    // console.log(roomId)
 
     const navigate = useNavigate()
 

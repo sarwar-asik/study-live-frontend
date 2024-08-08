@@ -1,25 +1,59 @@
 import LoaderData from '@/components/shared/LoaderData';
 import UserCard from '@/components/user/UserCard';
-import { RoomContext } from '@/context/RoomProvider';
+import { AudioContext } from '@/context/AudioProvider';
+import AuthContext from '@/context/AuthProvider';
+import { RoomContext } from '@/context/VideoProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
+import { useGetSingleUserQuery } from '@/redux/api/userApi.ts';
 import { IUserDataType } from '@/type/dataType/user.data';
-import { useState } from 'react';
-
-import { useContext } from 'react';
-
-import { useParams, Link } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { FaRegMessage } from "react-icons/fa6";
+import { FaDollarSign, FaVideo } from 'react-icons/fa';
+import { IoCallOutline } from "react-icons/io5";
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const SingleUser = () => {
+    const { startAudioCallNow, setLocalStream } = useContext(AudioContext)
+    const { user } = useContext(AuthContext)
     const { id } = useParams()
-    const { data, loading } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
+    const { data, isLoading: loading } = useGetSingleUserQuery(id ?? "1");
+    // console.log(data)
+
     const { data: allUserData } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
     const userData = data?.data
     const { ws, me } = useContext(RoomContext);
-    const createRoom = () => {
-        ws.emit("create-room", { peerId: me._id });
+
+
+    const navigate = useNavigate()
+
+    // console.log(data?.data)
+    const startVideoCallWithRoom = () => {
+        if (!user?.id || !id) {
+            // console.log("user id or receiver id not found")
+            navigate("/login")
+            return
+        }
+
+        ws.emit("create-room", { peerId: me._id, receiverId: data?.data?.id, senderName: data?.data?.name });
     };
+
     const [userRating, setUserRating] = useState(1);
+
+
+    const handleAudioCall = async () => {
+        if (!user?.id || !id) {
+            // console.log("user id or receiver id not found")
+            navigate("/login")
+            return
+        }
+        navigate(`/audio/${id}`)
+        const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+        setLocalStream(stream);
+        await startAudioCallNow(user.id, id, user?.name)
+        // navigate(`/audio/${id}`)
+    }
+
 
     // console.log(userData)
 
@@ -32,7 +66,7 @@ const SingleUser = () => {
             <section className='block lg:flex  justify-between  items-center  w-full'>
 
                 <div className="block lg:flex items-center gap-[5rem] text-white w-[55%] mx-auto">
-                    <img className='rounded-full h-[10rem] w-[10rem]' src={userData?.img ?? "https://img.freepik.com/free-photo/smart-casual-asian-happiness-male-wear-glasses-smile-cheerful-hand-use-smartphone-ready-press-buy-button-with-shopping-mall-abstract-blur-background-technology-communication-ideas-concept_609648-525.jpg?t=st=1723063301~exp=1723066901~hmac=820448065fc7fe4795f3e9853063096c4b06f8c6fabf3993b06751c90081c681&w=1380"} alt="" />
+                    <img className='rounded-full h-[10rem] w-[10rem]' src={userData?.img ?? "https://shorturl.at/pNO1x"} alt="" />
                     <div className="space-y-5 mt-7 lg:mt-0">
                         <h2 className='text-4xl font-serif font-extrabold'>{userData?.name}</h2>
                         <p className='text-xl text-slate-200'>{userData?.email}</p>
@@ -51,14 +85,25 @@ const SingleUser = () => {
                     </div>
                 </div>
                 <div className='mt-7 lg:mt-0 flex flex-col gap-5 w-[45%] font-bold text-xl mx-auto text-center'>
-                    <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded">
-                        Message Now
+                    <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center ">
+                        <FaRegMessage />
+                        <h4> Message Now</h4>
+
+                        <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>01</span></h5>
+
                     </Link>
-                    <button className="bg-primary w-full p-3 text-white rounded">
-                        Audio call
+                    <button onClick={handleAudioCall} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center" >
+                        <IoCallOutline />
+                        <h4>Audio Call</h4>
+
+                        <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>03</span></h5>
+
                     </button>
-                    <button onClick={createRoom} className="bg-primary w-full p-3 text-white rounded">
-                        Video call
+                    <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center">
+                        <FaVideo />
+                        <h4>Video Call</h4>
+
+                        <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>05</span></h5>
                     </button>
                 </div>
             </section>
@@ -71,7 +116,7 @@ const SingleUser = () => {
                 <p className='text-lg  mt-5'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                 <h1 className='bg-white h-[0.5px] w-full my-[5rem]' />
             </section>
-            <div className='bg-[#362C38]  py-[2rem] container mx-auto'>
+            <div className='bg-secondary  py-[2rem] container mx-auto'>
                 <h2 className='text-3xl font-bold text-white my-2'>You Might Also Like </h2>
                 {loading && <LoaderData />}
                 <div className=" container grid grid-cols-2 md:gird-cols-3 lg:grid-cols-5  gap-7" >

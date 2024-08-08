@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import counterSlice from './features/user/counterSlice';
 import videoSlice from './features/video/videoSlice';
+import { baseApi } from './api/baseApi';
 // import { baseApi } from './api/baseApi';
 // import { workSplice } from './features/workSpace/workSpaceSlice';
 // ...
@@ -13,10 +14,10 @@ const store = configureStore({
         counter: counterSlice,
         video:videoSlice,
         // workSpace: workSplice,
-        // [baseApi.reducerPath]: baseApi.reducer,
+        [baseApi.reducerPath]: baseApi.reducer,
     },
-    // middleware: getDefaultMiddleware =>
-    //     getDefaultMiddleware().concat(baseApi.middleware),
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware().concat(baseApi.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

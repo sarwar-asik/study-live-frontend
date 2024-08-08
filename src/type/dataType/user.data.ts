@@ -12,3 +12,11 @@ export type IUserDataType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type IUserSchema = {
+  name: string;
+  password: string;
+  email: string;
+  points?: number;
+  img: string;
+};

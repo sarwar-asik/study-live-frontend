@@ -1,13 +1,15 @@
 import Login from "@/pages/Auth/Login";
 import SignUp from "@/pages/Auth/SignUp";
-import Home from "@/pages/home/Home";
-import LandingPage from "@/pages/landing/LandingPage";
+import Home from "@/pages/home/HomePage";
+
 import PricingPage from "@/pages/pricing/PricingPage";
 import PrivateRoute from "./PrivateRouter";
-import TestWeb from "@/components/dashboard/Test";
+
 import UsersPage from "@/pages/Users/UsersPage";
 import SingleUser from "@/pages/Users/SingleUser";
-import { Room } from "@/pages/dashboard/video/VideoCallPage";
+import { VideoCallPage } from "@/pages/dashboard/video/VideoCallPage";
+import AudioCallPage from "@/pages/dashboard/audio/AudioCallPage";
+
 
 export const MainRouterPath = [
     {
@@ -26,21 +28,20 @@ export const MainRouterPath = [
         path: "/pricing",
         element: <PricingPage />
     },
-    {
-        path: "/test",
-        element: <TestWeb />
-    },{
+  {
         path: "/users",
         element: <UsersPage />
-    },{
+    }, {
         path: "/user/:id",
         element: <SingleUser />
-    },{
-        path: "/video/:id",
-        element: <Room />
     },
     {
-        path: "/landing",
-        element: <PrivateRoute><LandingPage /></PrivateRoute>
+        path: "/video/:id",
+        element: <PrivateRoute><VideoCallPage /></PrivateRoute>
     },
+    {
+        path: "/audio/:id",
+        element: <PrivateRoute><AudioCallPage /></PrivateRoute>
+    },
+ 
 ]

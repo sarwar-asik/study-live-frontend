@@ -32,6 +32,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         fetchUserData();
     }, []);
 
+    
+
     const refreshUser = async () => {
         setLoading(true);
         try {

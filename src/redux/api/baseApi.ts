@@ -4,12 +4,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // import { axiosBaseQuery } from 'src/helpers/axios/axiosBaseQuery';
 // import { getBaseUrl } from '../../helpers/config/envConfig';
 import { tagTypesList } from '../redux-tags';
+import { SERVER_URL } from "@/helper/const";
 
 // Define a service using a base URL and expected endpoints
 export const baseApi = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'https://backend.doob.com.bd/api/v1',
+        baseUrl: `${SERVER_URL}`,
     }),
     endpoints: () => ({}),
     tagTypes: tagTypesList,

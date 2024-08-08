@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { VideoPlayer } from "./VideoPlayer";
-import { RoomContext } from "@/context/RoomProvider";
+import { RoomContext } from "@/context/VideoProvider";
+import VideoInputSection from "@/components/dashboard/videoCall/VideoInputSection";
+import usePointDeduction from "@/hooks/usePointsDeduction";
+import AuthContext from "@/context/AuthProvider";
 
 
-export const Room = () => {
+export const VideoCallPage = () => {
     const { id } = useParams();
+    const { user } = useContext(AuthContext)
     const { ws, me, peers, stream, setStream } = useContext(RoomContext);
 
+    const navigate = useNavigate()
+
+    usePointDeduction(user.id, 5)
     useEffect(() => {
         try {
             navigator.mediaDevices
@@ -23,13 +30,30 @@ export const Room = () => {
         me?.on("open", () => {
             ws.emit("join-room", { roomId: id, peerId: me._id });
         });
-    }, [id, me, ws]);
+        // Cleanup function to stop tracks and clear the stream when the component unmounts
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach((track: any) => track.stop());
+            }
+            setStream(null);
+        };
+    }, [id, me, setStream, ws, stream]);
+
+    const handleEndCall = () => {
+        if (stream) {
+            stream.getTracks().forEach((track: any) => track.stop());
+        }
+        setStream(null);
+        navigate(-1);
+    };
+
 
     return (
         <div>
-            <>Room id {id}</>
+
+            <VideoInputSection handleEndCall={handleEndCall} key={"me"} stream={stream} />
             <div className="grid grid-cols-4 gap-4">
-                <VideoPlayer className="me" key={"me"} stream={stream} />
+
 
                 {Object?.values(peers)?.map((peer: any, index: number) => (
                     <VideoPlayer key={index} stream={peer.stream} />

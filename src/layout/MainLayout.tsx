@@ -1,39 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { RoomContext } from "@/context/RoomProvider";
 import Footer from "@/components/shared/Footer";
 import Navbar from "@/components/shared/Navbar";
-import React from "react";
-import { useContext } from "react";
-import { useEffect } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import React, { useContext } from "react";
+import { Outlet, } from "react-router-dom";
+import AuthContext from "@/context/AuthProvider";
+import AddPointsComponent from "@/components/shared/AddPointsComponent";
+import MainCallHandler from "@/components/shared/MainCallHandler";
 
 
 
 export default function MainLayout() {
-    const { ws } = useContext(RoomContext);
-    const navigate = useNavigate();
-    useEffect(() => {
-        ws.on("room-created", (data: { roomId: any; }) => {
-            console.log(data);
-            navigate(`/video/${data.roomId}`)
-            // window.location.href = `/video/${data.roomId}`
-        });
-        ws.on("room-created-b", (data: { roomId: any; }) => {
-            console.log(data);
 
-            setTimeout(() => {
-                // navigate(`/video/${data.roomId}`)
-                window.location.href = `/video/${data.roomId}`
-            }, 5000)
+    const { user } = useContext(AuthContext);
 
-        });
-    }, [ws])
     return (
         <React.Fragment>
 
             <Navbar />
-            <div className="min-h-screen bg-[#362C38]">
+            <div className="min-h-screen bg-secondary">
+
+
+                {
+                    user?.id && <AddPointsComponent user={user} />
+                }
+                {
+                    user?.id && <MainCallHandler />
+                }
                 <Outlet />
+
+
             </div>
 
             <Footer />

@@ -1,31 +1,36 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createContext, useEffect, useReducer, useState } from "react";
+import { createContext, useContext, useEffect, useReducer, useState } from "react";
 import Peer from "peerjs";
-import { v4 as uuidV4 } from "uuid";
+// import { v4 as uuidV4 } from "uuid";
 
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 // import { useNavigate } from "react-router-dom";
 import { peersReducer } from "./pearsReducer";
 import { addPeerAction, removePeerAction } from "./pearsAction";
-import { SERVER_URL_ONLY } from "@/helper/const";
-const WS = `${SERVER_URL_ONLY}?id=${localStorage.getItem("userId")}`;
+// import { SERVER_URL_ONLY } from "@/helper/const";
+import AuthContext from "./AuthProvider";
+import { ChatContext } from "./ChatContext";
+// const WS = `${SERVER_URL_ONLY}?id=${localStorage.getItem("userId")}`;
 
 export const RoomContext = createContext<null | any>(null);
 
-const ws = io(WS);
+// const ws = io(WS);
 
-export const RoomProvider = ({ children }: { children: any }) => {
+export const VideoProvider = ({ children }: { children: any }) => {
     // const navigate = useNavigate();
+    const { io: ws } = useContext(ChatContext);
+    const { user } = useContext(AuthContext)
 
     const [me, setMe] = useState<Peer>();
     const [peers, dispatch] = useReducer(peersReducer, {});
     const [stream, setStream] = useState<MediaStream>();
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const enterRoom = ({ roomId }: { roomId: "string" }) => {
-        // navigate(`/room/${roomId}`);
-        console.log(roomId);
-    };
+    // const enterRoom = ({ roomId }: { roomId: "string" }) => {
+    //     // navigate(`/room/${roomId}`);
+    //     console.log(roomId);
+    // };
 
     const handleUserList = ({ participants }: { participants: string[] }) => {
 
@@ -45,8 +50,8 @@ export const RoomProvider = ({ children }: { children: any }) => {
     };
 
     useEffect(() => {
-        const meId = uuidV4();
-        const peer = new Peer(meId);
+        // const meId = uuidV4();
+        const peer = new Peer(user.id);
         setMe(peer);
         // try {
         //     navigator.mediaDevices

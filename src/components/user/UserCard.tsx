@@ -10,7 +10,7 @@ export default function UserCard({ user }: any) {
             {/* Card Image */}
             <div className='relative'>
                 <img width={350} height={300} className="h-[300px] w-[350px]l bg-gray-400 rounded-t-lg"
-                    src={user?.img ?? "https://img.freepik.com/free-photo/smart-casual-asian-happiness-male-wear-glasses-smile-cheerful-hand-use-smartphone-ready-press-buy-button-with-shopping-mall-abstract-blur-background-technology-communication-ideas-concept_609648-525.jpg?t=st=1723063301~exp=1723066901~hmac=820448065fc7fe4795f3e9853063096c4b06f8c6fabf3993b06751c90081c681&w=1380"} />
+                    src={user?.img ?? "https://shorturl.at/pNO1x"} />
                 <h1 className='flex items-center bg-primary hover:bg-purple-600 text-white absolute bottom-5 left-3 rounded px-3 py-1'>
                     <FaDollarSign />
                     <span>{user?.points ?? 10}</span>

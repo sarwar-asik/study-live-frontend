@@ -4,7 +4,7 @@ import LoaderData from '@/components/shared/LoaderData'
 import { IMessageDataType } from '@/type/dataType/message.data'
 import { IUserDataType } from '@/type/dataType/user.data'
 import React, { useEffect, useRef, useState } from 'react'
-import VideoCallSection from '../videoCall/VideoCallSection'
+
 
 export default function ChatSection({ user, io, receiverId, newMessage }: { user: IUserDataType, io: any, receiverId: string, newMessage: any }) {
     const [data, setData] = useState<IMessageDataType[] | any[]>([])
@@ -42,10 +42,8 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
     return (
         <div className=''>
             <div className="h-screen  overflow-y-auto p-4   pb-[10rem]  ">
-                {
-                    loading && <LoaderData />
-                }
-                {/* <VideoCallSection receiverId={receiverId} senderId={user?.id} />  */}
+               
+     
                 {
                     data?.map((message: IMessageDataType) => {
 
@@ -84,7 +82,9 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
                     })
                 }
 
-
+                {
+                    loading && <LoaderData />
+                }
 
                 {/* Outgoing Message */}
 
