@@ -14,7 +14,7 @@ export default {
         // Add your custom colors here
         primary: "#7808B1",
         white: "#F9FAFB",
-        secondary: "#2ecc71",
+        secondary: "#362C38",
         black: "#040C1F",
         "light-dark": "#1F2937",
         dark: "#111827",

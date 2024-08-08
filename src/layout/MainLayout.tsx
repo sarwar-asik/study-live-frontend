@@ -32,7 +32,7 @@ export default function MainLayout() {
         <React.Fragment>
 
             <Navbar />
-            <div className="min-h-screen bg-[#362C38]">
+            <div className="min-h-screen bg-secondary">
                 <Outlet />
             </div>
 

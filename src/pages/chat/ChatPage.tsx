@@ -64,7 +64,7 @@ export default function ChatPage() {
 
 
             <ChatSection newMessage={newMessage} io={io} receiverId={receiverId} user={user} />
-          
+
         </div>
     )
 }

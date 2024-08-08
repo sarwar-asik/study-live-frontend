@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Footer() {
     return (
@@ -37,12 +38,12 @@ export default function Footer() {
                                     data-original="#000000"
                                 />
                             </svg>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Admin
-                            </a>
+                            </Link>
                         </li>
                         <li>
                             <svg
@@ -55,12 +56,12 @@ export default function Footer() {
                                     data-original="#000000"
                                 />
                             </svg>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Security
-                            </a>
+                            </Link>
                         </li>
                         <li>
                             <svg
@@ -73,12 +74,12 @@ export default function Footer() {
                                     data-original="#000000"
                                 />
                             </svg>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Support
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>
@@ -86,36 +87,36 @@ export default function Footer() {
                     <h4 className="text-white text-lg font-semibold mb-7">Products</h4>
                     <ul className="list-none space-y-4">
                         <li>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Best Features
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Update arrivals
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Pricing
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Live
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>
@@ -123,36 +124,36 @@ export default function Footer() {
                     <h4 className="text-white text-lg font-semibold mb-7">Resources</h4>
                     <ul className="list-none space-y-4">
                         <li>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Documentation
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Tutorials
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 Blog
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a
-                                href="javascript:void(0)"
+                            <Link
+                                to="/"
                                 className="hover:text-white text-gray-300 text-sm"
                             >
                                 FAQ
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>
@@ -181,13 +182,13 @@ export default function Footer() {
             <div className="bg-gray-800 py-5 px-4 text-center">
                 <p className="text-gray-300 text-sm">
                     © 2024
-                    <a
-                        href="https://www.linkedin.com/in/sarwar-asik/"
+                    <Link
+                        to="https://www.linkedin.com/in/sarwar-asik/"
                         target="_blank"
                         className="hover:underline mx-1"
                     >
                         Study Live
-                    </a>
+                    </Link>
                     All Rights Reserved.
                 </p>
             </div>

@@ -33,7 +33,7 @@ export default function ChatHeaderSection({ user, receiverId }: {
 
     return (
         <React.Fragment>
-            <header className="bg-slate-100 p-4 text-gray-700 flex justify-between">
+            <header className="bg-primary p-4 text-white flex justify-between">
                 <h1 className="text-2xl font-semibold">{user?.name ?? "UserName"}</h1>
                 {/* audio and video button by react-icons */}
                 <div className="flex space-x-4">
@@ -48,9 +48,9 @@ export default function ChatHeaderSection({ user, receiverId }: {
                     </button> */}
 
 
-                    <button onClick={handleClick} className={`text-4xl ms-2 text-black rounded-full  focus:outline-none`}>
+                    <button onClick={handleClick} className={`text-4xl ms-2 text-black rounded-full flex lg:hidden  focus:outline-none`}>
 
-                        <IoMenuSharp />
+                        <IoMenuSharp className='text-white' />
                     </button>
 
 
