@@ -36,7 +36,7 @@ const SingleUser = () => {
             return
         }
         await startAudioCallNow(user.id, id, user?.name)
-        navigate(`/audio/${id}`)
+        // navigate(`/audio/${id}`)
     }
 
 

@@ -5,7 +5,7 @@ import Navbar from "@/components/shared/Navbar";
 import React, { useState } from "react";
 import { useContext } from "react";
 import { useEffect } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import {  Outlet } from "react-router-dom";
 import AuthContext from "@/context/AuthProvider";
 
 
