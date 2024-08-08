@@ -38,28 +38,11 @@ export default function ChatHeaderSection({ user, receiverId }: {
                 {/* audio and video button by react-icons */}
                 <div className="flex space-x-4">
 
-                    {/* <button className="rounded-full text-2xl bg-primary hover:bg-primary/80 w-[3rem] text-white p-3 "><IoCallOutline />
-                    </button>
-                    <button
-                        //  onClick={handleVideoCall}
-                        className="p-3 bg-primary 
-                        hover:bg-primary/80  text-white rounded-full  focus:outline-none focus:ring-2 focus:ring-gray-400">
-                        <FaVideo size={25} />
-                    </button> */}
-
-
                     <button onClick={handleClick} className={`text-4xl ms-2 text-black rounded-full flex lg:hidden  focus:outline-none`}>
 
                         <IoMenuSharp className='text-white' />
                     </button>
-
-
-
-
                 </div>
-
-
-
             </header>
 
             {/* modal menu section */}

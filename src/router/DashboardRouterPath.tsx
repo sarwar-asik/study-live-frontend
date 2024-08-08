@@ -5,8 +5,6 @@ import AudioCallPage from "@/pages/dashboard/audio/AudioCallPage";
 
 
 export const DashboardRouterPath = [
-
-  
     {
         path: "audio/:id",
         element: <AudioCallPage />

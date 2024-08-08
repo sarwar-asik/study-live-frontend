@@ -10,7 +10,7 @@ export default function ModalCommon({ type, points, onClick, openModal, setOpenM
     const { roomId, } = useContext(RoomContext)
 
     // console.log(enterRoom())
-    console.log(roomId)
+    // console.log(roomId)
 
     const navigate = useNavigate()
 

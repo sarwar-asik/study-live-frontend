@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-case-declarations */
 import { ADD_PEER, REMOVE_PEER } from "./pearsAction";
 
 
@@ -5,13 +7,13 @@ export const initialState = {};
 type PeerState = Record<string, { stream: MediaStream }>;
 type PeerAction =
     | {
-          type: typeof ADD_PEER;
-          payload: { peerId: string; stream: MediaStream };
-      }
+        type: typeof ADD_PEER;
+        payload: { peerId: string; stream: MediaStream };
+    }
     | {
-          type: typeof REMOVE_PEER;
-          payload: { peerId: string };
-      };
+        type: typeof REMOVE_PEER;
+        payload: { peerId: string };
+    };
 export const peersReducer = (
     state: PeerState = initialState,
     action: PeerAction

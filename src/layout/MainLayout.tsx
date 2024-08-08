@@ -11,8 +11,7 @@ import MainCallHandler from "@/components/shared/MainCallHandler";
 
 export default function MainLayout() {
 
-    const { user } = useContext(AuthContext)
-
+    const { user } = useContext(AuthContext);
 
     return (
         <React.Fragment>

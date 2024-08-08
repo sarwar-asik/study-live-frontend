@@ -4,7 +4,7 @@ import AuthContext from '@/context/AuthProvider';
 
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import BoxDropDownUI from '../UI/DrpDownMeet';
+import BoxDropDownUI from '../UI/DropDownMeet';
 import { FaDollarSign } from 'react-icons/fa';
 import { IoMenuSharp, IoClose } from "react-icons/io5";
 import { HiMenuAlt2, HiSearch, HiOutlineUser } from "react-icons/hi";
@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
- 
+
   const { pathname } = useLocation()
 
 
@@ -42,6 +42,7 @@ const Navbar: React.FC = () => {
       { name: 'Users', link: '/users', active: pathname === '/users' },
     ];
 
+  // for protected routes
   if (!user?.email) {
     navItems.push({ name: 'Login', link: '/login', active: pathname === '/login' }, {
       name: 'Signup', link: '/sign-up', active: pathname === '/sign-up'

@@ -43,7 +43,7 @@ export default function ChatSection({ user, io, receiverId, newMessage }: { user
         <div className=''>
             <div className="h-screen  overflow-y-auto p-4   pb-[10rem]  ">
                
-                {/* <VideoCallSection receiverId={receiverId} senderId={user?.id} />  */}
+     
                 {
                     data?.map((message: IMessageDataType) => {
 

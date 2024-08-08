@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useContext, useEffect, useReducer, useState } from "react";
 import Peer from "peerjs";
@@ -18,7 +19,7 @@ export const RoomContext = createContext<null | any>(null);
 
 export const VideoProvider = ({ children }: { children: any }) => {
     // const navigate = useNavigate();
-    const { io:ws } = useContext(ChatContext);
+    const { io: ws } = useContext(ChatContext);
     const { user } = useContext(AuthContext)
 
     const [me, setMe] = useState<Peer>();
@@ -26,10 +27,10 @@ export const VideoProvider = ({ children }: { children: any }) => {
     const [stream, setStream] = useState<MediaStream>();
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const enterRoom = ({ roomId }: { roomId: "string" }) => {
-        // navigate(`/room/${roomId}`);
-        console.log(roomId);
-    };
+    // const enterRoom = ({ roomId }: { roomId: "string" }) => {
+    //     // navigate(`/room/${roomId}`);
+    //     console.log(roomId);
+    // };
 
     const handleUserList = ({ participants }: { participants: string[] }) => {
 

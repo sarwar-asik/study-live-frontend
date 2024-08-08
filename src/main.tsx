@@ -21,10 +21,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <ChatProvider>
           <VideoProvider>
-           <AudioProvider>
+            <AudioProvider>
               <RouterProvider router={router} />
               <Toaster />
-           </AudioProvider>
+            </AudioProvider>
           </VideoProvider>
         </ChatProvider>
       </AuthProvider>

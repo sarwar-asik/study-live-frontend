@@ -1,30 +1,26 @@
 import AuthContext from '@/context/AuthProvider'
-import useFetchDataHook from '@/hooks/useFetchDataHook'
 import LoaderData from '@/components/shared/LoaderData'
 import { IUserDataType } from '@/type/dataType/user.data'
 import { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { SERVER_URL } from '@/helper/const'
 import { CiHome } from "react-icons/ci";
+import { useGetAllUserQuery } from '@/redux/api/userApi.ts'
 
 export default function SidebarDash() {
 
-    // const {user}= useContext(AuthContext)
     const location = useLocation()
-    // console.log(location)
-    const chatStart = location.pathname?.indexOf('/chat') + 6; // +6 to move past '/chat/'
+
+    const chatStart = location.pathname?.indexOf('/chat') + 6;
     const uuid = location.pathname?.slice(chatStart);
 
 
-    // console.log(uuid); // Output: baffe21f-1341-4738-9f30-8d8f3f3bec6d
     const { user } = useContext(AuthContext)
-    const { data, error, loading } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
+
     // console.log(data)
+    const { data, isLoading } = useGetAllUserQuery(undefined)
 
 
-    if (error) {
-        console.log(error)
-    }
+
 
     const userData = data?.data
     // console.log(userData)
@@ -41,7 +37,7 @@ export default function SidebarDash() {
             <div className="overflow-y-auto bg-secondary h-screen p-3 mb-9 pb-20  ">
 
                 {
-                    loading && <LoaderData />
+                    isLoading && <LoaderData />
                 }
 
                 {

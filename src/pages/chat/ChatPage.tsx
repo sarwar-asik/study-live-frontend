@@ -19,7 +19,7 @@ export default function ChatPage() {
 
     const { id } = useParams()
 
-    usePointDeduction(user.id,1)
+    usePointDeduction(user.id, 1)
 
     // console.log("🚀 ~ id:", id)
 
@@ -32,7 +32,7 @@ export default function ChatPage() {
             {/* Chat Header */}
             <ChatHeaderSection user={userData?.data} receiverId={receiverId} />
 
-      
+
 
 
             <ChatSection newMessage={newMessage} io={io} receiverId={receiverId} user={user} />

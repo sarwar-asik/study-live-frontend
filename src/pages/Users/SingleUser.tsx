@@ -8,13 +8,9 @@ import useFetchDataHook from '@/hooks/useFetchDataHook';
 import { useGetSingleUserQuery } from '@/redux/api/userApi.ts';
 import { IUserDataType } from '@/type/dataType/user.data';
 import { useState, useContext } from 'react';
-// import { useContext } from 'react';
-
 import { FaRegMessage } from "react-icons/fa6";
 import { FaDollarSign, FaVideo } from 'react-icons/fa';
 import { IoCallOutline } from "react-icons/io5";
-
-
 import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const SingleUser = () => {
@@ -23,7 +19,7 @@ const SingleUser = () => {
     const { id } = useParams()
     const { data, isLoading: loading } = useGetSingleUserQuery(id ?? "1");
     // console.log(data)
-    // const { data, loading } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
+
     const { data: allUserData } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
     const userData = data?.data
     const { ws, me } = useContext(RoomContext);
