@@ -13,7 +13,7 @@ import { useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 
 const SingleUser = () => {
-    const { startAudioCallNow } = useContext(AudioContext)
+    const { startAudioCallNow, setLocalStream } = useContext(AudioContext)
     const { user } = useContext(AuthContext)
     const { id } = useParams()
     const { data, loading } = useFetchDataHook<{ data: IUserDataType }>(`${SERVER_URL}/user/${id}`)
@@ -24,7 +24,13 @@ const SingleUser = () => {
 
     // console.log(data?.data)
     const startVideoCallWithRoom = () => {
-        ws.emit("create-room", { peerId: me._id, receiverId: data?.data?.id,senderName:data?.data?.name });
+        if (!user?.id || !id) {
+            // console.log("user id or receiver id not found")
+            navigate("/login")
+            return
+        }
+
+        ws.emit("create-room", { peerId: me._id, receiverId: data?.data?.id, senderName: data?.data?.name });
     };
 
     const [userRating, setUserRating] = useState(1);
@@ -32,9 +38,13 @@ const SingleUser = () => {
 
     const handleAudioCall = async () => {
         if (!user?.id || !id) {
-            console.log("user id or receiver id not found")
+            // console.log("user id or receiver id not found")
+            navigate("/login")
             return
         }
+        navigate(`/audio/${id}`)
+        const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+        setLocalStream(stream);
         await startAudioCallNow(user.id, id, user?.name)
         // navigate(`/audio/${id}`)
     }
@@ -51,7 +61,7 @@ const SingleUser = () => {
             <section className='block lg:flex  justify-between  items-center  w-full'>
 
                 <div className="block lg:flex items-center gap-[5rem] text-white w-[55%] mx-auto">
-                    <img className='rounded-full h-[10rem] w-[10rem]' src={userData?.img ?? "https://img.freepik.com/free-photo/smart-casual-asian-happiness-male-wear-glasses-smile-cheerful-hand-use-smartphone-ready-press-buy-button-with-shopping-mall-abstract-blur-background-technology-communication-ideas-concept_609648-525.jpg?t=st=1723063301~exp=1723066901~hmac=820448065fc7fe4795f3e9853063096c4b06f8c6fabf3993b06751c90081c681&w=1380"} alt="" />
+                    <img className='rounded-full h-[10rem] w-[10rem]' src={userData?.img ?? "https://shorturl.at/pNO1x"} alt="" />
                     <div className="space-y-5 mt-7 lg:mt-0">
                         <h2 className='text-4xl font-serif font-extrabold'>{userData?.name}</h2>
                         <p className='text-xl text-slate-200'>{userData?.email}</p>

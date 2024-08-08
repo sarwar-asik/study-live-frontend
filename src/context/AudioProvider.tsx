@@ -8,11 +8,10 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
     const { io } = useContext(ChatContext);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+    // const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [peerConnection, setPeerConnection] = useState<RTCPeerConnection | null>(null);
-    const [incomingCall, setIncomingCall] = useState<any>(null);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [isStartVideoCall, setIsStartVideoCall] = useState(false)
+    const [incomingAudioCall, setIncomingAudioCall] = useState<any>(null);
+
 
 
     useEffect(() => {
@@ -30,11 +29,11 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
         setPeerConnection(pc)
 
 
-        io.on('incoming-call', async (data: { senderId: string, receiverId: string, senderName: string }) => {
-            console.log(data, 'incoming call data')
-            setIncomingCall(data)
+        // io.on('incoming-call', async (data: { senderId: string, receiverId: string, senderName: string }) => {
+        //     console.log(data, 'incoming call data')
+        //     setIncomingAudioCall(data)
 
-        })
+        // })
 
         io.on('answer', (answerData: any) => {
             console.log(answerData, 'from caller')
@@ -64,7 +63,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
 
             }
             setLocalStream(null);
-            setRemoteStream(null);
+            // setRemoteStream(null);
         })
 
 
@@ -79,6 +78,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
             });
         }
     }, [localStream, peerConnection]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const getMedia = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -89,10 +89,10 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const startAudioCallNow = async (senderId: string, receiverId: string, senderName: string) => {
-        setIsStartVideoCall(true);
+
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
-            setLocalStream(stream);
+            // const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+            // setLocalStream(stream);
 
             if (peerConnection) {
                 const offer = await peerConnection.createOffer();
@@ -112,7 +112,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
             return;
         }
 
-        if (!incomingCall || !incomingCall.offer) {
+        if (!incomingAudioCall || !incomingAudioCall.offer) {
             console.error('Incoming call offer is not available');
             return;
         }
@@ -121,12 +121,12 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
             const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
             setLocalStream(stream);
 
-            const { offer } = incomingCall;
+            const { offer } = incomingAudioCall;
             await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
 
-            io.emit('answer', { answer, targetId: incomingCall.senderId });
+            io.emit('answer', { answer, targetId: incomingAudioCall.senderId });
         } catch (error) {
             console.error('Error answering the call:', error);
         }
@@ -148,13 +148,13 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
         }
         setLocalStream(null);
         console.log('null')
-        setRemoteStream(null);
+        // setRemoteStream(null);
         io.emit('end-call', receiverId);
     }
     // console.log(localStream)
 
     return (
-        <AudioContext.Provider value={{ startAudioCallNow, localStream, incomingCall, answerCall, endCall }}>
+        <AudioContext.Provider value={{ startAudioCallNow, localStream, incomingCall: incomingAudioCall, answerCall, endCall, setIncomingAudioCall, setLocalStream }}>
             {children}
         </AudioContext.Provider>
     );

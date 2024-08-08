@@ -3,20 +3,22 @@ import { createContext, useContext, useEffect, useReducer, useState } from "reac
 import Peer from "peerjs";
 // import { v4 as uuidV4 } from "uuid";
 
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 // import { useNavigate } from "react-router-dom";
 import { peersReducer } from "./pearsReducer";
 import { addPeerAction, removePeerAction } from "./pearsAction";
-import { SERVER_URL_ONLY } from "@/helper/const";
+// import { SERVER_URL_ONLY } from "@/helper/const";
 import AuthContext from "./AuthProvider";
-const WS = `${SERVER_URL_ONLY}?id=${localStorage.getItem("userId")}`;
+import { ChatContext } from "./ChatContext";
+// const WS = `${SERVER_URL_ONLY}?id=${localStorage.getItem("userId")}`;
 
 export const RoomContext = createContext<null | any>(null);
 
-const ws = io(WS);
+// const ws = io(WS);
 
 export const VideoProvider = ({ children }: { children: any }) => {
     // const navigate = useNavigate();
+    const { io:ws } = useContext(ChatContext);
     const { user } = useContext(AuthContext)
 
     const [me, setMe] = useState<Peer>();

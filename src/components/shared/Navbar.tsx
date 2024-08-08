@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import AuthContext from '@/context/AuthProvider';
 // import { ChatContext } from '@/context/ChatContext';
-import { logoutHandler } from '@/helper/authHelper';
+
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import BoxDropDownUI from '../UI/DrpDownMeet';
@@ -13,21 +13,14 @@ import Logo from './Logo';
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
-  const { user, refreshUser } = useContext(AuthContext)
-  // const { userAllData } = useContext(ChatContext)
+  const { user } = useContext(AuthContext)
 
-  // console.log(data)
-  // console.log(userAllData)
 
   const handleClick = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const logoutHandle = () => {
-    logoutHandler()
-    refreshUser()
-  }
-
+ 
   const { pathname } = useLocation()
 
 
@@ -69,19 +62,30 @@ const Navbar: React.FC = () => {
           </span>
         </div>
         <div className="hidden lg:flex">
-          {user.email && <BoxDropDownUI items={['Profile', 'Logout']} buttonMenu={<div className='flex items-center gap-2 font-bold' ><HiOutlineUser className='text-2xl' /> <span className='text-3xl'>{user?.name}</span></div>}
-          />
 
-          }
+          <BoxDropDownUI
+            items={['Profile', 'Category', "Dashboard"]}
+            buttonMenu={
+              <div className="flex gap-2 font-bold">
+                <HiOutlineUser className="text-2xl" /> <span>{user?.name}</span>
+              </div>
+            }
+
+          />
         </div>
       </section>
       <div className="flex flex-wrap items-center justify-between gap-4 px-2 lg:px-5 py-4 bg-[#1E1B22] min-h-[70px]">
-        <BoxDropDownUI items={['Profile', 'Logout']} buttonMenu={<div className='flex gap-2 font-bold' ><HiMenuAlt2 className='text-2xl' /> <span>Menu</span></div>} elementItem={<button
-          onClick={() => { logoutHandle() }}
-          className='text-red-500 hover:text-red-400 block font-bold text-[15px] lg:hidden '>
+        {/* reusable dropdown */}
+        <BoxDropDownUI
+          items={['Profile', 'Category']}
+          buttonMenu={
+            <div className="flex gap-2 font-bold">
+              <HiMenuAlt2 className="text-2xl" /> <span>{user?.name}</span>
+            </div>
+          }
 
-          logout
-        </button>} />
+
+        />
 
         <div
           id="collapseMenu"

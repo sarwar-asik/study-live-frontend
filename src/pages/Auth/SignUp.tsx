@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import usePostHook from '@/hooks/usePostHook';
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import LoaderSubmit from '../../components/shared/LoaderSubmit';
 import { authKey, SERVER_URL } from '@/helper/const';
@@ -15,18 +14,23 @@ export default function SignUp() {
 
   const navigate = useNavigate()
 
-  const { data, loading, postData } = usePostHook<string>(`${SERVER_URL}/auth/sign-up`);
+  const [loading, setLoading] = useState(false)
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<any> => {
     event.preventDefault();
-    const formElement = event.currentTarget;
-    const name: string = (formElement.elements.namedItem("name") as HTMLInputElement).value;
-    const email: string = (formElement.elements.namedItem("email") as HTMLInputElement).value;
-    const password: string = (formElement.elements.namedItem("password") as HTMLInputElement).value;
-    console.log({ name, email, password });
-    const bodyData = { name, email, password }
 
-    const response = await postData(bodyData) as any
-    console.log(response)
+    const formData = new FormData(event.currentTarget);
+    // const image = formData.get('image') as File;
+    // const name = formData.get('name') ;
+    // console.log("🚀", name)
+
+    console.log(formData)
+    const formElement = event.currentTarget;
+
+    setLoading(true)
+    const response = await postSSDataWithFile(`${SERVER_URL}/auth/sign-up`, formData);
+
+    // console.log(response)
+    setLoading(false)
     if (response?.data.accessToken) {
       toast("SIgn Up  success")
       setToLocalStorage(authKey, response?.data.accessToken)
@@ -38,11 +42,36 @@ export default function SignUp() {
       toast("Failed to sign up")
 
     }
-    console.log(data);
-    console.log(response);
+    // console.log(data);
+    // console.log(response);
 
 
   }
+
+
+  async function postSSDataWithFile(
+    url: string,
+    formData: FormData,
+    options = {} as RequestInit
+  ): Promise<any> {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        ...options,
+        body: formData, // FormData instance containing file and other data
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      return await response.json(); // Parsing JSON response from the server
+    } catch (error) {
+      console.error("Error in postSSDataWithFile:", error);
+      throw error; // Propagate the error to the caller for handling
+    }
+  }
+
   return (
     <React.Fragment>
       <div className="min-h-screen bg-login-bg bg-cover bg-center flex items-center justify-center relative ">
@@ -86,6 +115,18 @@ export default function SignUp() {
                   placeholder="Password"
                 />
               </div>
+              <div>
+                <label htmlFor="image" className='text-white font-semibold my-3 text-lg'>Select your Profile</label>
+                <input
+                  name="image"
+                  type="file"
+
+                  required
+                  className="bg-[#52545BCC] w-full text-sm text-white px-4 py-3.5 rounded-md outline-blue-600 focus:bg-transparent mt-3"
+                  placeholder="Password"
+                />
+              </div>
+
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center">
                   <input
