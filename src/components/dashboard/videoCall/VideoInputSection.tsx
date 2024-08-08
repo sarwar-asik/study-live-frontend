@@ -34,16 +34,27 @@ export default function VideoInputSection({ stream, handleEndCall }: { stream: M
     const endCallHandler = () => {
         handleEndCall();
         if (videoRef.current) {
-            videoRef.current.srcObject = null
+            videoRef.current.srcObject = null;
         }
     }
     // console.log(stream)
 
     return (
-        <div className='max-h-[10rem] '>
-            <video style={{ width: "100%" ,zIndex:200,height:"50%"}} ref={videoRef} autoPlay muted={true} />
-            {
-                videoRef?.current?.srcObject !== null && < div className='w-full bg-slate-700 flex items-center justify-center  gap-5 py-4'>
+        <div className="max-w-6xl mx-auto p-4">
+            <div className="relative w-full">
+                <video
+                    className="w-full h-auto max-h-96 md:max-h-[40rem] z-20 bg-[#3B334F] max-w-[858px] mx-auto"
+                    ref={videoRef}
+                    autoPlay
+                    muted={true}
+                    style={{
+                        width: "100% !important",
+                        minWidth: "100% !important",
+                    }}
+                />
+            </div>
+            {videoRef?.current?.srcObject !== null && (
+                <div className="w-full max-w-[858px] mx-auto bg-slate-700 flex items-center justify-center gap-5 py-4">
                     <button
                         onClick={toggleAudio}
                         className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
@@ -51,18 +62,19 @@ export default function VideoInputSection({ stream, handleEndCall }: { stream: M
                         {isAudioOn ? <FaMicrophone size={24} /> : <FaMicrophoneSlash size={24} />}
                     </button>
                     <button
-
                         onClick={toggleVideo}
                         className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
                     >
-
                         {isVideoOn ? <FaVideo size={24} /> : <FaVideoSlash size={24} />}
                     </button>
-                    <button onClick={endCallHandler} className="rounded-full text-2xl bg-red-600 w-[3rem] text-white p-3 "><IoCallOutline />
+                    <button
+                        onClick={endCallHandler}
+                        className="p-2 bg-red-600 rounded-full text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    >
+                        <IoCallOutline size={24} />
                     </button>
                 </div>
-            }
-
-        </div >
+            )}
+        </div>
     );
 }

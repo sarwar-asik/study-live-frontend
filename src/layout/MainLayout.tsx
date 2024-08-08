@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { RoomContext } from "@/context/RoomProvider";
+import { RoomContext } from "@/context/VideoProvider";
 import Footer from "@/components/shared/Footer";
 import Navbar from "@/components/shared/Navbar";
 import React from "react";

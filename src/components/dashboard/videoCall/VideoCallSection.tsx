@@ -1,4 +1,4 @@
-import { RoomContext } from '@/context/RoomProvider'
+import { RoomContext } from '@/context/VideoProvider'
 import React, { useContext } from 'react'
 import VideoInputSection from './VideoInputSection'
 
@@ -34,7 +34,7 @@ export default function VideoCallSection({ senderId, receiverId }: { senderId: s
 
                   <button
                     // onClick={handleAnswerCall}
-                    onClick={async () =>await answerCall()}
+                    onClick={async () => await answerCall()}
                     className="p-2 bg-green-600 px-3 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white my-5 z-50"
                   >
                     Answer Call

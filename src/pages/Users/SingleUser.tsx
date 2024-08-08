@@ -1,6 +1,6 @@
 import LoaderData from '@/components/shared/LoaderData';
 import UserCard from '@/components/user/UserCard';
-import { RoomContext } from '@/context/RoomProvider';
+import { RoomContext } from '@/context/VideoProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
 import { IUserDataType } from '@/type/dataType/user.data';
@@ -16,8 +16,10 @@ const SingleUser = () => {
     const { data: allUserData } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
     const userData = data?.data
     const { ws, me } = useContext(RoomContext);
-    const createRoom = () => {
-        ws.emit("create-room", { peerId: me._id });
+
+    // console.log(data?.data)
+    const startVideoCallWithRoom = () => {
+        ws.emit("create-room", { peerId: me._id, receiverId: data?.data });
     };
     const [userRating, setUserRating] = useState(1);
 
@@ -57,7 +59,7 @@ const SingleUser = () => {
                     <button className="bg-primary w-full p-3 text-white rounded">
                         Audio call
                     </button>
-                    <button onClick={createRoom} className="bg-primary w-full p-3 text-white rounded">
+                    <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded">
                         Video call
                     </button>
                 </div>

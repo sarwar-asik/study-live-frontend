@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 
-// import { RoomContext } from '@/context/RoomProvider';
+// import { RoomContext } from '@/context/VideoProvider';
 
 export default function BoxDropDownUI({ items, buttonMenu, elementItem }: { items: string[], buttonMenu: ReactElement, elementItem?: ReactElement }) {
     const [open, setOpen] = useState(false);

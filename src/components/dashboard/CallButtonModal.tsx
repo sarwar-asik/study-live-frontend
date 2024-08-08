@@ -1,4 +1,4 @@
-import { RoomContext } from '@/context/RoomProvider'
+import { RoomContext } from '@/context/VideoProvider'
 
 import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
