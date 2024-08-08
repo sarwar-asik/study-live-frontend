@@ -79,14 +79,14 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, [localStream, peerConnection]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const getMedia = async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            setLocalStream(stream);
-        } catch (err) {
-            console.error('Error accessing media devices.', err);
-        }
-    };
+    // const getMedia = async () => {
+    //     try {
+    //         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    //         setLocalStream(stream);
+    //     } catch (err) {
+    //         console.error('Error accessing media devices.', err);
+    //     }
+    // };
 
     const startAudioCallNow = async (senderId: string, receiverId: string, senderName: string) => {
 
