@@ -23,14 +23,7 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-
   const { pathname } = useLocation()
-
-
-  // console.log(user)
-
-
-  // console.log(pathname)
   const navItems: {
     name: string;
     link: string;

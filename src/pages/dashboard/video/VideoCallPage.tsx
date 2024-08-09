@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -37,7 +38,7 @@ export const VideoCallPage = () => {
             }
             setStream(null);
         };
-    }, [id, me, setStream, ws, stream]);
+    }, [id, me, setStream, ws]);
 
     const handleEndCall = () => {
         if (stream) {
