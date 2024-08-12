@@ -9,6 +9,7 @@ import {
 } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { Track } from "livekit-client";
+import '@livekit/components-styles'; 
 
 const serverUrl = 'wss://study-live-6hvqlmts.livekit.cloud';
 // const serverUrl = 'wss://study-live-6hvqlmts.livekit.cloud';
