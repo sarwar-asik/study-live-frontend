@@ -106,6 +106,7 @@ const Navbar: React.FC = () => {
               <li key={item?.name} className="max-lg:border-b max-lg:py-3 px-3">
                 <Link
                   to={item?.link}
+                  onClick={()=>setIsMenuOpen(false)}
                   className={`hover:text-primary block font-bold text-[15px] ${item?.active ? 'text-primary' : 'text-black lg:text-white'}`}
                 >
                   {item.name}

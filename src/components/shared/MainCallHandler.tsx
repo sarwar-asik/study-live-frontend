@@ -68,7 +68,7 @@ export default function MainCallHandler() {
             {incomingCalling && (
                 // Render the incoming call modal with the appropriate styles
                 <div className="fixed z-[100] inset-0 grid place-items-center bg-black/20 backdrop-blur-sm duration-100 dark:bg-transparent">
-                    <div className="absolute rounded-lg drop-shadow-lg dark:bg-zinc-900 dark:text-white rounded border border-[#7808B1] max-w-4xl mx-auto bg-[#393B4C] text-white">
+                    <div className="absolute rounded-lg drop-shadow-lg dark:bg-zinc-900 dark:text-white  border border-[#7808B1] max-w-4xl mx-auto bg-[#393B4C] text-white">
                         <div className='flex justify-between py-9 px-7 text-xl'>
                             {/* Render the call type and sender name */}
                             <h2>Incoming {incomingCalling?.type} call from {incomingCalling?.senderName}</h2>
