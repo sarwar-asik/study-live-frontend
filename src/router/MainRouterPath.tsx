@@ -9,6 +9,7 @@ import UsersPage from "@/pages/Users/UsersPage";
 import SingleUser from "@/pages/Users/SingleUser";
 import { VideoCallPage } from "@/pages/dashboard/video/VideoCallPage";
 import AudioCallPage from "@/pages/dashboard/audio/AudioCallPage";
+import VideoLivePage from "@/pages/liveKit/VideoLivePage";
 
 
 export const MainRouterPath = [
@@ -42,6 +43,11 @@ export const MainRouterPath = [
     {
         path: "/audio/:id",
         element: <PrivateRoute><AudioCallPage /></PrivateRoute>
+    },
+ 
+    {
+        path: "/video-live",
+        element: <PrivateRoute><VideoLivePage /></PrivateRoute>
     },
  
 ]

@@ -44,12 +44,13 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="shadow-md font-sans tracking-wide relative z-50">
+
       <section className="py-2 bg-[#1E1B22] text-white text-right px-10 flex justify-between items-center flex-wrap">
         <Logo />
         <div className="relative w-1/3">
           <input
             id="pass"
-            className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500  bg-white placeholder:text-slate-600 placeholder:font-serif"
+            className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500  bg-white  text-slate-700 placeholder:text-slate-600 placeholder:font-serif"
             placeholder="Search by category "
             name="password"
             type="password"
@@ -71,6 +72,7 @@ const Navbar: React.FC = () => {
           />
         </div>
       </section>
+
       <div className="flex flex-wrap items-center justify-between gap-4 px-2 lg:px-5 py-4 bg-[#1E1B22] min-h-[70px]">
         {/* reusable dropdown */}
         <BoxDropDownUI
@@ -106,6 +108,7 @@ const Navbar: React.FC = () => {
               <li key={item?.name} className="max-lg:border-b max-lg:py-3 px-3">
                 <Link
                   to={item?.link}
+                  onClick={() => setIsMenuOpen(false)}
                   className={`hover:text-primary block font-bold text-[15px] ${item?.active ? 'text-primary' : 'text-black lg:text-white'}`}
                 >
                   {item.name}
