@@ -30,6 +30,7 @@ const useFetchDataHook = <T>(
         throw new Error(`Error: ${response.statusText}`);
       }
       const result = await response.json();
+      // console.log("🚀 ~ ~ result:", result)
       setData(result);
     } catch (err) {
       setError(err as Error);

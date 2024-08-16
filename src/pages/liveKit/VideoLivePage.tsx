@@ -9,23 +9,39 @@ import {
 } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { Track } from "livekit-client";
-import '@livekit/components-styles'; 
+import '@livekit/components-styles';
+import { useState, useEffect, useContext } from "react";
+import AuthContext from "@/context/AuthProvider";
+import useFetchDataHook from "@/hooks/useFetchDataHook";
 
 const serverUrl = 'wss://study-live-6hvqlmts.livekit.cloud';
 // const serverUrl = 'wss://study-live-6hvqlmts.livekit.cloud';
-const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6InF1aWNrc3RhcnQtcm9vbSJ9LCJpc3MiOiJ5b3VyX2FwaV9rZXlfaGVyZSIsImV4cCI6MTcyMzM3NzMyNCwibmJmIjowLCJzdWIiOiJxdWlja3N0YXJ0LXVzZXJuYW1lIn0.K-Ns52fvgx16FMkrG5qqzGHkp9qc67ubEHXnC4wd79M';
+// const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6InF1aWNrc3RhcnQtcm9vbSJ9LCJpc3MiOiJ5b3VyX2FwaV9rZXlfaGVyZSIsImV4cCI6MTcyMzYxMzI0NiwibmJmIjowLCJzdWIiOiJxdWlja3N0YXJ0LXVzZXJuYW1lIn0.C5VcEZ7nOdnE9GGhuGuctG74tubZ7LaOi42w2xEKQpU';
 
+const receiverId = '74c97403-92a7-4698-b50f-6afa9d281414'
 export default function VideoLivePage() {
 
-    // const { data: tokenData } = usePost<string>(`http://localhost:5000/getToken`)
+    const { user } = useContext(AuthContext)
+    const userId = user?.id
+    // fetch data
+    const { data: tokenData } = useFetchDataHook<string>(`http://localhost:5000/getToken?userId=${userId}`)
+    // console.log(user)
+    console.log(tokenData)
 
+    const [remoteUserId, setRemoteUserId] = useState<string | undefined>(undefined);
+
+    // Function to initiate a call (replace with your call logic)
+    const initiateCall = (calleeId: string) => {
+        setRemoteUserId(calleeId);
+        // Connect to LiveKit room using calleeId (replace with actual connection logic)
+    };
 
     // console.log(tokenData)
     return (
         <LiveKitRoom
             video={true}
             audio={true}
-            token={token ?? ""}
+            token={tokenData ?? ""}
             serverUrl={serverUrl}
             // Use the default LiveKit theme for nice styles.
             data-lk-theme="default"
@@ -40,6 +56,8 @@ export default function VideoLivePage() {
             <ControlBar />
         </LiveKitRoom>
     );
+
+
 }
 
 function MyVideoConference() {
@@ -53,7 +71,7 @@ function MyVideoConference() {
         { onlySubscribed: false },
     );
     return (
-        <GridLayout tracks={tracks} style={{ height: 'calc(100vh - var(--lk-control-bar-height))' }}>
+        <GridLayout tracks={tracks} style={{ height: 'calc(80vh - var(--lk-control-bar-height))' }}>
             {/* The GridLayout accepts zero or one child. The child is used
       as a template to render all passed in tracks. */}
             <ParticipantTile />
