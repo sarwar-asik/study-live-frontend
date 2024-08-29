@@ -118,7 +118,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             setLocalStream(stream);
 
             const { offer } = incomingAudioCall;
