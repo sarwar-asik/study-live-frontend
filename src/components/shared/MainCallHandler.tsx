@@ -15,6 +15,8 @@ export default function MainCallHandler() {
 
     const navigate = useNavigate();
 
+    console.log(user?.id)
+
     // useEffect hook to handle incoming events from the WebSocket
     useEffect(() => {
 
@@ -42,7 +44,7 @@ export default function MainCallHandler() {
             setIncomingCalling({ type: "audio", senderName: data?.senderName, roomId: data?.receiverId, senderId: data?.from });
         });
         // Cleanup function to remove the event listeners when the component unmounts
-    }, [ws, user, setIncomingAudioCall]);
+    }, [ws, user]);
 
     // Function to handle answering the incoming audio call
     const handleAnswerCall = () => {
@@ -62,6 +64,7 @@ export default function MainCallHandler() {
         setIncomingCalling(null);
     };
 
+    console.log(incomingCalling)
     // Render the incoming call modal if there is an incoming call
     return (
         <React.Fragment>
