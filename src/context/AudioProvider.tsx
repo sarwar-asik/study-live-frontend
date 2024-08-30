@@ -13,18 +13,28 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
     const [incomingAudioCall, setIncomingAudioCall] = useState<any>(null);
 
 
-
     useEffect(() => {
         const configuration = {
-            'iceServers': [{
-                urls: [
-                    'stun:stun.l.google.com:19302',
-                    'stun:stun1.l.google.com:19302',
-                    'stun:stun2.l.google.com:19302',
-                    'stun:stun3.l.google.com:19302',
-                ]
-            }]
+            iceServers: [
+                {
+                    urls: [
+                        'stun:global.stun.twilio.com:3478', // Replace with your TURN server address and port
+
+                    ],
+                    // username: 'efAIRLOZ179F998GBE', // Replace with the username for your TURN server
+                    // credential: '4XuMIdIr41W7MGxw' // Replace with the password for your TURN server
+                },
+                {
+                    "username": "dc2d2894d5a9023620c467b0e71cfa6a35457e6679785ed6ae9856fe5bdfa269",
+                    "credential": "tE2DajzSJwnsSbc123",
+                    "urls": "turn:global.turn.twilio.com:3478?transport=udp"
+                },
+                {
+                    urls: 'stun:stun.l.google.com:19302' // You can include a STUN server as a fallback
+                }
+            ]
         }
+        // LLGS34MU38MET2TKJX9QWYZW for verify twillo
         const pc = new RTCPeerConnection(configuration);
         setPeerConnection(pc)
 
@@ -71,11 +81,17 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (localStream && peerConnection) {
-            console.log('local stream and peer connection available added getTracks()')
+            // console.log('local stream and peer connection available added getTracks()')
             localStream.getTracks().forEach((track) => {
                 console.log(track, 'trackData')
                 peerConnection.addTrack(track, localStream);
             });
+            // io.on('ice-candidate', async (data: any) => {
+            //     console.log(data, 'trackData')
+            //     if (peerConnection && data?.candidate) {
+            //         await peerConnection.addIceCandidate(new RTCIceCandidate(data?.candidate));
+            //     }
+            // });
         }
     }, [localStream, peerConnection]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -122,6 +138,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
             setLocalStream(stream);
 
             const { offer } = incomingAudioCall;
+            console.log(offer, "offer when answer")
             await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);

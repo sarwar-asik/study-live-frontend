@@ -10,6 +10,7 @@ import SingleUser from "@/pages/Users/SingleUser";
 import { VideoCallPage } from "@/pages/dashboard/video/VideoCallPage";
 import AudioCallPage from "@/pages/dashboard/audio/AudioCallPage";
 import VideoLivePage from "@/pages/liveKit/VideoLivePage";
+import Test from "@/components/shared/Test";
 
 
 export const MainRouterPath = [
@@ -29,7 +30,7 @@ export const MainRouterPath = [
         path: "/pricing",
         element: <PricingPage />
     },
-  {
+    {
         path: "/users",
         element: <UsersPage />
     }, {
@@ -44,10 +45,14 @@ export const MainRouterPath = [
         path: "/audio/:id",
         element: <PrivateRoute><AudioCallPage /></PrivateRoute>
     },
- 
+
     {
         path: "/video-live",
         element: <PrivateRoute><VideoLivePage /></PrivateRoute>
     },
- 
+    {
+        path: "/test",
+        element: <Test />
+    },
+
 ]

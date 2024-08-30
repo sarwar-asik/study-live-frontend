@@ -38,7 +38,7 @@ const SingleUser = () => {
         ws.emit("create-room", { peerId: me._id, receiverId: data?.data?.id, senderName: data?.data?.name });
     };
 
-    const [userRating, setUserRating] = useState(1);
+    const [userRating, setUserRating] = useState(3);
 
 
     const handleAudioCall = async () => {

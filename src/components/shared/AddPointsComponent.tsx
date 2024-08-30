@@ -12,15 +12,17 @@ export default function AddPointsComponent({ user }: { user: IUserDataType }) {
 
     const [showModal, setShowModal] = useState(false);
 
+    // console.log(userLiveData?.points)
     useEffect(() => {
-        if (userLiveData?.points !== undefined && userLiveData?.points < 1) {
+        console.log('ok')
+        if (userLiveData?.points !== undefined && userLiveData?.points < 2) {
             // console.log('yessssss');
             setShowModal(true);
         }
     }, [userLiveData?.points]);
 
     const handleAddPointsAndClose = async () => {
-        if (userLiveData?.id && userLiveData?.points !== undefined && userLiveData?.points < 1) {
+        if (userLiveData?.id && userLiveData?.points !== undefined && userLiveData?.points < 2) {
             try {
                 const response = await addPoints({ id: userLiveData.id, points: 10 }).unwrap()
                 if (response) {
