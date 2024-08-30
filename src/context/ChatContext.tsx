@@ -26,7 +26,7 @@ export const ChatProvider = ({ children }: { children: any }) => {
         })
     }, [io])
     return (
-        <ChatContext.Provider value={{ io, newMessage, userAllData }}>
+        <ChatContext.Provider value={{ io, newMessage, userAllData, user }}>
             {children}
         </ChatContext.Provider>
     );

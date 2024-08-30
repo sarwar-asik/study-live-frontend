@@ -9,6 +9,7 @@ export default function AudioCallSection({ senderId, receiverId }: { senderId: s
   const { localStream, endCall } = useContext(AudioContext)
   // console.log(senderId, receiverId)
 
+  console.log(new Date())
   const navigate = useNavigate()
   // console.log(localStream, 'localStream')
 

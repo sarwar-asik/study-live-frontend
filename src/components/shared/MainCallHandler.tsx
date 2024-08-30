@@ -22,14 +22,14 @@ export default function MainCallHandler() {
             console.log(data, 'room-created');
             window.location.href = `/video/${data.roomId}`
         });
- 
+
         // after a delay if the user is the receiver
         ws.on("room-created-b", (data: { roomId: string; receiverId: string, senderName: string }) => {
             console.log(data, 'room-created-b');
 
             setTimeout(() => {
                 if (user?.id === data?.receiverId) {
-                    setIncomingCalling({ type: "video", senderName: data?.senderName })
+                    setIncomingCalling({ type: "video", senderName: data?.senderName, roomId: data?.roomId, senderId: data?.receiverId });
                 }
             }, 1000)
 
@@ -45,10 +45,15 @@ export default function MainCallHandler() {
     }, [ws, user, setIncomingAudioCall]);
 
     // Function to handle answering the incoming audio call
+
     const handleAnswerCall = () => {
+        console.log(incomingCalling)
         if (incomingCalling?.type === 'video') {
             // If the call is a video call, navigate to the corresponding video call page
-            window.location.href = `/video/${incomingCalling?.roomId}`;
+            if (incomingCalling?.roomId) {
+
+                window.location.href = `/video/${incomingCalling?.roomId}`;
+            }
         } else {
             // If the call is an audio call, navigate to the corresponding audio call page and answer the call
             navigate(`/audio/${incomingCalling?.senderId}`);
