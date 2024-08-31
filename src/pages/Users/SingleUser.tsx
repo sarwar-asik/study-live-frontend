@@ -35,7 +35,7 @@ const SingleUser = () => {
             return
         }
 
-        ws.emit("create-room", { peerId: me._id, receiverId: data?.data?.id, senderName: data?.data?.name });
+        ws.emit("create-room", { peerId: me._id, receiverId: data?.id, senderName: data?.data?.name });
     };
 
     const [userRating, setUserRating] = useState(3);
