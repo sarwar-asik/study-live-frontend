@@ -20,77 +20,78 @@ export const RoomContext = createContext<null | any>(null);
 export const VideoProvider = ({ children }: { children: any }) => {
     // const navigate = useNavigate();
     const { io: ws } = useContext(ChatContext);
-    const { user } = useContext(AuthContext)
+    // const { user } = useContext(AuthContext)
 
-    const [me, setMe] = useState<Peer>();
-    const [peers, dispatch] = useReducer(peersReducer, {});
-    const [stream, setStream] = useState<MediaStream>();
+    // const [me, setMe] = useState<Peer>();
+    // const [peers, dispatch] = useReducer(peersReducer, {});
+    // const [stream, setStream] = useState<MediaStream>();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // const enterRoom = ({ roomId }: { roomId: "string" }) => {
-    //     // navigate(`/room/${roomId}`);
-    //     console.log(roomId);
+    // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // // const enterRoom = ({ roomId }: { roomId: "string" }) => {
+    // //     // navigate(`/room/${roomId}`);
+    // //     console.log(roomId);
+    // // };
+
+    // const handleUserList = ({ participants }: { participants: string[] }) => {
+
+    //     stream && participants?.map((peerId) => {
+    //         const call = stream && me?.call(peerId, stream);
+    //         console.log(stream, "steam");
+    //         console.log("call", call);
+    //         call?.on("stream", (userVideoStream: MediaStream) => {
+    //             console.log({ addPeerAction });
+    //             dispatch(addPeerAction(peerId, userVideoStream));
+    //         });
+    //     });
     // };
 
-    const handleUserList = ({ participants }: { participants: string[] }) => {
+    // const removePeer = (peerId: string) => {
+    //     dispatch(removePeerAction(peerId));
+    // };
 
-        stream && participants?.map((peerId) => {
-            const call = stream && me?.call(peerId, stream);
-            console.log(stream, "steam");
-            console.log("call", call);
-            call?.on("stream", (userVideoStream: MediaStream) => {
-                console.log({ addPeerAction });
-                dispatch(addPeerAction(peerId, userVideoStream));
-            });
-        });
-    };
+    // useEffect(() => {
+    //     // const meId = uuidV4();
+    //     const peer = new Peer(user.id);
+    //     setMe(peer);
+    //     // try {
+    //     //     navigator.mediaDevices
+    //     //         .getUserMedia({ video: true, audio: true })
+    //     //         .then((stream) => {
+    //     //             setStream(stream);
+    //     //         });
+    //     // } catch (err) {
+    //     //     console.error({ err });
+    //     // }
+    //     // ws.on("room-created", enterRoom);
+    //     ws.on("get-users", handleUserList);
+    //     ws.on("user-disconnected", removePeer);
+    // }, [ws]);
 
-    const removePeer = (peerId: string) => {
-        dispatch(removePeerAction(peerId));
-    };
+    // useEffect(() => {
+    //     if (!stream) return;
+    //     if (!me) return;
 
-    useEffect(() => {
-        // const meId = uuidV4();
-        const peer = new Peer(user.id);
-        setMe(peer);
-        // try {
-        //     navigator.mediaDevices
-        //         .getUserMedia({ video: true, audio: true })
-        //         .then((stream) => {
-        //             setStream(stream);
-        //         });
-        // } catch (err) {
-        //     console.error({ err });
-        // }
-        // ws.on("room-created", enterRoom);
-        ws.on("get-users", handleUserList);
-        ws.on("user-disconnected", removePeer);
-    }, [ws]);
+    //     ws.on(
+    //         "user-joined",
+    //         ({ peerId }: { roomId: string; peerId: string }) => {
+    //             console.log(peerId,'user joinded')
+    //             const call = stream && me.call(peerId, stream);
+    //             call.on("stream", (userVideoStream: MediaStream) => {
+    //                 dispatch(addPeerAction(peerId, userVideoStream));
+    //             });
+    //         }
+    //     );
 
-    useEffect(() => {
-        if (!stream) return;
-        if (!me) return;
-
-        ws.on(
-            "user-joined",
-            ({ peerId }: { roomId: string; peerId: string }) => {
-                const call = stream && me.call(peerId, stream);
-                call.on("stream", (userVideoStream: MediaStream) => {
-                    dispatch(addPeerAction(peerId, userVideoStream));
-                });
-            }
-        );
-
-        me.on("call", (call) => {
-            call.answer(stream);
-            call.on("stream", (userVideoStream) => {
-                dispatch(addPeerAction(call.peer, userVideoStream));
-            });
-        });
-    }, [stream, me, ws,]);
+    //     me.on("call", (call) => {
+    //         call.answer(stream);
+    //         call.on("stream", (userVideoStream) => {
+    //             dispatch(addPeerAction(call.peer, userVideoStream));
+    //         });
+    //     });
+    // }, [stream, me, ws,]);
 
     return (
-        <RoomContext.Provider value={{ ws, me, peers, stream, setStream }}>
+        <RoomContext.Provider value={{ ws,}}>
             {children}
         </RoomContext.Provider>
     );
