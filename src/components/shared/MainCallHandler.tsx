@@ -72,12 +72,12 @@ export default function MainCallHandler() {
 
     console.log(incomingCalling)
     const [isStartCall, setIsStartCall] = useState(false)
-    const handleAnswer2 =()=>{
-         setIsStartCall(true)
+    const handleAnswer2 = () => {
+        setIsStartCall(true)
 
         answerCall()
     }
-    // Render the incoming call modal if there is an incoming call
+    // Render the incoming calnl modal if there is an incoming call
     return (
         <React.Fragment>
             {incomingCall && (
@@ -103,14 +103,9 @@ export default function MainCallHandler() {
             )}
 
             {
-                isStartCall && <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-4 rounded shadow-lg flex flex-col items-center">
-                        <p className="mb-4">started call...</p>
-                        <div className="flex space-x-4">
-                            <Test/>
-                        </div>
-                    </div>
-                </div>
+                isStartCall &&
+
+                <Test />
             }
         </React.Fragment>
     );

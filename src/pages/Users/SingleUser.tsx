@@ -78,14 +78,9 @@ const SingleUser = () => {
             }
 
             {
-                isStartCall && <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-4 rounded shadow-lg flex flex-col items-center">
-                        <p className="mb-4">started call...</p>
-                        <div className="flex space-x-4">
-                            <Test />
-                        </div>
-                    </div>
-                </div>
+                isStartCall &&
+                
+               <Test/>
             }
             <section className='block lg:flex  justify-between  items-center  w-full'>
 
