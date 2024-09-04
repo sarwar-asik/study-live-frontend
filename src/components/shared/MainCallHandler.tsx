@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { RoomContext } from "@/context/VideoProvider";
 import AuthContext from "@/context/AuthProvider";
 import { AudioContext } from "@/context/AudioProvider";
+import Test from './Test';
 
 export default function MainCallHandler() {
-    const { ws } = useContext(RoomContext);
-    const { user } = useContext(AuthContext);
-    const { setIncomingAudioCall, answerCall } = useContext(AudioContext);
+    const { ws, user, incomingCall, rejectCall, answerCall, } = useContext(RoomContext);
+    // const { user } = useContext(AuthContext);
+    const { setIncomingAudioCall, answerCall: answerAudioCall, } = useContext(AudioContext);
 
     const [incomingCalling, setIncomingCalling] = useState<{ type: "video" | "audio", senderName: string, roomId?: string; senderId?: string } | null>(null);
 
@@ -59,7 +60,7 @@ export default function MainCallHandler() {
         } else {
             // If the call is an audio call, navigate to the corresponding audio call page and answer the call
             navigate(`/audio/${incomingCalling?.senderId}`);
-            answerCall();
+            answerAudioCall();
             setIncomingCalling(null);
         }
     };
@@ -70,32 +71,47 @@ export default function MainCallHandler() {
     };
 
     console.log(incomingCalling)
+    const [isStartCall, setIsStartCall] = useState(false)
+    const handleAnswer2 =()=>{
+         setIsStartCall(true)
+
+        answerCall()
+    }
     // Render the incoming call modal if there is an incoming call
     return (
         <React.Fragment>
-            {incomingCalling && (
-                // Render the incoming call modal with the appropriate styles
-                <div className="fixed z-[100] inset-0 grid place-items-center bg-black/20 backdrop-blur-sm duration-100 dark:bg-transparent">
-                    <div className="absolute rounded-lg drop-shadow-lg dark:bg-zinc-900 dark:text-white  border border-[#7808B1] max-w-4xl mx-auto bg-[#393B4C] text-white">
-                        <div className='flex justify-between py-9 px-7 text-xl'>
-                            {/* Render the call type and sender name */}
-                            <h2>Incoming {incomingCalling?.type} call from {incomingCalling?.senderName}</h2>
+            {incomingCall && (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded shadow-lg flex flex-col items-center">
+                        <p className="mb-4">Incoming call...</p>
+                        <div className="flex space-x-4">
+                            <button
+                                onClick={handleAnswer2}
+                                className="bg-green-500 text-white p-2 rounded cursor-pointer hover:bg-green-700"
+                            >
+                                Answer
+                            </button>
+                            <button
+                                onClick={rejectCall}
+                                className="bg-red-500 text-white p-2 rounded cursor-pointer hover:bg-red-700"
+                            >
+                                Reject
+                            </button>
                         </div>
-                        <section>
-                            <div className="bg-white p-7 flex justify-between items-center rounded-lg shadow-lg">
-                                <button
-                                    onClick={handleAnswerCall}
-                                    className="p-2 bg-green-600 px-3 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-white my-5 z-50"
-                                >
-                                    {/* Render the answer call button */}
-                                    Answer Call
-                                </button>
-                                <button onClick={handleRejectCall} className='h-9 px-3 rounded-full p-2 bg-red-600'>Reject</button>
-                            </div>
-                        </section>
                     </div>
                 </div>
             )}
+
+            {
+                isStartCall && <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded shadow-lg flex flex-col items-center">
+                        <p className="mb-4">started call...</p>
+                        <div className="flex space-x-4">
+                            <Test/>
+                        </div>
+                    </div>
+                </div>
+            }
         </React.Fragment>
     );
 }

@@ -12,6 +12,7 @@ import { FaRegMessage } from "react-icons/fa6";
 import { FaDollarSign, FaVideo } from 'react-icons/fa';
 import { IoCallOutline } from "react-icons/io5";
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import Test from '@/components/shared/Test';
 
 const SingleUser = () => {
     const { startAudioCallNow, setLocalStream } = useContext(AudioContext)
@@ -22,13 +23,14 @@ const SingleUser = () => {
 
     const { data: allUserData } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
     const userData = data?.data
-    const { ws, me } = useContext(RoomContext);
+    const { ws,call} = useContext(RoomContext);
 
 
     const navigate = useNavigate()
 
-    // console.log(data?.data)
-    
+    console.log(userData?.id)
+    const [isStartCall, setIsStartCall] = useState(false)
+
     const startVideoCallWithRoom = () => {
         if (!user?.id || !id) {
             // console.log("user id or receiver id not found")
@@ -36,7 +38,14 @@ const SingleUser = () => {
             return
         }
 
-        ws.emit("create-room", { peerId: me._id, receiverId: userData?.id, senderName: data?.data?.name });
+        if (userData?.id) {
+            setIsStartCall(true)
+            call(userData?.id)
+
+        }
+
+
+        // ws.emit("create-room", { peerId: me._id, receiverId: userData?.id, senderName: data?.data?.name });
     };
 
     const [userRating, setUserRating] = useState(3);
@@ -56,13 +65,27 @@ const SingleUser = () => {
     }
 
 
+
     // console.log(userData)
 
     return (
         <div className="pt-10 container mx-auto">
 
+
+
             {
                 loading && <LoaderData />
+            }
+
+            {
+                isStartCall && <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded shadow-lg flex flex-col items-center">
+                        <p className="mb-4">started call...</p>
+                        <div className="flex space-x-4">
+                            <Test />
+                        </div>
+                    </div>
+                </div>
             }
             <section className='block lg:flex  justify-between  items-center  w-full'>
 
