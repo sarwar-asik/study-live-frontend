@@ -16,9 +16,10 @@ function Test() {
     const peerInstance = useRef<Peer | null>(null);
 
     useEffect(() => {
-        console.log("Initializing Peer instance...");
-        const peer = new Peer();
-        // const peer = new Peer("1122");
+        if (!user?.id) return; // Ensure user ID is available before initializing Peer instance
+
+        console.log("Initializing Peer instance with user ID...");
+        const peer = new Peer(user.id); // Initialize Peer with user ID
         peer.on("open", (id) => {
             console.log("Peer connection established with ID:", id);
             setPeerId(id);
@@ -34,7 +35,13 @@ function Test() {
         });
 
         peerInstance.current = peer;
-    }, []);
+
+        return () => {
+            if (peerInstance.current) {
+                peerInstance.current.destroy();
+            }
+        };
+    }, [user?.id]);
 
     const answerCall = () => {
         if (incomingCall) {
@@ -48,7 +55,7 @@ function Test() {
                         currentUserVideoRef.current.play();
                     }
                     incomingCall.answer(mediaStream);
-                    incomingCall.on("stream", (remoteStream: MediaProvider | null) => {
+                    incomingCall.on("stream", (remoteStream: MediaStream | null) => {
                         console.log("Remote stream received:", remoteStream);
                         if (remoteVideoRef.current) {
                             remoteVideoRef.current.srcObject = remoteStream;
@@ -160,4 +167,4 @@ function Test() {
     );
 }
 
-export default Test
+export default Test;

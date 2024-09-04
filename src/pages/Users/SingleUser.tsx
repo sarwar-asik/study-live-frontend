@@ -28,6 +28,7 @@ const SingleUser = () => {
     const navigate = useNavigate()
 
     // console.log(data?.data)
+    
     const startVideoCallWithRoom = () => {
         if (!user?.id || !id) {
             // console.log("user id or receiver id not found")
@@ -35,7 +36,7 @@ const SingleUser = () => {
             return
         }
 
-        ws.emit("create-room", { peerId: me._id, receiverId: data?.id, senderName: data?.data?.name });
+        ws.emit("create-room", { peerId: me._id, receiverId: userData?.id, senderName: data?.data?.name });
     };
 
     const [userRating, setUserRating] = useState(3);
