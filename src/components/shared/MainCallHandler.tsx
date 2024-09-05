@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // CallHandler.tsx
 import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { RoomContext } from "@/context/VideoProvider";
 // import AuthContext from "@/context/AuthProvider";
 import { AudioContext } from "@/context/AudioProvider";
@@ -10,11 +9,11 @@ import VideoModal from './VideoModal';
 export default function MainCallHandler() {
     const { ws, user, incomingCall, rejectCall, answerCall, isStartCall, setIsStartCall } = useContext(RoomContext);
     // const { user } = useContext(AuthContext);
-    const { setIncomingAudioCall, answerCall: answerAudioCall, } = useContext(AudioContext);
+    const { setIncomingAudioCall, } = useContext(AudioContext);
 
     const [incomingCalling, setIncomingCalling] = useState<{ type: "video" | "audio", senderName: string, roomId?: string; senderId?: string } | null>(null);
 
-    const navigate = useNavigate();
+
 
     console.log(user?.id)
 
@@ -49,26 +48,10 @@ export default function MainCallHandler() {
 
     // Function to handle answering the incoming audio call
 
-    const handleAnswerCall = () => {
-        console.log(incomingCalling)
-        if (incomingCalling?.type === 'video') {
-            // If the call is a video call, navigate to the corresponding video call page
-            if (incomingCalling?.roomId) {
 
-                window.location.href = `/video/${incomingCalling?.roomId}`;
-            }
-        } else {
-            // If the call is an audio call, navigate to the corresponding audio call page and answer the call
-            navigate(`/audio/${incomingCalling?.senderId}`);
-            answerAudioCall();
-            setIncomingCalling(null);
-        }
-    };
 
     // Function to handle rejecting the incoming call
-    const handleRejectCall = () => {
-        setIncomingCalling(null);
-    };
+ 
 
     console.log(incomingCalling, 'incomingCalling')
     const handleAnswer2 = () => {

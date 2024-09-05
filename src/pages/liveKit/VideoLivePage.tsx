@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
     ControlBar,
@@ -10,7 +11,7 @@ import {
 import "@livekit/components-styles";
 import { Track } from "livekit-client";
 import '@livekit/components-styles';
-import { useState, useEffect, useContext } from "react";
+import {  useContext } from "react";
 import AuthContext from "@/context/AuthProvider";
 import useFetchDataHook from "@/hooks/useFetchDataHook";
 
@@ -18,7 +19,7 @@ const serverUrl = 'wss://study-live-6hvqlmts.livekit.cloud';
 // const serverUrl = 'wss://study-live-6hvqlmts.livekit.cloud';
 // const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6InF1aWNrc3RhcnQtcm9vbSJ9LCJpc3MiOiJ5b3VyX2FwaV9rZXlfaGVyZSIsImV4cCI6MTcyMzYxMzI0NiwibmJmIjowLCJzdWIiOiJxdWlja3N0YXJ0LXVzZXJuYW1lIn0.C5VcEZ7nOdnE9GGhuGuctG74tubZ7LaOi42w2xEKQpU';
 
-const receiverId = '74c97403-92a7-4698-b50f-6afa9d281414'
+// const receiverId = '74c97403-92a7-4698-b50f-6afa9d281414'
 export default function VideoLivePage() {
 
     const { user } = useContext(AuthContext)
@@ -28,13 +29,13 @@ export default function VideoLivePage() {
     // console.log(user)
     console.log(tokenData)
 
-    const [remoteUserId, setRemoteUserId] = useState<string | undefined>(undefined);
+    // const [remoteUserId, setRemoteUserId] = useState<string | undefined>(undefined);
 
     // Function to initiate a call (replace with your call logic)
-    const initiateCall = (calleeId: string) => {
-        setRemoteUserId(calleeId);
-        // Connect to LiveKit room using calleeId (replace with actual connection logic)
-    };
+    // const initiateCall = (calleeId: string) => {
+    //     setRemoteUserId(calleeId);
+    //     // Connect to LiveKit room using calleeId (replace with actual connection logic)
+    // };
 
     // console.log(tokenData)
     return (

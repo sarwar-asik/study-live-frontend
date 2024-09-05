@@ -5,10 +5,13 @@ import { RoomContext } from "@/context/VideoProvider";
 // import VideoInputSection from "../dashboard/videoCall/VideoInputSection";
 import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash } from "react-icons/fa";
 import { IoCallOutline } from "react-icons/io5";
+import usePointDeduction from "@/hooks/usePointsDeduction";
 
 function VideoModal() {
 
-    const { remoteVideoRef, localStream, setLocalStream, setIsStartCall } = useContext(RoomContext);
+    const { remoteVideoRef, localStream, setLocalStream, setIsStartCall, incomingCallData, user } = useContext(RoomContext);
+
+    usePointDeduction(user?.id, incomingCallData?.callType === "audio" ? 3 : 5);
     //@ts-ignore
     const handleEndCall = () => {
         if (localStream) {
@@ -18,10 +21,13 @@ function VideoModal() {
         setIsStartCall(false)
 
     };
-    console.log(remoteVideoRef)
+    // console.log(remoteVideoRef)
     const videoRef = useRef<HTMLVideoElement>(null)
 
     // const localStream = null
+    // console.log(incomingCallData, 'incomingCallData')
+
+
 
     useEffect(() => {
         if (videoRef.current && localStream) videoRef.current.srcObject = localStream;
@@ -53,6 +59,7 @@ function VideoModal() {
             videoRef.current.srcObject = null;
         }
     }
+
     return (
 
         <div className="fixed z-[100] inset-0 bg-gray-800  bg-opacity-[0.4] flex items-center justify-center ">
@@ -86,12 +93,16 @@ function VideoModal() {
                                         >
                                             {isAudioOn ? <FaMicrophone size={24} /> : <FaMicrophoneSlash size={24} />}
                                         </button>
-                                        <button
-                                            onClick={toggleVideo}
-                                            className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                                        >
-                                            {isVideoOn ? <FaVideo size={24} /> : <FaVideoSlash size={24} />}
-                                        </button>
+                                        {
+                                            incomingCallData?.callType !== "audio" &&
+                                            <button
+                                                onClick={toggleVideo}
+                                                className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                                            >
+                                                {isVideoOn ? <FaVideo size={24} /> : <FaVideoSlash size={24} />}
+                                            </button>
+                                        }
+                                        
                                         <button
                                             onClick={endCallHandler}
                                             className="p-2 bg-red-600 rounded-full text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -113,7 +124,8 @@ function VideoModal() {
                             } */}
                             < video
                                 ref={remoteVideoRef}
-                                className="h-[40%] w-[40%] mx-auto borde border-spacing-2 rounded absolute bottom-[4rem] right-2"
+                                poster="https://cdn-icons-png.freepik.com/512/9368/9368199.png"
+                                className="h-[40%] w-[40%] mx-auto border border-spacing-2 rounded absolute bottom-[4rem] right-2"
                             />
 
                             {/* <video
