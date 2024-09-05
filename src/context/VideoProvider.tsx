@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useReducer, useRef, useState } from "react";
 // import Peer from "peerjs";
 // import { v4 as uuidV4 } from "uuid";
+
 // import { io } from "socket.io-client";
 // import { useNavigate } from "react-router-dom";
 // import { peersReducer } from "./pearsReducer";
@@ -22,12 +23,12 @@ export const VideoProvider = ({ children }: { children: any }) => {
     const { io: ws } = useContext(ChatContext);
     const { user } = useContext(AuthContext)
 
-  
+
     const [peerId, setPeerId] = useState<string>("");
     const [incomingCall, setIncomingCall] = useState<any | null>(
         null
     );
-    const [localStream,setLocalStream]=useState<MediaStream | null>(null);
+    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [isStartCall, setIsStartCall] = useState(false)

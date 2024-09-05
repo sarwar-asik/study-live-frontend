@@ -3,7 +3,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RoomContext } from "@/context/VideoProvider";
-import AuthContext from "@/context/AuthProvider";
+// import AuthContext from "@/context/AuthProvider";
 import { AudioContext } from "@/context/AudioProvider";
 import VideoModal from './VideoModal';
 
