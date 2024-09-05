@@ -94,6 +94,10 @@ export const VideoProvider = ({ children }: { children: any }) => {
     const [incomingCall, setIncomingCall] = useState<Peer.MediaConnection | null>(
         null
     );
+    const [localStream,setLocalStream]=useState<MediaStream | null>(null);
+
+    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+    
     const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
     const currentUserVideoRef = useRef<HTMLVideoElement | null>(null);
     const peerInstance = useRef<Peer | null>(null);
@@ -133,6 +137,7 @@ export const VideoProvider = ({ children }: { children: any }) => {
                 .getUserMedia({ video: true, audio: true })
                 .then((mediaStream) => {
                     console.log("User media obtained:", mediaStream);
+                    setLocalStream(mediaStream)
                     if (currentUserVideoRef.current) {
                         currentUserVideoRef.current.srcObject = mediaStream;
                         currentUserVideoRef.current.play();
@@ -140,6 +145,7 @@ export const VideoProvider = ({ children }: { children: any }) => {
                     incomingCall.answer(mediaStream);
                     incomingCall.on("stream", (remoteStream: MediaStream | null) => {
                         console.log("Remote stream received:", remoteStream);
+                        setRemoteStream(remoteStream);
                         if (remoteVideoRef.current) {
                             remoteVideoRef.current.srcObject = remoteStream;
                             remoteVideoRef.current.play();
@@ -171,6 +177,7 @@ export const VideoProvider = ({ children }: { children: any }) => {
             .getUserMedia({ video: true, audio: true })
             .then((mediaStream) => {
                 console.log("User media obtained for outgoing call:", mediaStream);
+                setLocalStream(mediaStream)
                 if (currentUserVideoRef.current) {
                     currentUserVideoRef.current.srcObject = mediaStream;
                     currentUserVideoRef.current.play();
@@ -183,6 +190,7 @@ export const VideoProvider = ({ children }: { children: any }) => {
                             "Remote stream received during outgoing call:",
                             remoteStream
                         );
+                        setRemoteStream(remoteStream);
                         if (remoteVideoRef.current) {
                             remoteVideoRef.current.srcObject = remoteStream;
                             remoteVideoRef.current.play();
@@ -198,7 +206,7 @@ export const VideoProvider = ({ children }: { children: any }) => {
     };
 
     return (
-        <RoomContext.Provider value={{ ws, call, rejectCall, answerCall, currentUserVideoRef, peerId, user, remoteVideoRef ,incomingCall}}>
+        <RoomContext.Provider value={{ ws, call, rejectCall, answerCall, currentUserVideoRef, peerId, user, remoteVideoRef ,incomingCall,localStream,remoteStream,setLocalStream,setRemoteStream}}>
             {children}
         </RoomContext.Provider>
     );

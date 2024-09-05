@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash } from 'react-icons/fa';
 import { IoCallOutline } from 'react-icons/io5';
 
-export default function VideoInputSection({ stream, handleEndCall }: { stream: MediaStream | null, handleEndCall: () => void }) {
+export default function VideoInputSection({ stream, handleEndCall,remoteStream }: { stream: MediaStream | null, handleEndCall: () => void }) {
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
@@ -40,10 +40,10 @@ export default function VideoInputSection({ stream, handleEndCall }: { stream: M
     // console.log(stream)
 
     return (
-        <div className="max-w-6xl mx-auto p-4">
+        <div className="max-w-3x mx-auto p">
             <div className="relative w-full">
                 <video
-                    className="w-full h-auto max-h-96 md:max-h-[40rem] z-20 bg-[#3B334F] max-w-[858px] mx-auto"
+                    className="w-full h-auto max-h-96 md:max-h-[40rem] z-20 bg-[#3B334F] max-w-[100vw] mx-auto"
                     ref={videoRef}
                     autoPlay
                     muted={true}
@@ -54,7 +54,7 @@ export default function VideoInputSection({ stream, handleEndCall }: { stream: M
                 />
             </div>
             {videoRef?.current?.srcObject !== null && (
-                <div className="w-full max-w-[858px] mx-auto bg-slate-700 flex items-center justify-center gap-5 py-4">
+                <div className="w-full max-w-[100vw] mx-auto bg-slate-700 flex items-center justify-center gap-5 py-4">
                     <button
                         onClick={toggleAudio}
                         className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
