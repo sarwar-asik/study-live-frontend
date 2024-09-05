@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { RoomContext } from "@/context/VideoProvider";
 import AuthContext from "@/context/AuthProvider";
 import { AudioContext } from "@/context/AudioProvider";
-import Test from './Test';
+import VideoModal from './VideoModal';
 
 export default function MainCallHandler() {
-    const { ws, user, incomingCall, rejectCall, answerCall, } = useContext(RoomContext);
+    const { ws, user, incomingCall, rejectCall, answerCall, isStartCall, setIsStartCall } = useContext(RoomContext);
     // const { user } = useContext(AuthContext);
     const { setIncomingAudioCall, answerCall: answerAudioCall, } = useContext(AudioContext);
 
@@ -70,11 +70,9 @@ export default function MainCallHandler() {
         setIncomingCalling(null);
     };
 
-    console.log(incomingCalling)
-    const [isStartCall, setIsStartCall] = useState(false)
+    console.log(incomingCalling, 'incomingCalling')
     const handleAnswer2 = () => {
         setIsStartCall(true)
-
         answerCall()
     }
     // Render the incoming calnl modal if there is an incoming call
@@ -83,7 +81,7 @@ export default function MainCallHandler() {
             {incomingCall && (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-4 rounded shadow-lg flex flex-col items-center">
-                        <p className="mb-4">Incoming call...</p>
+                        <p className="mb-4">Incoming a call...</p>
                         <div className="flex space-x-4">
                             <button
                                 onClick={handleAnswer2}
@@ -105,7 +103,7 @@ export default function MainCallHandler() {
             {
                 isStartCall &&
 
-                <Test />
+                <VideoModal />
             }
         </React.Fragment>
     );

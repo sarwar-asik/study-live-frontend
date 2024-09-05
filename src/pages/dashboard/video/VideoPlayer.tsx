@@ -19,7 +19,7 @@ export const VideoPlayer: React.FC<{
     console.log(videoRef)
     console.log(stream)
     return (
-        <div className={`bg-green-500 ${className}`} >
+        <div className={`${className}`} >
             <video
                 playsInline
                 ref={videoRef}

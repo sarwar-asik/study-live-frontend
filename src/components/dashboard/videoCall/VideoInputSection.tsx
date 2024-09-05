@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash } from 'react-icons/fa';
 import { IoCallOutline } from 'react-icons/io5';
 
-export default function VideoInputSection({ stream, handleEndCall,remoteStream }: { stream: MediaStream | null, handleEndCall: () => void }) {
+export default function VideoInputSection({ stream, handleEndCall }: { stream: MediaStream | null, handleEndCall: () => void }) {
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
@@ -40,7 +40,7 @@ export default function VideoInputSection({ stream, handleEndCall,remoteStream }
     // console.log(stream)
 
     return (
-        <div className="max-w-3x mx-auto p">
+        <div className="max-w-3x mx-auto ">
             <div className="relative w-full">
                 <video
                     className="w-full h-auto max-h-96 md:max-h-[40rem] z-20 bg-[#3B334F] max-w-[100vw] mx-auto"
