@@ -12,7 +12,7 @@ import { peersReducer } from "@/context/pearsReducer";
 import Peer from "peerjs";
 
 export const VideoCallPage = () => {
-    const { id } = useParams();
+    const { id: roomId } = useParams();
     const { user } = useContext(AuthContext);
     const { ws } = useContext(RoomContext);
     const [me, setMe] = useState<Peer>();
@@ -25,18 +25,19 @@ export const VideoCallPage = () => {
 
     // Initialize the PeerJS connection
     useEffect(() => {
-        const peer = new Peer(user?.id);
+        const peer = new Peer();
         setMe(peer);
 
-        peer.on("open", () => {
-            ws.emit("join-room", { roomId: id, peerId: peer.id });
+        peer.on("open", (id) => {
+            console.log(id)
+            ws.emit("join-room", { roomId: roomId, peerId: id });
         });
 
         return () => {
             peer.disconnect();
             peer.destroy();
         };
-    }, [id, user.id, ws]);
+    }, [roomId, user.id, ws]);
 
     // Get user media (video and audio)
     useEffect(() => {

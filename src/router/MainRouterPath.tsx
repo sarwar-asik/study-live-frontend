@@ -1,16 +1,14 @@
 import Login from "@/pages/Auth/Login";
 import SignUp from "@/pages/Auth/SignUp";
 import Home from "@/pages/home/HomePage";
-
 import PricingPage from "@/pages/pricing/PricingPage";
 import PrivateRoute from "./PrivateRouter";
-
 import UsersPage from "@/pages/Users/UsersPage";
 import SingleUser from "@/pages/Users/SingleUser";
 import { VideoCallPage } from "@/pages/dashboard/video/VideoCallPage";
 import AudioCallPage from "@/pages/dashboard/audio/AudioCallPage";
 import VideoLivePage from "@/pages/liveKit/VideoLivePage";
-import Test from "@/components/shared/Test";
+import VideoModal from "@/components/shared/VideoModal";
 
 
 export const MainRouterPath = [
@@ -52,7 +50,7 @@ export const MainRouterPath = [
     },
     {
         path: "/test",
-        element: <Test />
+        element: <VideoModal />
     },
 
 ]
