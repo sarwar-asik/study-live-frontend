@@ -93,12 +93,16 @@ function VideoModal() {
                                         >
                                             {isAudioOn ? <FaMicrophone size={24} /> : <FaMicrophoneSlash size={24} />}
                                         </button>
-                                        <button
-                                            onClick={toggleVideo}
-                                            className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                                        >
-                                            {isVideoOn ? <FaVideo size={24} /> : <FaVideoSlash size={24} />}
-                                        </button>
+                                        {
+                                            incomingCallData?.callType !== "audio" &&
+                                            <button
+                                                onClick={toggleVideo}
+                                                className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                                            >
+                                                {isVideoOn ? <FaVideo size={24} /> : <FaVideoSlash size={24} />}
+                                            </button>
+                                        }
+                                        
                                         <button
                                             onClick={endCallHandler}
                                             className="p-2 bg-red-600 rounded-full text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
