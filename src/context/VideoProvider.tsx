@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createContext, useContext, useEffect, useReducer, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import CircularJSON from 'circular-json';
 // import Peer from "peerjs";
 // import { v4 as uuidV4 } from "uuid";
@@ -24,12 +24,15 @@ export const VideoProvider = ({ children }: { children: any }) => {
     const { io: ws } = useContext(ChatContext);
     const { user } = useContext(AuthContext)
 
-  
+
     const [peerId, setPeerId] = useState<string>("");
     const [incomingCall, setIncomingCall] = useState<any | null>(
         null
     );
-    const [localStream,setLocalStream]=useState<MediaStream | null>(null);
+    const [incomingCallData, setIncomingCallData] = useState<{ email: string, callType: "video" | "audio" } | null>(
+        null
+    );
+    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [isStartCall, setIsStartCall] = useState(false)
@@ -51,12 +54,25 @@ export const VideoProvider = ({ children }: { children: any }) => {
 
             setIncomingCall(call);
             console.log("Incoming call received:", call);
-            console.log(typeof call,'c type');
+            console.log(typeof call, 'c type');
             // console.log(JSON.stringify(call),'incomingCall.metadata');
-            console.log(JSON.parse(CircularJSON.stringify(call)));
-            const metadata = JSON.parse(CircularJSON.stringify(call))?.metadata;
-            console.log(metadata)
-            
+            const parsedCall = JSON.parse(CircularJSON.stringify(call));
+            const metadata = parsedCall?.metadata || parsedCall?.options?._payload?.metadata || parsedCall?.options?.metadata
+
+            if (metadata) {
+                console.log(metadata)
+                setIncomingCallData(parsedCall?.options?._payload?.metadata)
+                console.log(parsedCall?.options?._payload?.metadata, 'parsedCall?.options?._payload?.metadata;')
+                // Access the callType and email from metadata
+                // const callType = metadata.callType;
+                // const email = metadata.email;
+
+                // console.log("Call Type:", callType);
+                // console.log("Email:", email);
+            } else {
+                console.log("Metadata not found");
+            }
+
 
         });
 
@@ -77,7 +93,7 @@ export const VideoProvider = ({ children }: { children: any }) => {
         if (incomingCall) {
             console.log("Answering call...");
             navigator.mediaDevices
-                .getUserMedia({ video: true, audio: true })
+                .getUserMedia({ video: incomingCallData?.callType === "audio" ? false : true, audio: true })
                 .then((mediaStream) => {
                     console.log("User media obtained:", mediaStream);
                     setLocalStream(mediaStream)
@@ -114,10 +130,11 @@ export const VideoProvider = ({ children }: { children: any }) => {
         }
     };
 
-    const call = (remotePeerId: string) => {
+    const callFunc = (remotePeerId: string, callType: "video" | "audio") => {
+
         console.log("Placing call to remote peer ID:", remotePeerId);
         navigator.mediaDevices
-            .getUserMedia({ video: true, audio: true })
+            .getUserMedia({ video: callType === "audio" ? false : true, audio: true })
             .then((mediaStream) => {
                 console.log("User media obtained for outgoing call:", mediaStream);
                 setLocalStream(mediaStream)
@@ -125,10 +142,14 @@ export const VideoProvider = ({ children }: { children: any }) => {
                     currentUserVideoRef.current.srcObject = mediaStream;
                     currentUserVideoRef.current.play();
                 }
-                const call = peerInstance.current?.call(remotePeerId, mediaStream,{
+                setIncomingCallData({
+                    email: user.email,
+                    callType: callType
+                })
+                const call = peerInstance.current?.call(remotePeerId, mediaStream, {
                     metadata: {
                         email: user.email,    // Send user's email
-                        callType: 'video'    // Send the call type (video/audio)
+                        callType: callType    // Send the call type (video/audio)
                     }
                 });
                 if (call) {
@@ -154,7 +175,7 @@ export const VideoProvider = ({ children }: { children: any }) => {
     };
 
     return (
-        <RoomContext.Provider value={{ ws, call, rejectCall, answerCall, currentUserVideoRef, peerId, user, remoteVideoRef, incomingCall, localStream, remoteStream, setLocalStream, setRemoteStream, isStartCall, setIsStartCall }}>
+        <RoomContext.Provider value={{ ws, callFunc, rejectCall, answerCall, currentUserVideoRef, peerId, user, remoteVideoRef, incomingCall, localStream, remoteStream, setLocalStream, setRemoteStream, isStartCall, setIsStartCall, incomingCallData }}>
             {children}
         </RoomContext.Provider>
     );

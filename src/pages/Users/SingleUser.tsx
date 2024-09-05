@@ -1,6 +1,6 @@
 import LoaderData from '@/components/shared/LoaderData';
 import UserCard from '@/components/user/UserCard';
-import { AudioContext } from '@/context/AudioProvider';
+
 import { RoomContext } from '@/context/VideoProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
@@ -14,9 +14,9 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import VideoModal from '@/components/shared/VideoModal';
 
 const SingleUser = () => {
-    const { startAudioCallNow, setLocalStream } = useContext(AudioContext)
-    const { call, isStartCall, setIsStartCall, user } = useContext(RoomContext);
-    // const { user } = useContext(AuthContext)
+
+    const { callFunc, isStartCall, setIsStartCall, user } = useContext(RoomContext);
+
     const { id } = useParams()
     const { data, isLoading: loading } = useGetSingleUserQuery(id ?? "1");
     // console.log(data)
@@ -27,8 +27,7 @@ const SingleUser = () => {
 
     const navigate = useNavigate()
 
-    console.log(userData?.id)
-    // const [isStartCall, setIsStartCall] = useState(false)
+
 
     const startVideoCallWithRoom = () => {
         if (!user?.id || !id) {
@@ -39,12 +38,11 @@ const SingleUser = () => {
 
         if (userData?.id) {
             setIsStartCall(true)
-            call(userData?.id)
-
+            callFunc(userData?.id, "video")
         }
 
 
-        // ws.emit("create-room", { peerId: me._id, receiverId: userData?.id, senderName: data?.data?.name });
+
     };
 
     const [userRating, setUserRating] = useState(3);
@@ -56,11 +54,10 @@ const SingleUser = () => {
             navigate("/login")
             return
         }
-        navigate(`/audio/${id}`)
-        const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
-        setLocalStream(stream);
-        await startAudioCallNow(user.id, id, user?.name)
-        // navigate(`/audio/${id}`)
+        if (userData?.id) {
+            setIsStartCall(true)
+            callFunc(userData?.id, "audio")
+        }
     }
 
 
@@ -69,8 +66,6 @@ const SingleUser = () => {
 
     return (
         <div className="pt-10 container mx-auto">
-
-
 
             {
                 loading && <LoaderData />

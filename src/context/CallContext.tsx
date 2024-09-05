@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import  { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Room, RemoteParticipant, LocalParticipant, connect } from 'livekit-client';
+import { Room, RemoteParticipant, LocalParticipant } from 'livekit-client';
 
 interface CallContextProps {
     room: Room | null;
@@ -14,8 +15,9 @@ interface CallContextProps {
 
 const CallContext = createContext<CallContextProps | undefined>(undefined);
 
-export const CallProvider: React.FC = ({ children }) => {
+export const CallProvider = ({ children }: { children: any }) => {
     const [room, setRoom] = useState<Room | null>(null);
+
     const [participants, setParticipants] = useState<RemoteParticipant[]>([]);
     const [localParticipant, setLocalParticipant] = useState<LocalParticipant | null>(null);
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -29,19 +31,20 @@ export const CallProvider: React.FC = ({ children }) => {
         };
     }, []);
 
-    const connectToRoom = async (token: string) => {
-        const newRoom = await connect(token, { videoCaptureDefaults: { resolution: { width: 640, height: 480 } } });
-        setRoom(newRoom);
-        setLocalParticipant(newRoom.localParticipant);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // const connectToRoom = async (_token: string) => {
+    //     // const newRoom = await connect(token, { videoCaptureDefaults: { resolution: { width: 640, height: 480 } } });
+    //     // setRoom(newRoom);
+    //     // setLocalParticipant(newRoom.localParticipant);
 
-        newRoom.on('participantConnected', (participant) => {
-            setParticipants((prev) => [...prev, participant]);
-        });
+    //     // newRoom.on('participantConnected', (participant: RemoteParticipant) => {
+    //     //     setParticipants((prev) => [...prev, participant]);
+    //     // });
 
-        newRoom.on('participantDisconnected', (participant) => {
-            setParticipants((prev) => prev.filter((p) => p !== participant));
-        });
-    };
+    //     // newRoom.on('participantDisconnected', (participant: RemoteParticipant) => {
+    //     //     setParticipants((prev) => prev.filter((p) => p !== participant));
+    //     // });
+    // };
 
     const callUser = (userId: string, signal: any) => {
         if (socket) {
