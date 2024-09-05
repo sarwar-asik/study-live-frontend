@@ -14,6 +14,7 @@
     "@livekit/components-styles": "^1.0.12",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/simple-peer": "^9.11.8",
+    "circular-json": "^0.5.9",
     "global": "^4.4.0",
     "jwt-decode": "^4.0.0",
     "livekit-client": "^2.4.2",

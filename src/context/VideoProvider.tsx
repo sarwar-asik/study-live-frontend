@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useContext, useEffect, useReducer, useRef, useState } from "react";
+import CircularJSON from 'circular-json';
 // import Peer from "peerjs";
 // import { v4 as uuidV4 } from "uuid";
 
@@ -23,12 +24,12 @@ export const VideoProvider = ({ children }: { children: any }) => {
     const { io: ws } = useContext(ChatContext);
     const { user } = useContext(AuthContext)
 
-
+  
     const [peerId, setPeerId] = useState<string>("");
     const [incomingCall, setIncomingCall] = useState<any | null>(
         null
     );
-    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+    const [localStream,setLocalStream]=useState<MediaStream | null>(null);
 
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [isStartCall, setIsStartCall] = useState(false)
@@ -47,13 +48,20 @@ export const VideoProvider = ({ children }: { children: any }) => {
         });
 
         peer.on("call", (call) => {
-            console.log("Incoming call received:", call);
-            console.log(call);
+
             setIncomingCall(call);
+            console.log("Incoming call received:", call);
+            console.log(typeof call,'c type');
+            // console.log(JSON.stringify(call),'incomingCall.metadata');
+            console.log(JSON.parse(CircularJSON.stringify(call)));
+            const metadata = JSON.parse(CircularJSON.stringify(call))?.metadata;
+            console.log(metadata)
+            
+
         });
 
         peer.on("error", (err) => {
-            console.error("Peer error:", err);
+            console.error("Peer error:>>>", err);
         });
 
         peerInstance.current = peer;
@@ -117,7 +125,12 @@ export const VideoProvider = ({ children }: { children: any }) => {
                     currentUserVideoRef.current.srcObject = mediaStream;
                     currentUserVideoRef.current.play();
                 }
-                const call = peerInstance.current?.call(remotePeerId, mediaStream);
+                const call = peerInstance.current?.call(remotePeerId, mediaStream,{
+                    metadata: {
+                        email: user.email,    // Send user's email
+                        callType: 'video'    // Send the call type (video/audio)
+                    }
+                });
                 if (call) {
                     console.log("Call initiated successfully:", call);
                     call.on("stream", (remoteStream) => {

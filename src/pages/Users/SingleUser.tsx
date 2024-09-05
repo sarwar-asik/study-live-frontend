@@ -1,7 +1,6 @@
 import LoaderData from '@/components/shared/LoaderData';
 import UserCard from '@/components/user/UserCard';
 import { AudioContext } from '@/context/AudioProvider';
-// import AuthContext from '@/context/AuthProvider';
 import { RoomContext } from '@/context/VideoProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
@@ -79,6 +78,7 @@ const SingleUser = () => {
 
             {
                 isStartCall &&
+
                 <VideoModal />
             }
             <section className='block lg:flex  justify-between  items-center  w-full'>
