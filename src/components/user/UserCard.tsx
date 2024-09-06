@@ -9,7 +9,7 @@ export default function UserCard({ user }: any) {
         <Link to={`/user/${user?.id}`} className="max-w-[350px]  rounded  bg-slate-100/70  shadow-md dark:bg-[#18181B]">
             {/* Card Image */}
             <div className='relative'>
-                <img width={350} height={300} className="h-[300px] w-[350px]l bg-gray-400 rounded-t-lg"
+                <img width={350} height={280} className="h-[180px] md:h-[300px] w-[350px] bg-gray-400 rounded-t-lg"
                     src={user?.img ?? "https://shorturl.at/pNO1x"} />
                 <h1 className='flex items-center bg-primary hover:bg-purple-600 text-white absolute bottom-5 left-3 rounded px-3 py-1'>
                     <FaDollarSign />
@@ -19,8 +19,8 @@ export default function UserCard({ user }: any) {
             {/* Card Heading */}
 
 
-            <section className='px-5 py-9 bg-[#52545B] text-white flex flex-col gap-5 '>
-                <div className="space-y-2 flex justify-between items-center">
+            <section className='px-3 py-3 md:py-9 bg-[#52545B] text-white flex flex-col gap-5 '>
+                <div className="space-y-2 flex flex-wrap justify-between items-center ">
                     <h2 className=" sm:text-lg md:text-xl dark:text-white/90 font-bold">{user?.name}</h2>
                     {/* rating  */}
                     <div className="flex space-x-1">
@@ -35,8 +35,8 @@ export default function UserCard({ user }: any) {
                         <span>8.3 k</span>
                     </div>
                 </div>
-                <p>{user?.email} is an actor</p>
-
+                <p className='text-sm  text-nowrap md:text-md lg:text-lg xl:text-xl'>{user?.email} </p>
+                <span>Actor</span>
             </section>
         </Link>
     );
