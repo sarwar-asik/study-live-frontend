@@ -98,7 +98,7 @@ const SingleUser = () => {
                     </div>
                 </div>
                 <div className='mt-7 lg:mt-0 flex flex-col gap-5 w-[45%] font-bold text-xl mx-auto text-center'>
-                    <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center ">
+                    <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded flex flex-wrap gap-2 md:gap-7 justify-center items-center ">
                         <FaRegMessage />
                         <h4> Message Now</h4>
                         {loading && "..."}
@@ -106,14 +106,14 @@ const SingleUser = () => {
                         <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>01</span></h5>
 
                     </Link>
-                    <button onClick={handleAudioCall} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center" >
+                    <button onClick={handleAudioCall} className="bg-primary w-full p-3 text-white rounded flex flex-wrap gap-2 md:gap-7 justify-center items-center" >
                         <IoCallOutline />
                         <h4>Audio Call</h4>
                         {loading && "..."}
                         <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>03</span></h5>
 
                     </button>
-                    <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center">
+                    <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded flex flex-wrap gap-2 md:gap-7 justify-center items-center">
                         <FaVideo />
                         <h4>Video Call</h4>
                         {loading && "..."}
