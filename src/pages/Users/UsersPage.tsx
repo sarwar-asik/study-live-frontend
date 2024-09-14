@@ -11,7 +11,7 @@ const UsersPage = () => {
     // console.log(data);
     const usersData = data?.data
     return (
-        <div className='bg-secondary  pt-[4rem] container mx-auto'>
+        <div className='bg-secondary  pt-[4rem] container mx-auto px-2'>
             <h2 className='text-3xl font-bold text-white my-5'>All Users </h2>
             {isLoading && <LoaderData />}
             {

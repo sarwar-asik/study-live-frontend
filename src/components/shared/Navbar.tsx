@@ -33,6 +33,8 @@ const Navbar: React.FC = () => {
       { name: 'Pricing', link: '/pricing', active: pathname === '/pricing' },
       { name: 'About', link: '/', active: pathname === '/about' },
       { name: 'Users', link: '/users', active: pathname === '/users' },
+
+
     ];
 
   // for protected routes

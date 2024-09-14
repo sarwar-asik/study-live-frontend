@@ -12,7 +12,7 @@ import { peersReducer } from "@/context/pearsReducer";
 import Peer from "peerjs";
 
 export const VideoCallPage = () => {
-    const { id } = useParams();
+    const { id: roomId } = useParams();
     const { user } = useContext(AuthContext);
     const { ws } = useContext(RoomContext);
     const [me, setMe] = useState<Peer>();
@@ -21,27 +21,29 @@ export const VideoCallPage = () => {
     const navigate = useNavigate();
 
     usePointDeduction(user.id, 5);
+    console.log(user)
 
     // Initialize the PeerJS connection
     useEffect(() => {
-        const peer = new Peer(user.id);
+        const peer = new Peer();
         setMe(peer);
 
-        peer.on("open", () => {
-            ws.emit("join-room", { roomId: id, peerId: peer.id });
+        peer.on("open", (id) => {
+            console.log(id)
+            ws.emit("join-room", { roomId: roomId, peerId: id });
         });
 
         return () => {
             peer.disconnect();
             peer.destroy();
         };
-    }, [id, user.id, ws]);
+    }, [roomId, user.id, ws]);
 
     // Get user media (video and audio)
     useEffect(() => {
         const getUserMedia = async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 setStream(stream);
             } catch (err) {
                 console.error("Error getting user media:", err);
@@ -67,12 +69,20 @@ export const VideoCallPage = () => {
             call.on("stream", (userVideoStream: MediaStream) => {
                 dispatch(addPeerAction(call.peer, userVideoStream));
             });
+
+            call.on("close", () => {
+                removePeer(call.peer);
+            });
         });
 
         ws.on("user-joined", ({ peerId }: { roomId: string; peerId: string }) => {
             const call = me.call(peerId, stream);
             call.on("stream", (userVideoStream: MediaStream) => {
                 dispatch(addPeerAction(peerId, userVideoStream));
+            });
+
+            call.on("close", () => {
+                removePeer(call.peer);
             });
         });
 
@@ -87,7 +97,8 @@ export const VideoCallPage = () => {
     }, [me, stream, ws]);
 
     const handleUserList = ({ participants }: { participants: string[] }) => {
-        participants.forEach((peerId) => {
+        console.log(participants,'participants')
+        participants?.forEach((peerId) => {
             const call = me?.call(peerId, stream!);
             call?.on("stream", (userVideoStream: MediaStream) => {
                 dispatch(addPeerAction(peerId, userVideoStream));
@@ -107,10 +118,11 @@ export const VideoCallPage = () => {
         navigate(-1);
     };
 
+    console.log(peers,'peers')
     return (
         <div>
             <VideoInputSection handleEndCall={handleEndCall} key={"me"} stream={stream} />
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 gap-4 bg-red-400 min-h-[20rem]">
                 {Object.values(peers).map((peer: any, index: number) => (
                     <VideoPlayer key={index} stream={peer.stream} />
                 ))}

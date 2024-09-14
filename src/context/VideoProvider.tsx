@@ -1,16 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createContext, useContext, useEffect, useReducer, useState } from "react";
-import Peer from "peerjs";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import CircularJSON from 'circular-json';
+// import Peer from "peerjs";
 // import { v4 as uuidV4 } from "uuid";
 
 // import { io } from "socket.io-client";
 // import { useNavigate } from "react-router-dom";
-import { peersReducer } from "./pearsReducer";
-import { addPeerAction, removePeerAction } from "./pearsAction";
+// import { peersReducer } from "./pearsReducer";
+// import { addPeerAction, removePeerAction } from "./pearsAction";
 // import { SERVER_URL_ONLY } from "@/helper/const";
 import AuthContext from "./AuthProvider";
 import { ChatContext } from "./ChatContext";
+import Peer from "peerjs";
 // const WS = `${SERVER_URL_ONLY}?id=${localStorage.getItem("userId")}`;
 
 export const RoomContext = createContext<null | any>(null);
@@ -22,75 +24,158 @@ export const VideoProvider = ({ children }: { children: any }) => {
     const { io: ws } = useContext(ChatContext);
     const { user } = useContext(AuthContext)
 
-    const [me, setMe] = useState<Peer>();
-    const [peers, dispatch] = useReducer(peersReducer, {});
-    const [stream, setStream] = useState<MediaStream>();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // const enterRoom = ({ roomId }: { roomId: "string" }) => {
-    //     // navigate(`/room/${roomId}`);
-    //     console.log(roomId);
-    // };
+    const [peerId, setPeerId] = useState<string>("");
+    const [incomingCall, setIncomingCall] = useState<any | null>(
+        null
+    );
+    const [incomingCallData, setIncomingCallData] = useState<{ email: string, callType: "video" | "audio" } | null>(
+        null
+    );
+    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
-    const handleUserList = ({ participants }: { participants: string[] }) => {
+    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+    const [isStartCall, setIsStartCall] = useState(false)
+    const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+    const currentUserVideoRef = useRef<HTMLVideoElement | null>(null);
+    const peerInstance = useRef<Peer | null>(null);
 
-        stream && participants?.map((peerId) => {
-            const call = stream && me?.call(peerId, stream);
-            console.log(stream, "steam");
-            console.log("call", call);
-            call?.on("stream", (userVideoStream: MediaStream) => {
-                console.log({ addPeerAction });
-                dispatch(addPeerAction(peerId, userVideoStream));
-            });
+    useEffect(() => {
+        if (!user?.id) return; // Ensure user ID is available before initializing Peer instance
+
+        console.log("Initializing Peer instance with user ID...");
+        const peer = new Peer(user.id); // Initialize Peer with user ID
+        peer.on("open", (id) => {
+            console.log("Peer connection established with ID:", id);
+            setPeerId(id);
         });
-    };
 
-    const removePeer = (peerId: string) => {
-        dispatch(removePeerAction(peerId));
-    };
+        peer.on("call", (call) => {
 
-    useEffect(() => {
-        // const meId = uuidV4();
-        const peer = new Peer(user.id);
-        setMe(peer);
-        // try {
-        //     navigator.mediaDevices
-        //         .getUserMedia({ video: true, audio: true })
-        //         .then((stream) => {
-        //             setStream(stream);
-        //         });
-        // } catch (err) {
-        //     console.error({ err });
-        // }
-        // ws.on("room-created", enterRoom);
-        ws.on("get-users", handleUserList);
-        ws.on("user-disconnected", removePeer);
-    }, [ws]);
+            setIncomingCall(call);
+            console.log("Incoming call received:", call);
+            console.log(typeof call, 'c type');
+            // console.log(JSON.stringify(call),'incomingCall.metadata');
+            const parsedCall = JSON.parse(CircularJSON.stringify(call));
+            const metadata = parsedCall?.metadata || parsedCall?.options?._payload?.metadata || parsedCall?.options?.metadata
 
-    useEffect(() => {
-        if (!stream) return;
-        if (!me) return;
+            if (metadata) {
+                console.log(metadata)
+                setIncomingCallData(parsedCall?.options?._payload?.metadata)
+                console.log(parsedCall?.options?._payload?.metadata, 'parsedCall?.options?._payload?.metadata;')
+                // Access the callType and email from metadata
+                // const callType = metadata.callType;
+                // const email = metadata.email;
 
-        ws.on(
-            "user-joined",
-            ({ peerId }: { roomId: string; peerId: string }) => {
-                const call = stream && me.call(peerId, stream);
-                call.on("stream", (userVideoStream: MediaStream) => {
-                    dispatch(addPeerAction(peerId, userVideoStream));
-                });
+                // console.log("Call Type:", callType);
+                // console.log("Email:", email);
+            } else {
+                console.log("Metadata not found");
             }
-        );
 
-        me.on("call", (call) => {
-            call.answer(stream);
-            call.on("stream", (userVideoStream) => {
-                dispatch(addPeerAction(call.peer, userVideoStream));
-            });
+
         });
-    }, [stream, me, ws,]);
+
+        peer.on("error", (err) => {
+            console.error("Peer error:>>>", err);
+        });
+
+        peerInstance.current = peer;
+
+        return () => {
+            if (peerInstance.current) {
+                peerInstance.current.destroy();
+            }
+        };
+    }, [user?.id]);
+
+    const answerCall = () => {
+        if (incomingCall) {
+            console.log("Answering call...");
+            navigator.mediaDevices
+                .getUserMedia({ video: incomingCallData?.callType === "audio" ? false : true, audio: true })
+                .then((mediaStream) => {
+                    console.log("User media obtained:", mediaStream);
+                    setLocalStream(mediaStream)
+                    if (currentUserVideoRef.current) {
+                        currentUserVideoRef.current.srcObject = mediaStream;
+                        currentUserVideoRef.current.play();
+                    }
+                    incomingCall.answer(mediaStream);
+                    incomingCall.on("stream", (remoteStream: MediaStream | null) => {
+                        console.log("Remote stream received:", remoteStream);
+                        setRemoteStream(remoteStream);
+                        if (remoteVideoRef.current) {
+                            remoteVideoRef.current.srcObject = remoteStream;
+                            remoteVideoRef.current.play();
+                        }
+                    });
+                    setIncomingCall(null); // Reset the incoming call state after answering
+                })
+                .catch((error) => {
+                    console.error("Error accessing media devices:", error);
+                });
+        } else {
+            console.log("No incoming call to answer.");
+        }
+    };
+
+    const rejectCall = () => {
+        if (incomingCall) {
+            console.log("Rejecting call...");
+            incomingCall.close(); // Close the connection
+            setIncomingCall(null); // Reset the incoming call state
+        } else {
+            console.log("No incoming call to reject.");
+        }
+    };
+
+    const callFunc = (remotePeerId: string, callType: "video" | "audio") => {
+
+        console.log("Placing call to remote peer ID:", remotePeerId);
+        navigator.mediaDevices
+            .getUserMedia({ video: callType === "audio" ? false : true, audio: true })
+            .then((mediaStream) => {
+                console.log("User media obtained for outgoing call:", mediaStream);
+                setLocalStream(mediaStream)
+                if (currentUserVideoRef.current) {
+                    currentUserVideoRef.current.srcObject = mediaStream;
+                    currentUserVideoRef.current.play();
+                }
+                setIncomingCallData({
+                    email: user.email,
+                    callType: callType
+                })
+                const call = peerInstance.current?.call(remotePeerId, mediaStream, {
+                    metadata: {
+                        email: user.email,    // Send user's email
+                        callType: callType    // Send the call type (video/audio)
+                    }
+                });
+                if (call) {
+                    console.log("Call initiated successfully:", call);
+                    call.on("stream", (remoteStream) => {
+                        console.log(
+                            "Remote stream received during outgoing call:",
+                            remoteStream
+                        );
+                        setRemoteStream(remoteStream);
+                        if (remoteVideoRef.current) {
+                            remoteVideoRef.current.srcObject = remoteStream;
+                            remoteVideoRef.current.play();
+                        }
+                    });
+                } else {
+                    console.log("Failed to initiate call.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error accessing media devices:", error);
+            });
+    };
 
     return (
-        <RoomContext.Provider value={{ ws, me, peers, stream, setStream }}>
+        <RoomContext.Provider value={{ ws, callFunc, rejectCall, answerCall, currentUserVideoRef, peerId, user, remoteVideoRef, incomingCall, localStream, remoteStream, setLocalStream, setRemoteStream, isStartCall, setIsStartCall, incomingCallData }}>
             {children}
         </RoomContext.Provider>
     );

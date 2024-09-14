@@ -1,7 +1,6 @@
 import LoaderData from '@/components/shared/LoaderData';
 import UserCard from '@/components/user/UserCard';
-import { AudioContext } from '@/context/AudioProvider';
-import AuthContext from '@/context/AuthProvider';
+
 import { RoomContext } from '@/context/VideoProvider';
 import { SERVER_URL } from '@/helper/const';
 import useFetchDataHook from '@/hooks/useFetchDataHook';
@@ -12,22 +11,24 @@ import { FaRegMessage } from "react-icons/fa6";
 import { FaDollarSign, FaVideo } from 'react-icons/fa';
 import { IoCallOutline } from "react-icons/io5";
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import VideoModal from '@/components/shared/VideoModal';
 
 const SingleUser = () => {
-    const { startAudioCallNow, setLocalStream } = useContext(AudioContext)
-    const { user } = useContext(AuthContext)
+
+    const { callFunc, isStartCall, setIsStartCall, user } = useContext(RoomContext);
+
     const { id } = useParams()
     const { data, isLoading: loading } = useGetSingleUserQuery(id ?? "1");
     // console.log(data)
 
     const { data: allUserData } = useFetchDataHook<{ data: IUserDataType[] }>(`${SERVER_URL}/user`)
     const userData = data?.data
-    const { ws, me } = useContext(RoomContext);
 
 
     const navigate = useNavigate()
 
-    // console.log(data?.data)
+
+
     const startVideoCallWithRoom = () => {
         if (!user?.id || !id) {
             // console.log("user id or receiver id not found")
@@ -35,7 +36,13 @@ const SingleUser = () => {
             return
         }
 
-        ws.emit("create-room", { peerId: me._id, receiverId: data?.data?.id, senderName: data?.data?.name });
+        if (userData?.id) {
+            setIsStartCall(true)
+            callFunc(userData?.id, "video")
+        }
+
+
+
     };
 
     const [userRating, setUserRating] = useState(3);
@@ -47,12 +54,12 @@ const SingleUser = () => {
             navigate("/login")
             return
         }
-        navigate(`/audio/${id}`)
-        const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
-        setLocalStream(stream);
-        await startAudioCallNow(user.id, id, user?.name)
-        // navigate(`/audio/${id}`)
+        if (userData?.id) {
+            setIsStartCall(true)
+            callFunc(userData?.id, "audio")
+        }
     }
+
 
 
     // console.log(userData)
@@ -62,6 +69,12 @@ const SingleUser = () => {
 
             {
                 loading && <LoaderData />
+            }
+
+            {
+                isStartCall &&
+
+                <VideoModal />
             }
             <section className='block lg:flex  justify-between  items-center  w-full'>
 
@@ -85,24 +98,25 @@ const SingleUser = () => {
                     </div>
                 </div>
                 <div className='mt-7 lg:mt-0 flex flex-col gap-5 w-[45%] font-bold text-xl mx-auto text-center'>
-                    <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center ">
+                    <Link to={`/dashboard/chat/${id}`} className="bg-primary w-full p-3 text-white rounded flex flex-wrap gap-2 md:gap-7 justify-center items-center ">
                         <FaRegMessage />
                         <h4> Message Now</h4>
+                        {loading && "..."}
 
                         <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>01</span></h5>
 
                     </Link>
-                    <button onClick={handleAudioCall} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center" >
+                    <button onClick={handleAudioCall} className="bg-primary w-full p-3 text-white rounded flex flex-wrap gap-2 md:gap-7 justify-center items-center" >
                         <IoCallOutline />
                         <h4>Audio Call</h4>
-
+                        {loading && "..."}
                         <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>03</span></h5>
 
                     </button>
-                    <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded flex gap-7 justify-center items-center">
+                    <button onClick={startVideoCallWithRoom} className="bg-primary w-full p-3 text-white rounded flex flex-wrap gap-2 md:gap-7 justify-center items-center">
                         <FaVideo />
                         <h4>Video Call</h4>
-
+                        {loading && "..."}
                         <h5 className='flex gap-2 items-center'>  <FaDollarSign /> <span>05</span></h5>
                     </button>
                 </div>
